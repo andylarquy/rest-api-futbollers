@@ -5,6 +5,7 @@ import ar.edu.unsam.proyecto.domain.Empresa
 import ar.edu.unsam.proyecto.domain.Equipo
 import ar.edu.unsam.proyecto.domain.Partido
 import ar.edu.unsam.proyecto.domain.Usuario
+import ar.edu.unsam.proyecto.repos.RepositorioEquipo
 import ar.edu.unsam.proyecto.repos.RepositorioPartido
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import java.time.LocalDate
@@ -27,6 +28,7 @@ class Bootstrap {
 
 	RepositorioUsuario repoUsuarios = RepositorioUsuario.instance
 	RepositorioPartido repoPartido = RepositorioPartido.instance
+	RepositorioEquipo repoEquipo = RepositorioEquipo.instance
 
 	Usuario sebaCapo = new Usuario() => [
 		id = "U1"
@@ -109,20 +111,23 @@ class Bootstrap {
 		id = "E1"
 		nombre = "El equipazo"
 		owner = sebaCapo
+		foto = "https://i.imgur.com/hccT1z9.jpg"
 		integrantes = #[sebaCapo, nikoBostero, andy, jugador1, jugador2]
 	]
 
 	Equipo equipoMalo = new Equipo() => [
-		id = "E1"
+		id = "E2"
 		nombre = "El equipo malo"
 		owner = sebaCapo
+		foto = "https://i.imgur.com/RhqYpUg.jpg"
 		integrantes = #[jugador1, jugador2, jugador3, jugador4, andy]
 	]
 
 	Equipo equipoIncompleto = new Equipo() => [
-		id = "E2"
+		id = "E3"
 		nombre = "Equipo incompleto"
 		owner = nikoBostero
+		foto="https://i.imgur.com/lvR3nt3.jpg"
 		integrantes = #[sebaCapo, nikoBostero, andy]
 	]
 
@@ -133,7 +138,7 @@ class Bootstrap {
 		cantidadJugadores = 10
 	]
 
-	Cancha urquiza2 = new Cancha() => [ 
+	Cancha urquiza2 = new Cancha() => [
 		id = "C2"
 		nombre = "Cancha 2 Urquiza"
 		cesped = "sintetico"
@@ -219,7 +224,7 @@ class Bootstrap {
 		canchaReservada = urquiza1
 		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 5, 27), LocalTime.of(20, 00))
 	]
-	
+
 	Partido partido2 = new Partido() => [
 		id = "P2"
 		owner = andy
@@ -236,9 +241,13 @@ class Bootstrap {
 		repoUsuarios.create(andy)
 		repoUsuarios.create(jugador1)
 		repoUsuarios.create(jugador2)
-		
+
 		repoPartido.create(partido1)
 		repoPartido.create(partido2)
+
+		repoEquipo.create(equipazo)
+		repoEquipo.create(equipoMalo)
+		repoEquipo.create(equipoIncompleto)
 	}
 
 }

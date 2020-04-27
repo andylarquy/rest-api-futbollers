@@ -1,6 +1,6 @@
 package ar.edu.unsam.proyecto.domain
 
-import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartidoEmpresa
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import com.fasterxml.jackson.annotation.JsonView
 import java.time.LocalDateTime
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -8,16 +8,26 @@ import org.eclipse.xtend.lib.annotations.Accessors
 @Accessors
 class Partido {
 	
-	@JsonView(ViewsPartidoEmpresa.DefaultView) String id
+	@JsonView(ViewsPartido.DefaultView) 
+	String id
 	
-	@JsonView(ViewsPartidoEmpresa.DetallesView) Usuario owner
+	@JsonView(ViewsPartido.DefaultView) 
+	Usuario owner
 	
-	@JsonView(ViewsPartidoEmpresa.DefaultView) Equipo equipo1
-	@JsonView(ViewsPartidoEmpresa.DefaultView) Equipo equipo2
+	@JsonView(ViewsPartido.ListView) 
+	Equipo equipo1
 	
-	@JsonView(ViewsPartidoEmpresa.DefaultView) Empresa empresa
-	@JsonView(ViewsPartidoEmpresa.DetallesView) Cancha canchaReservada
-	@JsonView(ViewsPartidoEmpresa.DetallesView) LocalDateTime fechaDeReserva
+	@JsonView(ViewsPartido.ListView) 
+	Equipo equipo2
+	
+	@JsonView(ViewsPartido.DefaultView) 
+	Empresa empresa
+	
+	@JsonView(ViewsPartido.DetallesView) 
+	Cancha canchaReservada
+	
+	@JsonView(ViewsPartido.DetallesView) 
+	LocalDateTime fechaDeReserva
 	
 	
 	

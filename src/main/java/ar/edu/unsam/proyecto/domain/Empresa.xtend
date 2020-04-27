@@ -1,7 +1,8 @@
 package ar.edu.unsam.proyecto.domain
 
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEmpresa
-import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartidoEmpresa
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import com.fasterxml.jackson.annotation.JsonView
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -11,19 +12,37 @@ import org.uqbar.geodds.Point
 class Empresa {
 	
 	
-	@JsonView(ViewsPartidoEmpresa.DefaultView) String id
-	@JsonView(ViewsPartidoEmpresa.DefaultView) String nombre
+	@JsonView(ViewsEmpresa.DefaultView, ViewsEquipo.ListView, ViewsPartido.ListView) 
+	String id
 	
+	@JsonView(ViewsEmpresa.DefaultView, ViewsEquipo.ListView, ViewsPartido.ListView) 
+	String nombre
+
 	//Revisar si tienen q estar
-	@JsonView(ViewsPartidoEmpresa.DetallesView) Double lat
-	@JsonView(ViewsPartidoEmpresa.DetallesView) Double lon
-	@JsonView(ViewsPartidoEmpresa.DetallesView) String nombreDuenio
-	@JsonView(ViewsPartidoEmpresa.DetallesView) String email
-	@JsonView(ViewsPartidoEmpresa.DetallesView) Point lugar
-	@JsonView(ViewsPartidoEmpresa.DefaultView) String direccion
-	@JsonView(ViewsPartidoEmpresa.DefaultView) String foto
+	@JsonView(ViewsEmpresa.DetallesView) 
+	Double lat
 	
-	@JsonView(ViewsPartidoEmpresa.DetallesView) List<Cancha> canchas
+	@JsonView(ViewsEmpresa.DetallesView) 
+	Double lon
+	
+	@JsonView(ViewsEmpresa.DetallesView)
+	String nombreDuenio
+	 
+	@JsonView(ViewsEmpresa.DetallesView) 
+	String email
+	
+	@JsonView(ViewsEmpresa.DetallesView) 
+	Point lugar
+	
+	@JsonView(ViewsEquipo.ListView, ViewsEmpresa.DefaultView, ViewsPartido.ListView) 
+	String direccion
+	
+	@JsonView(ViewsEmpresa.DefaultView, ViewsEquipo.ListView, ViewsPartido.ListView) 
+	String foto
+	
+	
+	@JsonView(ViewsEmpresa.DetallesView) 
+	List<Cancha> canchas
 	
 	def agregarCancha(Cancha cancha){
 		canchas.add(cancha)

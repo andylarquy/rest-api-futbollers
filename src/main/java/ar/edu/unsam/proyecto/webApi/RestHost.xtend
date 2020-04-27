@@ -2,6 +2,7 @@ package ar.edu.unsam.proyecto.webApi
 
 import ar.edu.unsam.proyecto.domain.Usuario
 import ar.edu.unsam.proyecto.exceptions.IncorrectCredentials
+import ar.edu.unsam.proyecto.repos.RepositorioEquipo
 import ar.edu.unsam.proyecto.repos.RepositorioPartido
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -10,8 +11,8 @@ import org.eclipse.xtend.lib.annotations.Accessors
 class RestHost {
 	RepositorioUsuario repoUsuario = RepositorioUsuario.instance
 	RepositorioPartido repoPartidos = RepositorioPartido.instance
-	/*RepositorioEquipo repoEquipo
-	RepositorioSuperIndividuo repoIndividuo
+	RepositorioEquipo repoEquipo = RepositorioEquipo.instance
+	/* RepositorioSuperIndividuo repoIndividuo
 	RepositorioItem repoItem
 	RepositorioAmenaza repoAmenaza*/
 	
@@ -41,6 +42,11 @@ class RestHost {
 		println(usuarioPosta.id)
 		repoPartidos.getPartidosDelUsuario(usuarioPosta)
 
+	}
+	
+	def getEquiposDelUsuario(String idUsuario) {
+		val usuarioPosta = repoUsuario.searchById(idUsuario)
+		repoEquipo.getEquiposDelUsuario(usuarioPosta)
 	}
 
 }

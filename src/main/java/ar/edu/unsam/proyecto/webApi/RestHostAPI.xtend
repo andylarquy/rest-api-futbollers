@@ -2,11 +2,11 @@ package ar.edu.unsam.proyecto.webApi
 
 import ar.edu.unsam.proyecto.domain.Usuario
 import ar.edu.unsam.proyecto.exceptions.IncorrectCredentials
-import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartidoEmpresa
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsUsuario
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
-import java.util.List
 import org.uqbar.xtrest.api.annotation.Body
 import org.uqbar.xtrest.api.annotation.Controller
 import org.uqbar.xtrest.api.annotation.Get
@@ -66,7 +66,21 @@ class RestHostAPI {
 		try {
 			println(restHost.getPartidosDelUsuario(idUsuario).map[it.equipo1].map[nombre])
 			var partidoParseado = this.parsearObjeto(restHost.getPartidosDelUsuario(idUsuario),
-				ViewsPartidoEmpresa.DefaultView)
+				ViewsPartido.ListView)
+			return ok(partidoParseado)
+		} catch (Exception e) {
+			return badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+
+	}
+	
+	@Get("/equipos/:idUsuario")
+	def getEquipos() {
+
+		try {
+			println(restHost.getPartidosDelUsuario(idUsuario).map[it.equipo1].map[nombre])
+			var partidoParseado = this.parsearObjeto(restHost.getEquiposDelUsuario(idUsuario),
+				ViewsEquipo.ListView)
 			return ok(partidoParseado)
 		} catch (Exception e) {
 			return badRequest('{"status":400, "message":"' + e.message + '"}')

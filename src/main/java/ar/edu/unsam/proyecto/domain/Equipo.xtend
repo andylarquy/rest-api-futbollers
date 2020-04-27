@@ -1,7 +1,7 @@
 package ar.edu.unsam.proyecto.domain
 
-import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartidoEmpresa
-import com.fasterxml.jackson.annotation.JsonIgnore
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import com.fasterxml.jackson.annotation.JsonView
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
@@ -9,12 +9,20 @@ import org.eclipse.xtend.lib.annotations.Accessors
 @Accessors
 class Equipo {
 	
-	@JsonView(ViewsPartidoEmpresa.DefaultView) String id
-	@JsonView(ViewsPartidoEmpresa) String nombre
+	@JsonView(ViewsPartido.DefaultView) 
+	String id
 	
-	@JsonView(ViewsPartidoEmpresa) Usuario owner
+	@JsonView(ViewsEquipo.ListView) 
+	String nombre
+	
+	@JsonView(ViewsEquipo.ListView) 
+	String foto
+	
+	@JsonView(ViewsEquipo.ListView) 
+	Usuario owner
 
-	 @JsonView(ViewsPartidoEmpresa) List<Usuario> integrantes //Capaz conviene que sea un Set para no cagarla
+	@JsonView(ViewsEquipo.ListView) 
+	List<Usuario> integrantes //Capaz conviene que sea un Set para no cagarla
 	
 	def agregarIntegrante(Usuario integrante){
 		integrantes.add(integrante)
@@ -27,6 +35,21 @@ class Equipo {
 	//TODO: Separar en equipo y equipo completo
 	def contieneA(Usuario usuario) {
 		owner == usuario || integrantes.contains(usuario)
+	}
+	
+	def validar(){
+		true
+	}
+	
+	def participaUsuario(Usuario usuario){
+		println(usuario.id)
+		println(owner.id)
+		println(integrantes.map[id])
+		esOwner(usuario) || integrantes.contains(usuario)
+	}
+	
+	def esOwner(Usuario usuario){
+		usuario == owner
 	}
 	
 }
