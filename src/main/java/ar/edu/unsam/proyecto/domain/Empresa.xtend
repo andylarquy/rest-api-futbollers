@@ -1,6 +1,8 @@
 package ar.edu.unsam.proyecto.domain
 
-import com.fasterxml.jackson.annotation.JsonIgnore
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEmpresa
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartidoEmpresa
+import com.fasterxml.jackson.annotation.JsonView
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.geodds.Point
@@ -8,19 +10,20 @@ import org.uqbar.geodds.Point
 @Accessors
 class Empresa {
 	
-	String id
-	String nombre
+	
+	@JsonView(ViewsPartidoEmpresa.DefaultView) String id
+	@JsonView(ViewsPartidoEmpresa.DefaultView) String nombre
 	
 	//Revisar si tienen q estar
-	@JsonIgnore Double lat
-	@JsonIgnore Double lon
-	@JsonIgnore String nombreDuenio
-	@JsonIgnore String email
-	@JsonIgnore Point lugar
-	String direccion
-	String foto
+	@JsonView(ViewsPartidoEmpresa.DetallesView) Double lat
+	@JsonView(ViewsPartidoEmpresa.DetallesView) Double lon
+	@JsonView(ViewsPartidoEmpresa.DetallesView) String nombreDuenio
+	@JsonView(ViewsPartidoEmpresa.DetallesView) String email
+	@JsonView(ViewsPartidoEmpresa.DetallesView) Point lugar
+	@JsonView(ViewsPartidoEmpresa.DefaultView) String direccion
+	@JsonView(ViewsPartidoEmpresa.DefaultView) String foto
 	
-	@JsonIgnore List<Cancha> canchas
+	@JsonView(ViewsPartidoEmpresa.DetallesView) List<Cancha> canchas
 	
 	def agregarCancha(Cancha cancha){
 		canchas.add(cancha)

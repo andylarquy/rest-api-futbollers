@@ -1,18 +1,20 @@
 package ar.edu.unsam.proyecto.domain
 
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartidoEmpresa
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonView
 import java.util.List
 import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
 class Equipo {
 	
-	String id
-	String nombre
+	@JsonView(ViewsPartidoEmpresa.DefaultView) String id
+	@JsonView(ViewsPartidoEmpresa) String nombre
 	
-	@JsonIgnore Usuario owner
+	@JsonView(ViewsPartidoEmpresa) Usuario owner
 
-	@JsonIgnore List<Usuario> integrantes //Capaz conviene que sea un Set para no cagarla
+	 @JsonView(ViewsPartidoEmpresa) List<Usuario> integrantes //Capaz conviene que sea un Set para no cagarla
 	
 	def agregarIntegrante(Usuario integrante){
 		integrantes.add(integrante)

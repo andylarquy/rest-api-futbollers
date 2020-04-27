@@ -1,27 +1,23 @@
 package ar.edu.unsam.proyecto.domain
 
-import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
-import com.fasterxml.jackson.annotation.JsonIgnore
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartidoEmpresa
 import com.fasterxml.jackson.annotation.JsonView
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.core.JsonGenerator
 import java.time.LocalDateTime
 import org.eclipse.xtend.lib.annotations.Accessors
-
 
 @Accessors
 class Partido {
 	
-	@JsonView(ViewsPartido.DefaultView) String id
+	@JsonView(ViewsPartidoEmpresa.DefaultView) String id
 	
-	@JsonIgnore Usuario owner
+	@JsonView(ViewsPartidoEmpresa.DetallesView) Usuario owner
 	
-	@JsonView(ViewsPartido.DefaultView) Equipo equipo1
-	@JsonView(ViewsPartido.DefaultView) Equipo equipo2
+	@JsonView(ViewsPartidoEmpresa.DefaultView) Equipo equipo1
+	@JsonView(ViewsPartidoEmpresa.DefaultView) Equipo equipo2
 	
-	Empresa empresa
-	@JsonIgnore Cancha canchaReservada
-	@JsonIgnore LocalDateTime fechaDeReserva
+	@JsonView(ViewsPartidoEmpresa.DefaultView) Empresa empresa
+	@JsonView(ViewsPartidoEmpresa.DetallesView) Cancha canchaReservada
+	@JsonView(ViewsPartidoEmpresa.DetallesView) LocalDateTime fechaDeReserva
 	
 	
 	

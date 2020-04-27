@@ -1,12 +1,14 @@
 package ar.edu.unsam.proyecto.webApi.jsonViews
 
-class ViewsPartido {
+class ViewsPartidoEmpresa {
 
 	//CHEATSHEET  
 
     static class DefaultView {}
-	static class CredencialesView extends DefaultView {}
+	static class DetallesView extends DefaultView {}
 	static class PerfilView extends DefaultView {}
 	static class UbicacionView extends DefaultView {}
+	
+	
 }
 
