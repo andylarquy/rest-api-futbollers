@@ -29,17 +29,13 @@ class Partido {
 	@JsonView(ViewsPartido.DetallesView) 
 	LocalDateTime fechaDeReserva
 	
-	
-	
 	def validar(){
 		true
 	}
 
-	
-	
 	//TODO: Separar en equipo y equipo completo
 	def participaUsuario(Usuario usuario) {
-		usuario == owner || equipo1.contieneA(usuario) || equipo2.contieneA(usuario)
+		usuario == owner || equipo1.participaUsuario(usuario) || equipo2.participaUsuario(usuario)
 	}
 	
 }

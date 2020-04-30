@@ -8,3 +8,10 @@ class IncorrectCredentials extends Exception{
 		super(errorMessage)
 	}
 }
+
+class UserDoesntExist extends Exception{
+	
+	new(String errorMessage){
+		super(errorMessage)
+	}
+}

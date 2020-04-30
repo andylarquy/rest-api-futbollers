@@ -12,6 +12,7 @@ import org.uqbar.xtrest.api.annotation.Controller
 import org.uqbar.xtrest.api.annotation.Get
 import org.uqbar.xtrest.api.annotation.Post
 import org.uqbar.xtrest.json.JSONUtils
+import ar.edu.unsam.proyecto.exceptions.UserDoesntExist
 
 @Controller
 class RestHostAPI {
@@ -25,7 +26,12 @@ class RestHostAPI {
 	@Get("/index")
 	def getPeticionDePrueba() {
 
-		return ok(restHost.getPeticionDePrueba())
+		try{
+			ok(restHost.getPeticionDePrueba())
+		}
+		catch(Exception e){
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
 	}
 
 	@Post("/usuario/login")
@@ -38,9 +44,13 @@ class RestHostAPI {
 				ViewsUsuario.CredencialesView)
 
 			// println("Json del usuario recien logueado: " + usuarioParseado + "\n")
-			return ok(usuarioParseado)
-		} catch (IncorrectCredentials e) {
-			return forbidden('{"status":401, "message":"' + e.message + '"}')
+			ok(usuarioParseado)
+		} 
+		catch (IncorrectCredentials e) {
+			forbidden('{"status":401, "message":"' + e.message + '"}')
+		}
+		catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
 
@@ -52,11 +62,13 @@ class RestHostAPI {
 		println(body)
 		try {
 			restHost.signUpUsuario(usuario)
-
-			return ok('{"status": 200}')
-
-		} catch (IncorrectCredentials e) {
-			return badRequest('{"status":400, "message":"' + e.message + '"}')
+			ok('{"status": 200}')
+		} 
+		catch (IncorrectCredentials e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		} 
+		catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
 
@@ -67,9 +79,13 @@ class RestHostAPI {
 			println(restHost.getPartidosDelUsuario(idUsuario).map[it.equipo1].map[nombre])
 			var partidoParseado = this.parsearObjeto(restHost.getPartidosDelUsuario(idUsuario),
 				ViewsPartido.ListView)
-			return ok(partidoParseado)
-		} catch (Exception e) {
-			return badRequest('{"status":400, "message":"' + e.message + '"}')
+			ok(partidoParseado)	
+		} 
+		catch (UserDoesntExist e) {
+			notFound('{"status":404, "message":"' + e.message + '"}')
+		} 
+		catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 
 	}
@@ -78,12 +94,15 @@ class RestHostAPI {
 	def getEquipos() {
 
 		try {
-			println(restHost.getPartidosDelUsuario(idUsuario).map[it.equipo1].map[nombre])
 			var partidoParseado = this.parsearObjeto(restHost.getEquiposDelUsuario(idUsuario),
 				ViewsEquipo.ListView)
-			return ok(partidoParseado)
-		} catch (Exception e) {
-			return badRequest('{"status":400, "message":"' + e.message + '"}')
+			ok(partidoParseado)
+		}
+		catch (UserDoesntExist e) {
+			notFound('{"status":404, "message":"' + e.message + '"}')
+		}  
+		catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 
 	}

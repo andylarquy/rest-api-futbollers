@@ -14,8 +14,12 @@ class Usuario {
 	
 	@JsonView(ViewsUsuario.DefaultView) 
 	String nombre = ""
+	
 	@JsonView(ViewsUsuario.CredencialesView) 
 	String password = ""
+	
+	@JsonView(ViewsUsuario.PerfilView)
+	String foto
 	
 	@JsonView(ViewsUsuario.PerfilView)
 	 String sexo

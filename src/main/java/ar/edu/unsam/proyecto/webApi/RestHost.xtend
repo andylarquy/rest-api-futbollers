@@ -39,7 +39,6 @@ class RestHost {
 	
 	def getPartidosDelUsuario(String idUsuario) {
 		val usuarioPosta = repoUsuario.searchById(idUsuario)
-		println(usuarioPosta.id)
 		repoPartidos.getPartidosDelUsuario(usuarioPosta)
 
 	}

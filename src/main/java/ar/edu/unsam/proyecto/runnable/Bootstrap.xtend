@@ -36,6 +36,7 @@ class Bootstrap {
 		password = "mandarina"
 		sexo = "M"
 		posicion = "DC"
+		foto = "https://i.imgur.com/gF6Q26G.jpg"
 		email = "sebassdevita@gmail.com"
 		lat = -34.5677486
 		lon = -58.489429
@@ -47,6 +48,7 @@ class Bootstrap {
 		password = "mandarina"
 		sexo = "M"
 		posicion = "ED"
+		foto = "https://i.imgur.com/a0UL9YQ.png"
 		email = "niko.bostero.232@gmail.com"
 		lat = -34.6344499
 		lon = -58.3672355
@@ -58,6 +60,7 @@ class Bootstrap {
 		password = "mandarina"
 		sexo = "M"
 		posicion = "DFI"
+		foto = "https://i.imgur.com/tBUGRSa.jpg"
 		email = "andres27059934@gmail.com"
 		lat = -34.6016244
 		lon = -58.4420183
@@ -69,6 +72,7 @@ class Bootstrap {
 		password = "mandarina"
 		sexo = "M"
 		posicion = "MC"
+		foto = "https://i.imgur.com/DyYpkmS.jpg"
 		email = "elmaildelnabo1@sarasa.com"
 		lat = -34.6029831
 		lon = -58.4408178
@@ -80,6 +84,7 @@ class Bootstrap {
 		password = "mandarina"
 		sexo = "F"
 		posicion = "EI"
+		foto = "https://i.imgur.com/AofDmoH.jpg"
 		email = "elmaildelnabo2@sarasa.com"
 		lat = -34.5768884
 		lon = -58.4904551
@@ -91,6 +96,7 @@ class Bootstrap {
 		password = "mandarina"
 		sexo = "M"
 		posicion = "MC"
+		foto = "https://i.imgur.com/mUPUwOS.jpg"
 		email = "elmaildelnabo3@sarasa.com"
 		lat = -34.6029831
 		lon = -58.4408178
@@ -102,6 +108,7 @@ class Bootstrap {
 		password = "mandarina"
 		sexo = "F"
 		posicion = "EI"
+		foto = "https://i.imgur.com/kzeiAar.jpg"
 		email = "elmaildelnabo4@sarasa.com"
 		lat = -34.5768884
 		lon = -58.4904551
@@ -118,7 +125,7 @@ class Bootstrap {
 	Equipo equipoMalo = new Equipo() => [
 		id = "E2"
 		nombre = "El equipo malo"
-		owner = sebaCapo
+		owner = andy
 		foto = "https://i.imgur.com/RhqYpUg.jpg"
 		integrantes = #[jugador1, jugador2, jugador3, jugador4, andy]
 	]
@@ -201,7 +208,7 @@ class Bootstrap {
 		nombreDuenio = "Jorge"
 		email = "miraSiVaATenerMail@dePedoTieneAgua.com"
 		direccion = "Mitre 3847"
-		foto = "https://i.imgur.com/gYYrLrM.jpg"
+		foto = "https://i.imgur.com/0R5wqI5.jpg"
 	]
 
 	Empresa empresaArgentinos = new Empresa => [
@@ -241,6 +248,8 @@ class Bootstrap {
 		repoUsuarios.create(andy)
 		repoUsuarios.create(jugador1)
 		repoUsuarios.create(jugador2)
+		repoUsuarios.create(jugador3)
+		repoUsuarios.create(jugador4)
 
 		repoPartido.create(partido1)
 		repoPartido.create(partido2)

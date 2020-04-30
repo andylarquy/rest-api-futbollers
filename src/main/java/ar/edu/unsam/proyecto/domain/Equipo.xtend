@@ -12,7 +12,7 @@ class Equipo {
 	@JsonView(ViewsPartido.DefaultView) 
 	String id
 	
-	@JsonView(ViewsEquipo.ListView) 
+	@JsonView(ViewsEquipo.ListView, ViewsPartido.ListView) 
 	String nombre
 	
 	@JsonView(ViewsEquipo.ListView) 
@@ -29,15 +29,12 @@ class Equipo {
 	}
 	
 	def quitarIntegrante(Usuario integrante){
+		//TODO: Ver que hacer si se intenta remover un usuario que es owner
 		integrantes.remove(integrante)
 	}
 	
-	//TODO: Separar en equipo y equipo completo
-	def contieneA(Usuario usuario) {
-		owner == usuario || integrantes.contains(usuario)
-	}
-	
 	def validar(){
+		//TODO: Validar
 		true
 	}
 	

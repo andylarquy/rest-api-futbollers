@@ -1,12 +1,9 @@
 package ar.edu.unsam.proyecto.repos
 
 import ar.edu.unsam.proyecto.domain.Usuario
-import java.time.LocalDate
-import java.time.Period
-import java.util.List
+import ar.edu.unsam.proyecto.exceptions.UserDoesntExist
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.commons.model.annotations.Observable
-import java.util.Set
 
 @Observable
 @Accessors
@@ -59,7 +56,8 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 	}
 
 	def searchById(String cadenaId) {
-		return coleccion.filter[usuario|usuario.id == cadenaId].head
+		val usuario = coleccion.filter[usuario|usuario.id == cadenaId].head
+		return (usuario !== null) ? usuario : throw new UserDoesntExist("No existe un usuario con ese ID")
 	}
 	
 	def getUsuarioConCredenciales(String username, String password){
