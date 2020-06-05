@@ -14,6 +14,7 @@
 		<class>domain.Empresa</class>
 		<class>domain.Equipo</class>
 		<class>domain.Promocion</class>
+		<class>domain.Notificacion</class>
 		
 		
 		<properties>

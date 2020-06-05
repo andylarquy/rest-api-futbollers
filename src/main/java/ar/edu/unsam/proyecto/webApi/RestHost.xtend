@@ -62,12 +62,12 @@ class RestHost {
 	
 	def crearNuevoPartido(Partido partido) {
 		
+		partido.mapearJugadoresConocidos
+		
 		partido.mapearEquipoTemporal	
 		
-		partido.validar()
-		
-		
-		repoPartido.create(partido)
+		//partido.validar()
+		//repoPartido.create(partido)
 	}
 	
 	def getCanchas(){

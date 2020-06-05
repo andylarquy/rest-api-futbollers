@@ -15,6 +15,9 @@ import javax.persistence.ManyToOne
 import org.eclipse.xtend.lib.annotations.Accessors
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import javax.persistence.Transient
+import java.util.HashSet
+import javax.naming.InsufficientResourcesException
+import ar.edu.unsam.proyecto.exceptions.InsufficientCandidates
 
 @Accessors
 @Entity
@@ -104,9 +107,11 @@ class Partido {
 	}
 	
 	def mapearEquipoTemporal() {
+		
 		if(this.tieneEquipoTemporal){
 		
 			equipo1.getUsuariosTemporales.forEach[jugador | buscarJugadorPorGPS(jugador, equipo1.owner)]
+			equipo2.getUsuariosTemporales.forEach[jugador | buscarJugadorPorGPS(jugador, equipo2.owner)]
 			
 		}
 	}
@@ -116,12 +121,43 @@ class Partido {
 		val sexoBuscado = usuarioABuscar.sexo
 		val posicionBuscada = usuarioABuscar.posicion
 		
-		val candidato = repoUsuario.getUsuariosEnElRangoDe(usuarioOwner, rangoDeBusqueda, sexoBuscado, posicionBuscada).head
+		val candidatos = repoUsuario.getUsuariosEnElRangoDe(usuarioOwner, rangoDeBusqueda, sexoBuscado, posicionBuscada)
 		
-		val invitacion = new NotificacionInvitacion()
+		val invitacion = new Notificacion()
+		
 		invitacion.partido = this
+		invitacion.equipo = equipo1
 		
-		candidato.agregarNotificacion(invitacion)
+		if(candidatos.size >= jugadoresTemporalesDelPartido.size){
+			candidatos.forEach[candidato | candidato.agregarNotificacion(invitacion)
+				println(candidato)
+			]
+		}else{
+			throw new InsufficientCandidates("No se han encontrado suficientes jugadores con esos parametros de busqueda")
+		}
+		
+	}
+	
+	def jugadoresTemporalesDelPartido(){
+		val jugadores = jugadoresDelPartido
+		jugadores.filter[jugador | jugador.esIntegranteDesconocido].toSet
+		
+		return jugadores
+	}
+	
+	def jugadoresDelPartido(){
+		val jugadores = new HashSet()
+		jugadores.addAll(equipo1.integrantes)
+		jugadores.addAll(equipo2.integrantes)
+		
+		return jugadores
+	}
+	
+	def void jugadoresConocidos() {}
+	
+	def mapearJugadoresConocidos() {
+		equipo1.mapearJugadoresConocidos
+		equipo2.mapearJugadoresConocidos
 	}
 
 }

@@ -118,6 +118,50 @@ class Bootstrap {
 		lat = -34.5768884
 		lon = -58.4904551
 	]
+	
+	Usuario pepe = new Usuario() => [
+		nombre = "Pepe"
+		password = dotenv.get("PASSWORD")
+		sexo = "Masculino"
+		posicion = "Defensor"
+		foto = "https://i.imgur.com/kzeiAar.jpg"
+		email = "pepe@gmail.com"
+		lat = -34.6016244
+		lon = -58.4420183
+	]
+	
+	Usuario sofia = new Usuario() => [
+		nombre = "Sofia"
+		password = dotenv.get("PASSWORD")
+		sexo = "Femenino"
+		posicion = "Delantero"
+		foto = "https://i.imgur.com/kzeiAar.jpg"
+		email = "sofia@gmail.com"
+		lat = -34.6016244
+		lon = -58.4420183
+	]
+
+	Usuario agustin = new Usuario() => [
+		nombre = "Agustin"
+		password = dotenv.get("PASSWORD")
+		sexo = "Masculino"
+		posicion = "Mediocampista"
+		foto = "https://i.imgur.com/kzeiAar.jpg"
+		email = "agustin@gmail.com"
+		lat = -34.6016244
+		lon = -58.4420183
+	]
+	
+	Usuario juan = new Usuario() => [
+		nombre = "Juancete"
+		password = dotenv.get("PASSWORD")
+		sexo = "Masculino"
+		posicion = "Delantero"
+		foto = "https://i.imgur.com/kzeiAar.jpg"
+		email = "juancete@gmail.com"
+		lat = -34.6016244
+		lon = -58.4420183
+	]
 
 	Equipo equipazo = new Equipo() => [
 		nombre = "El equipazo"
@@ -273,6 +317,10 @@ class Bootstrap {
 		repoUsuarios.create(jugador2)
 		repoUsuarios.create(jugador3)
 		repoUsuarios.create(jugador4)
+		repoUsuarios.create(pepe)
+		repoUsuarios.create(sofia)
+		repoUsuarios.create(agustin)
+		repoUsuarios.create(juan)
 		
 		repoEquipo.create(equipazo)
 		repoEquipo.create(equipoMalo)

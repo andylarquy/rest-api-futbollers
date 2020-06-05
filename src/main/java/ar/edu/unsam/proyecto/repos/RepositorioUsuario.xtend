@@ -30,7 +30,10 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 	def coleccion(){
 		
 		queryTemplate(
+			
 			[criteria, query, from |
+				from.fetch("invitaciones", JoinType.LEFT)	
+				
 				return query
 			], 
 			[query | query.resultList]) as List<Usuario>
@@ -41,8 +44,15 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 	}
 
 	def searchById(Long idUsuario) {
-		val usuario = coleccion.filter[usuario|usuario.getIdUsuario == idUsuario].head
-		return (usuario !== null) ? usuario : throw new ObjectDoesntExists("No existe un usuario con el ID: "+idUsuario)
+		queryTemplate(
+			[criteria, query, from |
+				
+				from.fetch("invitaciones", JoinType.LEFT)	
+				
+				query.where(criteria.equal(from.get("idUsuario"), idUsuario))
+				return query
+			], 
+			[query | query.singleResult]) as Usuario
 	}
 	
 	def getUsuarioConCredenciales(String email, String password){
@@ -75,8 +85,14 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 
 	//TODO: Hacer en formato de query	
 	def getUsuariosEnElRangoDe(Usuario usuarioBuscado, int rangoDeBusqueda, String sexoBuscado, String posicionBuscada) {
-		coleccion.filter[usuario | usuario.estaDentroDelRango(usuarioBuscado.getUbicacion, rangoDeBusqueda)]
+		coleccion.filter[usuario | usuario.estaDentroDelRango(usuarioBuscado.getUbicacion, rangoDeBusqueda * 100)]
 	}
+	
+	def notificacionesDelUsuario(Long idUsuario){
+		val usuarioBuscado = coleccion.filter[usuario| usuario.idUsuario == idUsuario].head
+		return usuarioBuscado.invitaciones
+	}
+	
 	
 	
 }

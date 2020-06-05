@@ -6,10 +6,11 @@ import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsUsuario
 import com.fasterxml.jackson.annotation.JsonView
 import java.util.HashSet
-import java.util.List
 import java.util.Set
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.JoinTable
@@ -62,11 +63,12 @@ class Usuario {
 	@ManyToMany
 	Set <Usuario> amigos = new HashSet
 	
-	@Transient
-	transient Set<NotificacionInvitacion> invitaciones = new HashSet()
 	
-	@Transient
-	transient Set<NotificacionCandidato> candidatos = new HashSet()
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	Set<Notificacion> invitaciones = new HashSet()
+	
+	//@Transient
+	//transient Set<NotificacionCandidato> candidatos = new HashSet()
 	
 	@Transient
 	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
@@ -130,8 +132,13 @@ class Usuario {
 		idUsuario == ID_INTEGRANTE_DESCONOCIDO
 	}
 	
+	def esIntegranteConocido() {
+		idUsuario != ID_INTEGRANTE_DESCONOCIDO
+	}
+	
 	def estaDentroDelRango(Point ubicacionBuscada, int rango) {
 		val ubicacionUsuario = getUbicacion
+		
 		ubicacionUsuario.distance(ubicacionBuscada) <= rango
 	}
 	
@@ -139,8 +146,9 @@ class Usuario {
 		new Point(lat, lon)
 	}
 	
-	def agregarNotificacion(NotificacionInvitacion notificacion){
+	def agregarNotificacion(Notificacion notificacion){
 		invitaciones.add(notificacion)
+		repoUsuario.update(this)
 	}
-
+	
 }

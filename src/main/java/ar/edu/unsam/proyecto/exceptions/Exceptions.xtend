@@ -19,3 +19,9 @@ class ObjectAlreadyExists extends Exception{
 		super(errorMessage)
 	}
 }
+
+class InsufficientCandidates extends Exception{
+	new(String errorMessage){
+		super(errorMessage)
+	}
+}

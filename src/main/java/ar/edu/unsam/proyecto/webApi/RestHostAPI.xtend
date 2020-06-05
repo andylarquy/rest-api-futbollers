@@ -127,11 +127,11 @@ class RestHostAPI {
 			//println("[DEBUG]: Fue parseado con ID: " + partido.idPartido)
 			//println("[DEBUG]: Y con fecha de reserva: " + partido.fechaDeReserva)
 
-			//restHost.crearNuevoPartido(partido)
-
+			restHost.crearNuevoPartido(partido)
 			ok('{"status":200, "message":"ok"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
 		}
 	}
 

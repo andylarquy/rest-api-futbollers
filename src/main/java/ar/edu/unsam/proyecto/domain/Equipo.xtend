@@ -1,16 +1,19 @@
 package ar.edu.unsam.proyecto.domain
 
+import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import com.fasterxml.jackson.annotation.JsonView
+import java.util.Set
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
+import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
-import java.util.Set
+import java.util.HashSet
 
 @Accessors
 @Entity
@@ -35,6 +38,9 @@ class Equipo {
 	@ManyToMany
 	@JsonView(ViewsEquipo.ListView) 
 	Set<Usuario> integrantes //Capaz conviene que sea un Set para no cagarla
+	
+	@Transient
+	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
 	
 	def agregarIntegrante(Usuario integrante){
 		integrantes.add(integrante)
@@ -81,6 +87,20 @@ class Equipo {
 	
 	def getUsuariosTemporales() {
 		integrantes.filter[it.esIntegranteDesconocido]
+	}
+	
+	def mapearJugadoresConocidos() {
+		
+		if(esEquipoConocido){
+			val integrantesConocidos = new HashSet()
+			 integrantesConocidos.addAll(integrantes.filter[esIntegranteConocido])
+			integrantes.removeAll(integrantesConocidos)
+			integrantesConocidos.forEach[usuario | integrantes.add(repoUsuario.searchById(usuario.idUsuario))]
+		}
+	}
+	
+	def esEquipoConocido(){
+		this.idEquipo != -1
 	}
 	
 }
