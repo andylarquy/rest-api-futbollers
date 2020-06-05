@@ -20,17 +20,17 @@
 			<property name="javax.persistence.jdbc.driver"
 				value="com.mysql.cj.jdbc.Driver" />
 			<property name="javax.persistence.jdbc.url"
-				value="jdbc:mysql://mysqlfutbollers.ddns.net/futbollers?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC" />
+				value="jdbc:mysql://localhost/futbollers?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC" />
 			
-			<property name="javax.persistence.jdbc.user" value="futbollers" />
-			<property name="javax.persistence.jdbc.password" value="banana" />
+			<property name="javax.persistence.jdbc.user" value="root" />
+			<property name="javax.persistence.jdbc.password" value="" />
 
 			<!-- propiedades de hibernate -->
 			<property name="hibernate.dialect"
 				value="org.hibernate.dialect.MySQL5InnoDBDialect" />
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="true" />
-			<!-- <property name="hibernate.hbm2ddl.auto" value="create-drop" /> -->
+			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 		</properties>
 	</persistence-unit>
 

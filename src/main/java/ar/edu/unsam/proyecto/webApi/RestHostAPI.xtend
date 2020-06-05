@@ -96,8 +96,6 @@ class RestHostAPI {
 			throw e
 		}
 		
-		
-		
 	}
 
 	@Get("/partidos/:idUsuario")
@@ -108,30 +106,28 @@ class RestHostAPI {
 			ok(partidoParseado)
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
+			throw e
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
 		}
 	}
 
-	@Post("/partidos/:idUsuario")
+	@Post("/partidos")
 	def postPartidos(@Body String body) {
 		try {
 			// Seteo los adapter de ID a javaObject
 			val gson = new GsonBuilder()
 			.registerTypeAdapter(LocalDateTime, new LocalDateAdapter())
-			.registerTypeAdapter(Usuario, new UsuarioAdapter())
-			.registerTypeAdapter(Equipo, new EquiposAdapter())
-			.registerTypeAdapter(Empresa, new EmpresaAdapter())
-			.registerTypeAdapter(Cancha, new CanchaAdapter())
 			.create()
-
+			
 			val partido = gson.fromJson(body.toString, Partido)
 			
-			println("\n[DEBUG]: El partido " + partido)
-			println("[DEBUG]: Fue parseado con ID: " + partido.idPartido)
-			println("[DEBUG]: Y con fecha de reserva: " + partido.fechaDeReserva)
+			println("\n[DEBUG]: Partido java object:\n" + partido)
+			//println("[DEBUG]: Fue parseado con ID: " + partido.idPartido)
+			//println("[DEBUG]: Y con fecha de reserva: " + partido.fechaDeReserva)
 
-			restHost.crearNuevoPartido(partido, Long.valueOf(idUsuario))
+			//restHost.crearNuevoPartido(partido)
 
 			ok('{"status":200, "message":"ok"}')
 		} catch (Exception e) {

@@ -47,7 +47,7 @@ class RestHost {
 	
 	def getPartidosDelUsuario(Long idUsuario) {
 		val usuarioPosta = repoUsuario.searchById(idUsuario)
-		usuarioPosta.partidos
+		repoPartido.getPartidosDelUsuario(usuarioPosta)
 	}
 	
 	def getEquiposDelUsuario(Long idUsuario) {
@@ -60,11 +60,14 @@ class RestHost {
 		repoEquipo.create(equipo)
 	}
 	
-	def crearNuevoPartido(Partido partido, Long idUsuario) {
-		val usuarioPosta = repoUsuario.searchById(idUsuario)
+	def crearNuevoPartido(Partido partido) {
+		
+		partido.mapearEquipoTemporal	
+		
 		partido.validar()
+		
+		
 		repoPartido.create(partido)
-		usuarioPosta.agregarPartido(partido)
 	}
 	
 	def getCanchas(){

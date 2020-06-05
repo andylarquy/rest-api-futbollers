@@ -16,6 +16,7 @@ import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
+import org.uqbar.geodds.Point
 
 @Accessors
 @Entity
@@ -57,16 +58,20 @@ class Usuario {
 	@Column()
 	Double lon
 	
-	@JsonView(ViewsPartido.ListView)
-	@ManyToMany
-	List<Partido> partidos
-	
 	@JoinTable(name="Amistades")
 	@ManyToMany
 	Set <Usuario> amigos = new HashSet
 	
 	@Transient
+	transient Set<NotificacionInvitacion> invitaciones = new HashSet()
+	
+	@Transient
+	transient Set<NotificacionCandidato> candidatos = new HashSet()
+	
+	@Transient
 	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
+	
+	transient static val ID_INTEGRANTE_DESCONOCIDO = -1
 	
 	def tieneCredenciales(String email_, String password_) {
 		email.equals(email_) && password.equals(password_)
@@ -74,11 +79,6 @@ class Usuario {
 
 	def tieneEsteMail(String email) {
 		this.email.equals(email)
-	}
-	
-	def agregarPartido(Partido partido) {
-		partidos.add(partido)
-		repoUsuario.update(this)
 	}
 
 	def validar() {
@@ -124,6 +124,23 @@ class Usuario {
 	def crearAmistad(Usuario usuario){
 		usuario.agregarAmigo(this)
 		this.agregarAmigo(usuario)
+	}
+	
+	def esIntegranteDesconocido() {
+		idUsuario == ID_INTEGRANTE_DESCONOCIDO
+	}
+	
+	def estaDentroDelRango(Point ubicacionBuscada, int rango) {
+		val ubicacionUsuario = getUbicacion
+		ubicacionUsuario.distance(ubicacionBuscada) <= rango
+	}
+	
+	def getUbicacion(){
+		new Point(lat, lon)
+	}
+	
+	def agregarNotificacion(NotificacionInvitacion notificacion){
+		invitaciones.add(notificacion)
 	}
 
 }

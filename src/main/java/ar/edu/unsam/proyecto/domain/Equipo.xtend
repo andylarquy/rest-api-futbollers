@@ -79,4 +79,8 @@ class Equipo {
 		integrantes.map[idEquipo].toList
 	}
 	
+	def getUsuariosTemporales() {
+		integrantes.filter[it.esIntegranteDesconocido]
+	}
+	
 }

@@ -193,7 +193,7 @@ class Bootstrap {
 		nombre = "Futbol Urquiza"
 		lat = -34.5748777
 		lon = -58.4903939
-		canchas = #[urquiza1, urquiza2]
+		canchas = new HashSet(Arrays.asList(urquiza1, urquiza2))
 		nombreDuenio = "Tito Bara"
 		email = "futbolUrquiza@gmail.com"
 		direccion = "Roosevelt 5110"
@@ -204,7 +204,7 @@ class Bootstrap {
 		nombre = "Futbol Mitre"
 		lat = -34.5141931
 		lon = -58.5315329
-		canchas = #[vicLop1, vicLop2, vicLop3]
+		canchas = new HashSet(Arrays.asList(vicLop1, vicLop2, vicLop3))
 		nombreDuenio = "Jorge"
 		email = "miraSiVaATenerMail@dePedoTieneAgua.com"
 		direccion = "Mitre 3847"
@@ -215,7 +215,7 @@ class Bootstrap {
 		nombre = "Argentinos :)"
 		lat = -34.6078057
 		lon = -58.4763221
-		canchas = #[argen1, argen2]
+		canchas = new HashSet(Arrays.asList(argen1, argen2))
 		nombreDuenio = "No se mi nombre"
 		email = "niIdea@noSe.com"
 		direccion = "Sarasa 123"
@@ -266,67 +266,67 @@ class Bootstrap {
 
 	def runBootstrap() {
 		
-//		repoUsuarios.create(sebaCapo)
-//		repoUsuarios.create(nikoBostero)
-//		repoUsuarios.create(andy)
-//		repoUsuarios.create(jugador1)
-//		repoUsuarios.create(jugador2)
-//		repoUsuarios.create(jugador3)
-//		repoUsuarios.create(jugador4)
-//		
-//		repoEquipo.create(equipazo)
-//		repoEquipo.create(equipoMalo)
-//		repoEquipo.create(equipoIncompleto)
-//		
-//		repoCancha.create(urquiza1)
-//		repoCancha.create(urquiza2)
-//		repoCancha.create(vicLop1)
-//		repoCancha.create(vicLop2)
-//		repoCancha.create(vicLop3)
-//		repoCancha.create(argen1)
-//		repoCancha.create(argen2)
-//
-//		repoEmpresa.create(empresaUrquiza)
-//		repoEmpresa.create(empresaVicenteLopez)
-//		repoEmpresa.create(empresaArgentinos)
-//		
-//		repoPromocion.create(promo1)
-//		repoPromocion.create(promo2)
-//		repoPromocion.create(promo3)
-//		
-//		repoPartido.create(partido1)
-//		repoPartido.create(partido2)
-//		repoPartido.create(partido3)
-//
-//		//TODO: Pensar, no mandes un update innecesario
-//		andy.partidos = new ArrayList(Arrays.asList(partido1, partido2))
-//		sebaCapo.partidos = new ArrayList(Arrays.asList(partido2))
-//		nikoBostero.partidos = new ArrayList(Arrays.asList(partido1))
-//		
-//		andy.crearAmistad(sebaCapo)
-//		andy.crearAmistad(nikoBostero)
-//		andy.crearAmistad(jugador1)
-//		andy.crearAmistad(jugador2)
-//		andy.crearAmistad(jugador3)
-//		andy.crearAmistad(jugador4)
-//		
-//		nikoBostero.crearAmistad(sebaCapo)
-//		nikoBostero.crearAmistad(jugador1)
-//		nikoBostero.crearAmistad(jugador2)
-//		nikoBostero.crearAmistad(jugador3)
-//		
-//		sebaCapo.crearAmistad(sebaCapo)
-//		sebaCapo.crearAmistad(jugador1)
-//		sebaCapo.crearAmistad(jugador2)
-//		sebaCapo.crearAmistad(jugador4)
-//		
-//		repoUsuarios.update(sebaCapo)
-//		repoUsuarios.update(nikoBostero)
-//		repoUsuarios.update(andy)
-//		repoUsuarios.update(jugador1)
-//		repoUsuarios.update(jugador2)
-//		repoUsuarios.update(jugador3)
-//		repoUsuarios.update(jugador4)
+		repoUsuarios.create(sebaCapo)
+		repoUsuarios.create(nikoBostero)
+		repoUsuarios.create(andy)
+		repoUsuarios.create(jugador1)
+		repoUsuarios.create(jugador2)
+		repoUsuarios.create(jugador3)
+		repoUsuarios.create(jugador4)
+		
+		repoEquipo.create(equipazo)
+		repoEquipo.create(equipoMalo)
+		repoEquipo.create(equipoIncompleto)
+		
+		repoCancha.create(urquiza1)
+		repoCancha.create(urquiza2)
+		repoCancha.create(vicLop1)
+		repoCancha.create(vicLop2)
+		repoCancha.create(vicLop3)
+		repoCancha.create(argen1)
+		repoCancha.create(argen2)
+
+		repoEmpresa.create(empresaUrquiza)
+		repoEmpresa.create(empresaVicenteLopez)
+		repoEmpresa.create(empresaArgentinos)
+		
+		repoPromocion.create(promo1)
+		repoPromocion.create(promo2)
+		repoPromocion.create(promo3)
+		
+		repoPartido.create(partido1)
+		repoPartido.create(partido2)
+		repoPartido.create(partido3)
+
+		//TODO: Pensar, no mandes un update innecesario
+		//andy.partidos = new ArrayList(Arrays.asList(partido1, partido2))
+		//sebaCapo.partidos = new ArrayList(Arrays.asList(partido2))
+		//nikoBostero.partidos = new ArrayList(Arrays.asList(partido1))
+		
+		andy.crearAmistad(sebaCapo)
+		andy.crearAmistad(nikoBostero)
+		andy.crearAmistad(jugador1)
+		andy.crearAmistad(jugador2)
+		andy.crearAmistad(jugador3)
+		andy.crearAmistad(jugador4)
+		
+		nikoBostero.crearAmistad(sebaCapo)
+		nikoBostero.crearAmistad(jugador1)
+		nikoBostero.crearAmistad(jugador2)
+		nikoBostero.crearAmistad(jugador3)
+		
+		sebaCapo.crearAmistad(sebaCapo)
+		sebaCapo.crearAmistad(jugador1)
+		sebaCapo.crearAmistad(jugador2)
+		sebaCapo.crearAmistad(jugador4)
+		
+		repoUsuarios.update(sebaCapo)
+		repoUsuarios.update(nikoBostero)
+		repoUsuarios.update(andy)
+		repoUsuarios.update(jugador1)
+		repoUsuarios.update(jugador2)
+		repoUsuarios.update(jugador3)
+		repoUsuarios.update(jugador4)
 		
 	}
 

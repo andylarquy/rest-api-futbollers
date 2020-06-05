@@ -6,6 +6,7 @@ import org.uqbar.commons.model.annotations.Observable
 import ar.edu.unsam.proyecto.exceptions.ObjectDoesntExists
 import java.util.List
 import javax.persistence.criteria.JoinType
+import java.awt.Point
 
 @Observable
 @Accessors
@@ -30,7 +31,6 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 		
 		queryTemplate(
 			[criteria, query, from |
-				from.fetch("partidos", JoinType.LEFT)
 				return query
 			], 
 			[query | query.resultList]) as List<Usuario>
@@ -72,4 +72,11 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 		
 		usuario.amigos
 	}
+
+	//TODO: Hacer en formato de query	
+	def getUsuariosEnElRangoDe(Usuario usuarioBuscado, int rangoDeBusqueda, String sexoBuscado, String posicionBuscada) {
+		coleccion.filter[usuario | usuario.estaDentroDelRango(usuarioBuscado.getUbicacion, rangoDeBusqueda)]
+	}
+	
+	
 }

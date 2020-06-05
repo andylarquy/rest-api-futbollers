@@ -54,8 +54,8 @@ class RepositorioPartido extends Repositorio<Partido> {
 				val criteriosWhere = new ArrayList()
 				
 				//PRIMER JOIN: PARTIDO -> EQUIPOS
-				val tablaEquipo1 = from.joinSet("equipo1", JoinType.INNER)
-				val tablaEquipo2 = from.joinSet("equipo2", JoinType.INNER)
+				val tablaEquipo1 = from.join("equipo1", JoinType.INNER)
+				val tablaEquipo2 = from.join("equipo2", JoinType.INNER)
 		
 				//SEGUNDO JOIN: EQUIPO -> INTEGRANTES
 				val integrantesEquipo1 = tablaEquipo1.joinSet("integrantes", JoinType.INNER)

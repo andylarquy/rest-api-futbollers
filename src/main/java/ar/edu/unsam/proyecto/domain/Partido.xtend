@@ -13,6 +13,8 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.ManyToOne
 import org.eclipse.xtend.lib.annotations.Accessors
+import ar.edu.unsam.proyecto.repos.RepositorioUsuario
+import javax.persistence.Transient
 
 @Accessors
 @Entity
@@ -50,6 +52,12 @@ class Partido {
 	@JsonView(ViewsPartido.DetallesView)
 	@ManyToOne
 	Promocion promocion
+	
+	@Transient
+	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
+	
+	transient static val ID_EQUIPO_TEMPORAL = -2
+	transient static val ID_EQUIPO_GPS = -1
 	
 	def precioTotal(){
 		canchaReservada.precio * (1 - porcentajeDescuento / 100)
@@ -89,6 +97,31 @@ class Partido {
 	
 	def laDiferenciaEsMenorAUnaHora(LocalDateTime fecha1, LocalDateTime fecha2){
 		Math.abs(Duration.between(fecha1, fecha2).toMinutes) < 60
+	}
+	
+	def tieneEquipoTemporal() {
+		return equipo1.idEquipo == ID_EQUIPO_TEMPORAL || equipo2.idEquipo == ID_EQUIPO_TEMPORAL
+	}
+	
+	def mapearEquipoTemporal() {
+		if(this.tieneEquipoTemporal){
+		
+			equipo1.getUsuariosTemporales.forEach[jugador | buscarJugadorPorGPS(jugador, equipo1.owner)]
+			
+		}
+	}
+
+	def void buscarJugadorPorGPS(Usuario usuarioABuscar, Usuario usuarioOwner){
+		val int rangoDeBusqueda = Integer.parseInt(usuarioABuscar.email)
+		val sexoBuscado = usuarioABuscar.sexo
+		val posicionBuscada = usuarioABuscar.posicion
+		
+		val candidato = repoUsuario.getUsuariosEnElRangoDe(usuarioOwner, rangoDeBusqueda, sexoBuscado, posicionBuscada).head
+		
+		val invitacion = new NotificacionInvitacion()
+		invitacion.partido = this
+		
+		candidato.agregarNotificacion(invitacion)
 	}
 
 }

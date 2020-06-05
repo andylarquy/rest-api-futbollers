@@ -12,6 +12,7 @@ import javax.persistence.Id
 import javax.persistence.OneToMany
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.geodds.Point
+import java.util.Set
 
 @Accessors
 @Entity
@@ -57,7 +58,7 @@ class Empresa {
 	
 	@OneToMany
 	@JsonView(ViewsEmpresa.DetallesView) 
-	List<Cancha> canchas
+	Set<Cancha> canchas
 	
 	def agregarCancha(Cancha cancha){
 		canchas.add(cancha)
