@@ -31,8 +31,8 @@ class RepositorioPartido extends Repositorio<Partido> {
 		
 		queryTemplate(
 			[criteria, query, from |
-				//from.fetch("equipo1", JoinType.LEFT)
-				//from.fetch("equipo2", JoinType.LEFT)
+				from.fetch("equipo1", JoinType.LEFT)
+				from.fetch("equipo2", JoinType.LEFT)
 				//from.fetch("empresa", JoinType.LEFT)
 				//from.fetch("canchaReservada", JoinType.LEFT)
 				//from.fetch("promocion", JoinType.LEFT)
@@ -47,30 +47,34 @@ class RepositorioPartido extends Repositorio<Partido> {
 	}
 	
 	def getPartidosDelUsuario(Usuario usuario){
+		// TODO: Revisar si esta query hace las cosas bien
 		
 		queryTemplate(
 			[criteria, query, from |
 				
 				//PRIMER JOIN: PARTIDO -> EQUIPOS
-				val tablaEquipo1 = from.join("equipo1", JoinType.INNER)
-				val tablaEquipo2 = from.join("equipo2", JoinType.INNER)
+				val tablaEquipo1 = from.join("equipo1", JoinType.LEFT)
+				val tablaEquipo2 = from.join("equipo2", JoinType.LEFT)
 		
 				//SEGUNDO JOIN: EQUIPO -> INTEGRANTES
-				val integrantesEquipo1 = tablaEquipo1.joinSet("integrantes", JoinType.INNER)
-				val integrantesEquipo2 = tablaEquipo2.joinSet("integrantes", JoinType.INNER)
+				val integrantesEquipo1 = tablaEquipo1.joinSet("integrantes", JoinType.LEFT)
+				val integrantesEquipo2 = tablaEquipo2.joinSet("integrantes", JoinType.LEFT)
 				
 				val criterio1 = criteria.equal(integrantesEquipo1.get("idUsuario"), usuario.idUsuario)
 				val criterio2 = criteria.equal(integrantesEquipo2.get("idUsuario"), usuario.idUsuario)
-				val criterio3 = criteria.or(criterio1, criterio2)
-				val criterio4 = criteria.equal(from.get("estado"), true)
 				
-				query.where(criteria.and(criterio3, criterio4))
+				val criterio3 = criteria.equal(tablaEquipo1.get("owner"), usuario.idUsuario)
+				val criterio4 = criteria.equal(tablaEquipo1.get("owner"), usuario.idUsuario)
+				
+				val criterio5 = criteria.or(criterio1, criterio2, criterio3, criterio4)
+				val criterio6 = criteria.equal(from.get("estado"), true)
+				
+				query.where(criteria.and(criterio5, criterio6))
 				return query
 			],
 		
 		[query | query.resultList]) as List<Partido>
-		
-		
+		 
 	}
 	
 	def validarFechaCancha(LocalDateTime fecha){

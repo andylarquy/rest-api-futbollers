@@ -131,7 +131,7 @@ class Usuario {
 	}
 	
 	def esIntegranteConocido() {
-		idUsuario != ID_INTEGRANTE_DESCONOCIDO
+		idUsuario > ID_INTEGRANTE_DESCONOCIDO
 	}
 	
 	def estaDentroDelRango(Point ubicacionBuscada, int rango) {

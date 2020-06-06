@@ -223,6 +223,8 @@ class Partido {
 		eliminarJugadoresTemporales()
 		asignarNombreEquipos()
 		asignarIdEquiposTemporales()
+		mapearEquipo(equipo1)
+		mapearEquipo(equipo2)
 		mapearCancha()
 	}
 
@@ -234,6 +236,21 @@ class Partido {
 	def asignarIdEquiposTemporales() {
 		equipo1.asignarIdEquipoTemporal
 		equipo2.asignarIdEquipoTemporal
+	}
+
+	def mapearEquipo(Equipo equipo){
+	
+		val equipoAPrestitr = new Equipo()
+	
+		if(equipo.idEquipo === null){
+			equipoAPrestitr.idEquipo = equipo.idEquipo
+		}
+	
+		equipoAPrestitr.nombre = equipo.nombre
+		equipoAPrestitr.foto = equipo.foto
+		equipoAPrestitr.owner = equipo.owner
+		equipoAPrestitr.integrantes = equipo.integrantes
+	
 	}
 
 	def mapearCancha() {
@@ -248,6 +265,8 @@ class Partido {
 		confirmado = true
 		repoPartido.update(this)
 	}
+
+	
 }
 
 //TimerTask Auxiliar

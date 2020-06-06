@@ -62,6 +62,7 @@ class RestHost {
 		repoEquipo.create(equipo)
 	}
 	
+	//https://i.imgur.com/j6UGUXn.jpg
 	def crearNuevoPartido(Partido partido) {
 	
 		partido.mapearEmpresa()
@@ -86,11 +87,8 @@ class RestHost {
 	def getEmpresas(){
 		repoEmpresa.coleccion
 	}
-	
-	///////////////////////////////////
-	//ESTO PARECE QUE ESTA REPETIDO...
-	//https://i.imgur.com/gokGIGk.jpg
-	
+
+	//ESTO PARECE QUE ESTA REPETIDO, PERO ES SOLO QUE ESTAN MAL LOS NOMBRES
 	def getEmpresaById(Long idEmpresa){
 		repoEmpresa.getEmpresaById(idEmpresa)
 	}

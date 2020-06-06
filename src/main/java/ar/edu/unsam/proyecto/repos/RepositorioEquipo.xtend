@@ -50,18 +50,16 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 		queryTemplate(
 			[criteria, query, from |
 				
-				val criteriosWhere = new ArrayList()
-				
 				from.fetch("integrantes", JoinType.LEFT)
 				from.fetch("owner", JoinType.LEFT)
 				
-				val tablaIntegrantes = from.joinSet("integrantes", JoinType.INNER)
-				val owner = from.join("owner", JoinType.INNER)
+				val tablaIntegrantes = from.join("integrantes", JoinType.LEFT)
 				
-				criteriosWhere.add(criteria.equal(tablaIntegrantes.get("idUsuario"), usuario.idUsuario))
-				criteriosWhere.add(criteria.equal(owner.get("idUsuario"), usuario.idUsuario))
+				
+				val criterio1 = criteria.equal(tablaIntegrantes.get("idUsuario"),usuario.idUsuario)
+				val criterio2 = criteria.equal(from.get("owner"), usuario.idUsuario)
 		
-				query.where(criteriosWhere)
+				query.where(criteria.or(criterio1, criterio2))
 				return query
 			],
 		
@@ -84,12 +82,16 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 	
 	//TODO: Un Try catch quizas no es lo mas adecuado
 	def createIfNotExists(Equipo equipo) {
+		
 		try{
+			println(equipo.idEquipo)
 			repoEquipo.searchById(equipo.idEquipo)	
 		}catch(NoResultException e){
 			
+			println("NO SE ENCONTRO EL EQUIPO CON ID: "+equipo.idEquipo)
+			println(equipo.integrantes.map[idUsuario])
+			println(equipo.owner.idUsuario)
 			repoEquipo.create(equipo)
-			
 		}
 		
 	}

@@ -43,7 +43,6 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 	def searchById(Long idUsuario) {
 		queryTemplate(
 			[criteria, query, from |
-				
 				query.where(criteria.equal(from.get("idUsuario"), idUsuario))
 				return query
 			], 
@@ -77,6 +76,8 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 		
 		usuario.amigos
 	}
+	
+	
 
 	//TODO: Hacer en formato de query	
 	def getUsuariosEnElRangoDe(Usuario usuarioBuscado, int rangoDeBusqueda, String sexoBuscado, String posicionBuscada) {

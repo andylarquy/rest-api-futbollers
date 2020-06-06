@@ -101,8 +101,9 @@ class Equipo {
 	def mapearJugadoresConocidos() {
 		
 		if(esEquipoConocido){
+
 			val integrantesConocidos = new HashSet()
-			 integrantesConocidos.addAll(integrantes.filter[esIntegranteConocido])
+			integrantesConocidos.addAll(integrantes.filter[esIntegranteConocido])
 			integrantes.removeAll(integrantesConocidos)
 			integrantesConocidos.forEach[usuario | integrantes.add(repoUsuario.searchById(usuario.idUsuario))]
 		}
@@ -122,8 +123,10 @@ class Equipo {
 	
 	def getAsignarIdEquipoTemporal() {
 		if(idEquipo < 0){
+			//Es null a proposito
 			idEquipo = null
 		}
 	}
+	
 	
 }
