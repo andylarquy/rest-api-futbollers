@@ -7,6 +7,7 @@ class ViewsUsuario{
 	static class CredencialesView extends DefaultView {}
 	static class PerfilView extends DefaultView {}
 	static class UbicacionView extends DefaultView {}
+	
 }
 
 

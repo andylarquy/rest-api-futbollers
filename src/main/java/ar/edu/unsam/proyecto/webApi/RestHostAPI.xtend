@@ -25,7 +25,7 @@ import org.uqbar.xtrest.api.annotation.Controller
 import org.uqbar.xtrest.api.annotation.Get
 import org.uqbar.xtrest.api.annotation.Post
 import org.uqbar.xtrest.json.JSONUtils
-
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
 
 @Controller
 class RestHostAPI {
@@ -60,7 +60,6 @@ class RestHostAPI {
 		} catch (IncorrectCredentials e) {
 			forbidden('{"status":401, "message":"' + e.message + '"}')
 		} catch (Exception e) {
-			println(e)
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
@@ -119,14 +118,7 @@ class RestHostAPI {
 			
 			val partido = gson.fromJson(body.toString, Partido)
 			
-			println("\n[DEBUG]: Partido java object:\n" + partido)
-			//println("[DEBUG]: Fue parseado con ID: " + partido.idPartido)
-			//println("[DEBUG]: Y con fecha de reserva: " + partido.fechaDeReserva)
-
 			restHost.crearNuevoPartido(partido)
-			println(repoNotificacion.notificacionesDelUsuario(Long.valueOf(8)))
-			println(repoNotificacion.coleccion.size)
-			println(repoNotificacion.coleccion.map[usuario.idUsuario])
 			
 			ok('{"status":200, "message":"ok"}')
 		} catch (Exception e) {
@@ -247,8 +239,6 @@ class RestHostAPI {
 			val fecha = jsonBody.getString("fecha")
 			val fechaPosta = LocalDateTime.parse(fecha)
 			
-			println(fechaPosta)
-	
 			restHost.validarFechaCancha(fechaPosta)
 			ok('{"status":200, "message":"ok"}')
 		
@@ -263,8 +253,9 @@ class RestHostAPI {
 	@Get("/notificaciones/:idUsuario")
 	def getNotificacionesDelUsuarioById(){
 		try{
-
-			ok(restHost.getNotificacionesDelUsuario(Long.valueOf(idUsuario)).toJson)
+			//Si precisas mostrar mas cosas agregales ViewsNotificacion.NotificacionView
+			var notificacionesParseadas = auxiliar.parsearObjeto(restHost.getNotificacionesDelUsuario(Long.valueOf(idUsuario)), ViewsNotificacion.NotificacionView)
+			ok(notificacionesParseadas)
 		
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')

@@ -2,6 +2,9 @@ package ar.edu.unsam.proyecto.domain
 
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsCancha
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEmpresa
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.annotation.JsonView
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -11,10 +14,11 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
 @Entity
+@JsonInclude(Include.NON_NULL)//En teoria si un campo es null no lo parsea 
 class Cancha {
 	
 	@Id @GeneratedValue
-	@JsonView(ViewsEmpresa.SetupView, ViewsCancha.DefaultView)
+	@JsonView(ViewsEmpresa.SetupView, ViewsCancha.DefaultView, ViewsNotificacion.NotificacionView)
 	Long idCancha
 	
 	@Column()

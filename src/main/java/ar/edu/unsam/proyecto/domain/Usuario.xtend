@@ -4,6 +4,8 @@ import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsUsuario
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.annotation.JsonView
 import java.util.HashSet
 import java.util.Set
@@ -19,6 +21,7 @@ import org.uqbar.geodds.Point
 
 @Accessors
 @Entity
+@JsonInclude(Include.NON_NULL)//En teoria si un campo es null no lo parsea 
 class Usuario {
 
 	@JsonView(ViewsUsuario.IdView, ViewsPartido.DefaultView, ViewsEquipo.ListView)

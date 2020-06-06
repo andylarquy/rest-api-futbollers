@@ -6,7 +6,10 @@ import ar.edu.unsam.proyecto.repos.RepositorioCancha
 import ar.edu.unsam.proyecto.repos.RepositorioEmpresa
 import ar.edu.unsam.proyecto.repos.RepositorioNotificacion
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.annotation.JsonView
 import java.time.Duration
 import java.time.LocalDate
@@ -23,6 +26,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
 @Entity
+@JsonInclude(Include.NON_NULL)//En teoria si un campo es null no lo parsea (<3 gracias Jackson!)
 class Partido {
 
 	@JsonView(ViewsPartido.ListView)
@@ -34,27 +38,27 @@ class Partido {
 //	@JsonView(ViewsPartido.DefaultView)
 //	transient Usuario owner
 
-	@JsonView(ViewsPartido.ListView)
+	@JsonView(ViewsPartido.ListView, ViewsNotificacion.NotificacionView)
 	@ManyToOne
 	Equipo equipo1
 
-	@JsonView(ViewsPartido.ListView)
+	@JsonView(ViewsPartido.ListView, ViewsNotificacion.NotificacionView)
 	@ManyToOne
 	Equipo equipo2
 
-	@JsonView(ViewsPartido.DefaultView)
+	@JsonView(ViewsPartido.DefaultView, ViewsNotificacion.NotificacionView)
 	@ManyToOne
 	Empresa empresa
 
-	@JsonView(ViewsPartido.DetallesView)
+	@JsonView(ViewsPartido.DetallesView, ViewsNotificacion.NotificacionView)
 	@ManyToOne
 	Cancha canchaReservada
 
 	@Column()
-	@JsonView(ViewsPartido.DetallesView)
+	@JsonView(ViewsPartido.DetallesView, ViewsNotificacion.NotificacionView)
 	LocalDateTime fechaDeReserva
 	
-	@JsonView(ViewsPartido.DetallesView)
+	@JsonView(ViewsPartido.DetallesView, ViewsNotificacion.NotificacionView)
 	@ManyToOne
 	Promocion promocion
 	

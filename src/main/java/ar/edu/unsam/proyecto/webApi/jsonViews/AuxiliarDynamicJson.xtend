@@ -40,7 +40,6 @@ class AuxiliarDynamicJson {
 	// GSON ADAPTERS SARASA
 	static class LocalDateAdapter implements JsonDeserializer<LocalDateTime> {
 		override deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-			println(json)
 			LocalDateTime.parse(json.getAsJsonPrimitive().getAsString())
 		}
 	}

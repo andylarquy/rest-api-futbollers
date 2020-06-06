@@ -1,9 +1,14 @@
 package ar.edu.unsam.proyecto.domain
 
+import ar.edu.unsam.proyecto.repos.RepositorioEquipo
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.annotation.JsonView
+import java.util.HashSet
 import java.util.Set
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -13,14 +18,13 @@ import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
-import java.util.HashSet
-import ar.edu.unsam.proyecto.repos.RepositorioEquipo
 
 @Accessors
 @Entity
+@JsonInclude(Include.NON_NULL)//En teoria si un campo es null no lo parsea 
 class Equipo {
 	
-	@JsonView(ViewsEquipo.ListView)
+	@JsonView(ViewsEquipo.ListView, ViewsNotificacion.NotificacionView)
 	@Id @GeneratedValue  
 	Long idEquipo
 	
