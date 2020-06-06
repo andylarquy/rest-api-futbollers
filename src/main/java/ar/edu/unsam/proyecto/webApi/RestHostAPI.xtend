@@ -6,7 +6,6 @@ import ar.edu.unsam.proyecto.domain.Usuario
 import ar.edu.unsam.proyecto.exceptions.IncorrectCredentials
 import ar.edu.unsam.proyecto.exceptions.ObjectAlreadyExists
 import ar.edu.unsam.proyecto.exceptions.ObjectDoesntExists
-import ar.edu.unsam.proyecto.repos.RepositorioNotificacion
 import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson
 import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson.LocalDateAdapter
 import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson.UsuarioAdapter
@@ -14,6 +13,7 @@ import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson.UsuarioListAda
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsCancha
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEmpresa
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsUsuario
 import com.google.gson.GsonBuilder
@@ -25,13 +25,12 @@ import org.uqbar.xtrest.api.annotation.Controller
 import org.uqbar.xtrest.api.annotation.Get
 import org.uqbar.xtrest.api.annotation.Post
 import org.uqbar.xtrest.json.JSONUtils
-import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
 
 @Controller
 class RestHostAPI {
 	extension JSONUtils = new JSONUtils
 	RestHost restHost
-	RepositorioNotificacion repoNotificacion = RepositorioNotificacion.instance
+	
 	AuxiliarDynamicJson auxiliar = new AuxiliarDynamicJson()
 
 	new(RestHost restHost) {
@@ -248,6 +247,18 @@ class RestHostAPI {
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
+	}
+	
+	@Post("/confirmar-partido/:idPartido")
+	def confirmarPartido(){
+		try{
+			restHost.confirmarPartidoDeId(Long.valueOf(idPartido))
+			ok('{"status":200, "message":"ok"}')
+			
+		} catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+	
 	}
 	
 	@Get("/notificaciones/:idUsuario")

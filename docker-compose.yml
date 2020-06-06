@@ -1,0 +1,24 @@
+version: '3'
+services:
+# REDIS SERVER
+    redis:
+        hostname: redis
+        container_name: redis
+        image: redis
+        expose:
+        - 6379
+        ports:
+        - '6379:6379'
+        restart: always
+
+    # REDIS COMMANDER
+    redis-commander:
+        container_name: redis-commander
+        hostname: redis-commander
+        image: rediscommander/redis-commander:latest
+        restart: always
+        environment:
+        - REDIS_HOSTS=local:redis:6379
+        ports:
+        - "8081:8081"
+    

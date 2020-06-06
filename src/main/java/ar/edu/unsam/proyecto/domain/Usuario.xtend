@@ -54,11 +54,12 @@ class Usuario {
 
 	// Como la longitud y la latitud seran escribidas habitualmente y son datos mas bien volatiles
 	// Tomamos la decision de NO persistirlos en la base
+	//TODO: Hacer eso y que no se rompa POST partido
 	@JsonView(ViewsUsuario.UbicacionView)
-	transient Double lat
+	Double lat
 
 	@JsonView(ViewsUsuario.UbicacionView)
-	transient Double lon
+	Double lon
 	
 	@JoinTable(name="Amistades")
 	@ManyToMany
@@ -93,13 +94,9 @@ class Usuario {
 			throw new Exception('El usuario debe tener un ID')
 		}
 		
-		//TODO: Validar password no trivial (mas a fondo aun)
+		//TODO: Realizar distinto tipos de validacion
 		if (password === null){
 			throw new Exception('El usuario debe tener una contraseña')
-		}
-		
-		if (password.length <= 8){
-			throw new Exception('La contraseña debe tener un mínimo de 8 caracteres')
 		}
 		
 		if (foto === null){

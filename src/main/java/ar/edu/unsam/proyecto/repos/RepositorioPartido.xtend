@@ -37,6 +37,7 @@ class RepositorioPartido extends Repositorio<Partido> {
 				//from.fetch("empresa", JoinType.LEFT)
 				//from.fetch("canchaReservada", JoinType.LEFT)
 				//from.fetch("promocion", JoinType.LEFT)
+				query.where(criteria.equal(from.get("estado"), true))
 				return query
 			], 
 			[query | query.resultList]) as List<Partido>
@@ -63,6 +64,7 @@ class RepositorioPartido extends Repositorio<Partido> {
 				
 				criteriosWhere.add(criteria.equal(integrantesEquipo1.get("idUsuario"), usuario.idUsuario))
 				criteriosWhere.add(criteria.equal(integrantesEquipo2.get("idUsuario"), usuario.idUsuario))
+				criteriosWhere.add(criteria.equal(from.get("estado"), true))
 				
 				query.where(criteriosWhere)
 				
@@ -79,6 +81,13 @@ class RepositorioPartido extends Repositorio<Partido> {
 	
 	override entityType() {
 		Partido
+	}
+	
+	//Baja logica
+	def eliminarPartido(Partido partido){
+		partido.estado = false
+		update(partido)
+		
 	}
 
 	

@@ -117,5 +117,10 @@ class RestHost {
 	def getNotificacionesDelUsuario(Long idUsuario) {
 		repoNotificacion.notificacionesDelUsuario(idUsuario)
 	}
+	
+	def confirmarPartidoDeId(Long idPartido) {
+		val partidoPosta = repoPartido.searchById(idPartido)
+		partidoPosta.confirmarPartido()
+	}
 
 }
