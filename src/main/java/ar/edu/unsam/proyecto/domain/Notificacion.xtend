@@ -1,5 +1,6 @@
 package ar.edu.unsam.proyecto.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
@@ -9,11 +10,11 @@ class Notificacion{
 	
 	String descripcion
 
-	Partido partido
+	@JsonIgnore Partido partido
 	
-	transient Usuario usuario
+	@JsonIgnore transient Usuario usuario
 	
-	transient Equipo equipo
+	@JsonIgnore transient Equipo equipo
 	
 	def esDelUsuario(Long idUsuario) {
 		usuario.idUsuario == idUsuario

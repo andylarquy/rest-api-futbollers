@@ -2,9 +2,10 @@ package ar.edu.unsam.proyecto.repos
 
 import ar.edu.unsam.proyecto.domain.Equipo
 import ar.edu.unsam.proyecto.domain.Usuario
+import java.util.ArrayList
 import java.util.List
-import javax.persistence.criteria.JoinType
 import javax.persistence.NoResultException
+import javax.persistence.criteria.JoinType
 
 class RepositorioEquipo extends Repositorio<Equipo> {
 	public static RepositorioEquipo repoEquipo
@@ -49,10 +50,18 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 		queryTemplate(
 			[criteria, query, from |
 				
+				val criteriosWhere = new ArrayList()
+				
 				from.fetch("integrantes", JoinType.LEFT)
+				from.fetch("owner", JoinType.LEFT)
+				
 				val tablaIntegrantes = from.joinSet("integrantes", JoinType.INNER)
-				query.where(criteria.equal(tablaIntegrantes.get("idUsuario"), usuario.idUsuario))
+				val owner = from.joinSet("owner", JoinType.INNER)
+				
+				criteriosWhere.add(criteria.equal(tablaIntegrantes.get("idUsuario"), usuario.idUsuario))
+				criteriosWhere.add(criteria.equal(owner.get("idUsuario"), usuario.idUsuario))
 		
+				query.where(criteriosWhere)
 				return query
 			],
 		

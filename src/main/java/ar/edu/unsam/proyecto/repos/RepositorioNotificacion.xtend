@@ -24,7 +24,7 @@ class RepositorioNotificacion {
 	Set<Notificacion> coleccion = new HashSet()
 	
 	def notificacionesDelUsuario(Long idUsuario){
-		coleccion.filter[notificacion| notificacion.esDelUsuario(idUsuario)]
+		coleccion.filter[notificacion| notificacion.esDelUsuario(idUsuario)].toSet
 	}
 	
 	def agregarNotificacion(Notificacion notificacion) {

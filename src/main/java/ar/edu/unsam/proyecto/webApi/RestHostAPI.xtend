@@ -265,6 +265,17 @@ class RestHostAPI {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
+	
+	@Get("/notificaciones/:idUsuario")
+	def getNotificacionesDelUsuarioById(){
+		try{
+
+			ok(restHost.getNotificacionesDelUsuario(Long.valueOf(idUsuario)).toJson)
+		
+		} catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+	}
 
 	/* Auxiliares para pareo de JSONS (<3 Gracias Java, sos malisimo) */
 	

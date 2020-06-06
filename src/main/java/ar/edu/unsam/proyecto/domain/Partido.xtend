@@ -198,5 +198,5 @@ class Partido {
 	def mapearEmpresa(){
 		empresa = repoEmpresa.searchById(empresa.idEmpresa)
 	}
-
+	
 }

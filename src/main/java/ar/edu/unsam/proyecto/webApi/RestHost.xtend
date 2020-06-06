@@ -4,16 +4,17 @@ import ar.edu.unsam.proyecto.domain.Equipo
 import ar.edu.unsam.proyecto.domain.Partido
 import ar.edu.unsam.proyecto.domain.Usuario
 import ar.edu.unsam.proyecto.exceptions.IncorrectCredentials
-import ar.edu.unsam.proyecto.repos.RepositorioCancha
-import ar.edu.unsam.proyecto.repos.RepositorioEquipo
-import ar.edu.unsam.proyecto.repos.RepositorioPartido
-import ar.edu.unsam.proyecto.repos.RepositorioUsuario
-import org.eclipse.xtend.lib.annotations.Accessors
-import ar.edu.unsam.proyecto.repos.RepositorioEmpresa
-import ar.edu.unsam.proyecto.repos.RepositorioPromocion
 import ar.edu.unsam.proyecto.exceptions.ObjectDoesntExists
+import ar.edu.unsam.proyecto.repos.RepositorioCancha
+import ar.edu.unsam.proyecto.repos.RepositorioEmpresa
+import ar.edu.unsam.proyecto.repos.RepositorioEquipo
+import ar.edu.unsam.proyecto.repos.RepositorioNotificacion
+import ar.edu.unsam.proyecto.repos.RepositorioPartido
+import ar.edu.unsam.proyecto.repos.RepositorioPromocion
+import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import java.time.LocalDateTime
 import javax.persistence.NoResultException
+import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
 class RestHost {
@@ -23,6 +24,7 @@ class RestHost {
 	RepositorioCancha repoCancha = RepositorioCancha.instance
 	RepositorioEmpresa repoEmpresa = RepositorioEmpresa.instance
 	RepositorioPromocion repoPromociones = RepositorioPromocion.instance
+	RepositorioNotificacion repoNotificacion = RepositorioNotificacion.instance
 	
 	def getPeticionDePrueba() {
 		return '{ "message": "La API Rest esta funcionando!! :)" }'
@@ -69,21 +71,7 @@ class RestHost {
 		
 		partido.prepararParaPersistir()
 		
-		println(partido.equipo1.integrantes.map[foto])
-		println(partido.equipo1.owner.foto)
-			
-		println(partido.equipo2.integrantes.map[foto])
-		println(partido.equipo2.owner.foto)
-		
 		partido.validar()
-		
-		println("\n\n\n\n\n\n Llegaron los println")
-		println("id partido: "+partido.idPartido)
-		println("id equipo1: "+partido.equipo1.idEquipo)
-		println("id equipo2: "+partido.equipo2.idEquipo)
-		println("id canchaReservada: "+partido.canchaReservada.idCancha)
-		println("id empresa: "+partido.empresa.idEmpresa)
-		println("fecha de reserva: "+partido.fechaDeReserva)
 		
 		repoEquipo.createIfNotExists(partido.equipo1)
 		repoEquipo.createIfNotExists(partido.equipo2)
@@ -124,6 +112,10 @@ class RestHost {
 	
 	def getAmigosDelUsuario(Long idUsuario) {
 		repoUsuario.getAmigosDelUsuario(idUsuario)
+	}
+	
+	def getNotificacionesDelUsuario(Long idUsuario) {
+		repoNotificacion.notificacionesDelUsuario(idUsuario)
 	}
 
 }
