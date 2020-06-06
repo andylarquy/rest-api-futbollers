@@ -9,8 +9,6 @@ import ar.edu.unsam.proyecto.repos.RepositorioEmpresa
 import ar.edu.unsam.proyecto.repos.RepositorioEquipo
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -22,7 +20,6 @@ import java.io.IOException
 import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.util.List
-import com.google.gson.JsonParseException
 
 /*
  * La biblioteca de Jackson tiene un sistema para elegir cuales propiedades mostrar y cuales no 

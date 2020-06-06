@@ -7,12 +7,12 @@ import ar.edu.unsam.proyecto.repos.RepositorioEmpresa
 import ar.edu.unsam.proyecto.repos.RepositorioNotificacion
 import ar.edu.unsam.proyecto.repos.RepositorioPartido
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
+import ar.edu.unsam.proyecto.webApi.jsonViews.LocalDateTimeSerializer
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.annotation.JsonView
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import java.time.Duration
 import java.time.LocalDate
@@ -30,7 +30,6 @@ import javax.persistence.Id
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
-import ar.edu.unsam.proyecto.webApi.jsonViews.LocalDateTimeSerializer
 
 @Accessors
 @Entity
@@ -98,14 +97,17 @@ class Partido {
 	new() {
 		// ======= [DEBUG] =======
 		val fechaDeEliminacionDebug = LocalDateTime.now().plusSeconds(DEBUG_SEGUNDOS_PARA_CONFIRMAR)
-		val fechaDeEliminacionDebugAsDate = Date.from(
+		var fechaDeEliminacionDebugAsDate = Date.from(
 			fechaDeEliminacionDebug.atZone(ZoneId.systemDefault()).toInstant())
-
+		
 		val fechaDeEliminacion = LocalDateTime.now().plusDays(DIAS_PARA_CONFIRMAR)
 		val fechaDeEliminacionAsDate = Date.from(fechaDeEliminacion.atZone(ZoneId.systemDefault()).toInstant())
 
 		// Desde el momento de creacion de un partido hay X dias para confirmarlo y asi evitar su autoeliminacion
 		new Timer().schedule(autoEliminarPartido, fechaDeEliminacionAsDate);
+	
+		//Para eliminar el warning
+		fechaDeEliminacionDebugAsDate = fechaDeEliminacionDebugAsDate
 	}
 
 	@Transient

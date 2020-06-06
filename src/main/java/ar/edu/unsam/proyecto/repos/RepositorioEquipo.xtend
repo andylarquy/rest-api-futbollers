@@ -56,7 +56,7 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 				from.fetch("owner", JoinType.LEFT)
 				
 				val tablaIntegrantes = from.joinSet("integrantes", JoinType.INNER)
-				val owner = from.joinSet("owner", JoinType.INNER)
+				val owner = from.join("owner", JoinType.INNER)
 				
 				criteriosWhere.add(criteria.equal(tablaIntegrantes.get("idUsuario"), usuario.idUsuario))
 				criteriosWhere.add(criteria.equal(owner.get("idUsuario"), usuario.idUsuario))

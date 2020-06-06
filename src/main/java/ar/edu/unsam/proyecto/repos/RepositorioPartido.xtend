@@ -4,10 +4,9 @@ import ar.edu.unsam.proyecto.domain.Partido
 import ar.edu.unsam.proyecto.domain.Usuario
 import java.time.LocalDateTime
 import java.util.List
+import javax.persistence.criteria.JoinType
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.commons.model.annotations.Observable
-import javax.persistence.criteria.JoinType
-import java.util.ArrayList
 
 @Observable
 @Accessors
@@ -51,8 +50,6 @@ class RepositorioPartido extends Repositorio<Partido> {
 		
 		queryTemplate(
 			[criteria, query, from |
-		
-				val criteriosWhere = new ArrayList()
 				
 				//PRIMER JOIN: PARTIDO -> EQUIPOS
 				val tablaEquipo1 = from.join("equipo1", JoinType.INNER)
