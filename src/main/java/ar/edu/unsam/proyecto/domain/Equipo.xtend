@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.HashSet
+import ar.edu.unsam.proyecto.repos.RepositorioEquipo
 
 @Accessors
 @Entity
@@ -41,6 +42,10 @@ class Equipo {
 	
 	@Transient
 	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
+	
+	@Transient
+	transient RepositorioEquipo repoEquipo = RepositorioEquipo.instance
+	
 	
 	def agregarIntegrante(Usuario integrante){
 		integrantes.add(integrante)
@@ -97,10 +102,24 @@ class Equipo {
 			integrantes.removeAll(integrantesConocidos)
 			integrantesConocidos.forEach[usuario | integrantes.add(repoUsuario.searchById(usuario.idUsuario))]
 		}
+		
+		owner = repoUsuario.searchById(owner.idUsuario)
 	}
 	
 	def esEquipoConocido(){
 		this.idEquipo != -1
+	}
+	
+	def asignarNombreTemporal(){
+		if(idEquipo < 0){
+			nombre = "Equipo Temporal Nro. "+repoEquipo.coleccion.size
+		}
+	}
+	
+	def getAsignarIdEquipoTemporal() {
+		if(idEquipo < 0){
+			idEquipo = null
+		}
 	}
 	
 }

@@ -4,7 +4,7 @@ import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEmpresa
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import com.fasterxml.jackson.annotation.JsonView
-import java.util.List
+import java.util.Set
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -12,7 +12,6 @@ import javax.persistence.Id
 import javax.persistence.OneToMany
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.geodds.Point
-import java.util.Set
 
 @Accessors
 @Entity

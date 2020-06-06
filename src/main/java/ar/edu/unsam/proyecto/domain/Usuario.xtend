@@ -7,10 +7,8 @@ import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsUsuario
 import com.fasterxml.jackson.annotation.JsonView
 import java.util.HashSet
 import java.util.Set
-import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
-import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.JoinTable
@@ -63,9 +61,6 @@ class Usuario {
 	@ManyToMany
 	Set <Usuario> amigos = new HashSet
 	
-	
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	Set<Notificacion> invitaciones = new HashSet()
 	
 	//@Transient
 	//transient Set<NotificacionCandidato> candidatos = new HashSet()
@@ -144,11 +139,6 @@ class Usuario {
 	
 	def getUbicacion(){
 		new Point(lat, lon)
-	}
-	
-	def agregarNotificacion(Notificacion notificacion){
-		invitaciones.add(notificacion)
-		repoUsuario.update(this)
 	}
 	
 }

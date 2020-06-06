@@ -61,13 +61,34 @@ class RestHost {
 	}
 	
 	def crearNuevoPartido(Partido partido) {
+	
+		partido.mapearEmpresa()
 		
 		partido.mapearJugadoresConocidos
+		partido.mapearJugadoresTemporales
 		
-		partido.mapearEquipoTemporal	
+		partido.prepararParaPersistir()
 		
-		//partido.validar()
-		//repoPartido.create(partido)
+		println(partido.equipo1.integrantes.map[foto])
+		println(partido.equipo1.owner.foto)
+			
+		println(partido.equipo2.integrantes.map[foto])
+		println(partido.equipo2.owner.foto)
+		
+		partido.validar()
+		
+		println("\n\n\n\n\n\n Llegaron los println")
+		println("id partido: "+partido.idPartido)
+		println("id equipo1: "+partido.equipo1.idEquipo)
+		println("id equipo2: "+partido.equipo2.idEquipo)
+		println("id canchaReservada: "+partido.canchaReservada.idCancha)
+		println("id empresa: "+partido.empresa.idEmpresa)
+		println("fecha de reserva: "+partido.fechaDeReserva)
+		
+		repoEquipo.createIfNotExists(partido.equipo1)
+		repoEquipo.createIfNotExists(partido.equipo2)
+		
+		repoPartido.create(partido)
 	}
 	
 	def getCanchas(){

@@ -16,7 +16,6 @@ import io.github.cdimascio.dotenv.Dotenv
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.util.ArrayList
 import java.util.Arrays
 import java.util.HashSet
 
@@ -321,7 +320,7 @@ class Bootstrap {
 		repoUsuarios.create(sofia)
 		repoUsuarios.create(agustin)
 		repoUsuarios.create(juan)
-		
+
 		repoEquipo.create(equipazo)
 		repoEquipo.create(equipoMalo)
 		repoEquipo.create(equipoIncompleto)

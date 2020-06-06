@@ -11,6 +11,7 @@ import ar.edu.unsam.proyecto.exceptions.ObjectDoesntExists
 import ar.edu.unsam.proyecto.repos.RepositorioCancha
 import ar.edu.unsam.proyecto.repos.RepositorioEmpresa
 import ar.edu.unsam.proyecto.repos.RepositorioEquipo
+import ar.edu.unsam.proyecto.repos.RepositorioNotificacion
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsCancha
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEmpresa
@@ -37,6 +38,7 @@ import org.uqbar.xtrest.json.JSONUtils
 class RestHostAPI {
 	extension JSONUtils = new JSONUtils
 	RestHost restHost
+	RepositorioNotificacion repoNotificacion = RepositorioNotificacion.instance
 
 	new(RestHost restHost) {
 		this.restHost = restHost
@@ -128,6 +130,10 @@ class RestHostAPI {
 			//println("[DEBUG]: Y con fecha de reserva: " + partido.fechaDeReserva)
 
 			restHost.crearNuevoPartido(partido)
+			println(repoNotificacion.notificacionesDelUsuario(Long.valueOf(8)))
+			println(repoNotificacion.coleccion.size)
+			println(repoNotificacion.coleccion.map[usuario.idUsuario])
+			
 			ok('{"status":200, "message":"ok"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')

@@ -1,25 +1,26 @@
 package ar.edu.unsam.proyecto.domain
 
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
 import org.eclipse.xtend.lib.annotations.Accessors
-import javax.persistence.Column
-import javax.persistence.ManyToOne
 
-@Entity
 @Accessors
 class Notificacion{
 	
-	@Id @GeneratedValue
 	Long idNotificacion
 	
-	@Column()
 	String descripcion
+
+	Partido partido
 	
-	transient Partido partido
+	transient Usuario usuario
 	
 	transient Equipo equipo
 	
-	transient Usuario usuario
+	def esDelUsuario(Long idUsuario) {
+		usuario.idUsuario == idUsuario
+	}
+	
+	def empresaTieneMail(String email) {
+		partido.empresa.email.equals(email)
+	}
+	
 }

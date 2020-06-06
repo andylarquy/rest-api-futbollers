@@ -4,6 +4,7 @@ import ar.edu.unsam.proyecto.domain.Equipo
 import ar.edu.unsam.proyecto.domain.Usuario
 import java.util.List
 import javax.persistence.criteria.JoinType
+import javax.persistence.NoResultException
 
 class RepositorioEquipo extends Repositorio<Equipo> {
 	public static RepositorioEquipo repoEquipo
@@ -70,6 +71,18 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 	
 	override entityType() {
 		Equipo
+	}
+	
+	//TODO: Un Try catch quizas no es lo mas adecuado
+	def createIfNotExists(Equipo equipo) {
+		try{
+			repoEquipo.searchById(equipo.idEquipo)	
+		}catch(NoResultException e){
+			
+			repoEquipo.create(equipo)
+			
+		}
+		
 	}
 	
 	
