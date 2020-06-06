@@ -52,18 +52,17 @@ class Usuario {
 	@JsonView(ViewsUsuario.DefaultView)
 	String email
 
+	// Como la longitud y la latitud seran escribidas habitualmente y son datos mas bien volatiles
+	// Tomamos la decision de NO persistirlos en la base
 	@JsonView(ViewsUsuario.UbicacionView)
-	@Column()
-	Double lat
+	transient Double lat
 
 	@JsonView(ViewsUsuario.UbicacionView)
-	@Column()
-	Double lon
+	transient Double lon
 	
 	@JoinTable(name="Amistades")
 	@ManyToMany
 	Set <Usuario> amigos = new HashSet
-	
 	
 	//@Transient
 	//transient Set<NotificacionCandidato> candidatos = new HashSet()
@@ -94,9 +93,13 @@ class Usuario {
 			throw new Exception('El usuario debe tener un ID')
 		}
 		
-		//TODO: Validar password no trivial
+		//TODO: Validar password no trivial (mas a fondo aun)
 		if (password === null){
 			throw new Exception('El usuario debe tener una contraseña')
+		}
+		
+		if (password.length <= 8){
+			throw new Exception('La contraseña debe tener un mínimo de 8 caracteres')
 		}
 		
 		if (foto === null){
