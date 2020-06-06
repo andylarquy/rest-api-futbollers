@@ -1,30 +1,22 @@
 package ar.edu.unsam.proyecto.webApi
 
-import ar.edu.unsam.proyecto.domain.Cancha
-import ar.edu.unsam.proyecto.domain.Empresa
 import ar.edu.unsam.proyecto.domain.Equipo
 import ar.edu.unsam.proyecto.domain.Partido
 import ar.edu.unsam.proyecto.domain.Usuario
 import ar.edu.unsam.proyecto.exceptions.IncorrectCredentials
 import ar.edu.unsam.proyecto.exceptions.ObjectAlreadyExists
 import ar.edu.unsam.proyecto.exceptions.ObjectDoesntExists
-import ar.edu.unsam.proyecto.repos.RepositorioCancha
-import ar.edu.unsam.proyecto.repos.RepositorioEmpresa
-import ar.edu.unsam.proyecto.repos.RepositorioEquipo
 import ar.edu.unsam.proyecto.repos.RepositorioNotificacion
-import ar.edu.unsam.proyecto.repos.RepositorioUsuario
+import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson
+import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson.LocalDateAdapter
+import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson.UsuarioAdapter
+import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson.UsuarioListAdapter
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsCancha
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEmpresa
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsUsuario
-import com.fasterxml.jackson.databind.MapperFeature
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
-import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.util.List
 import org.json.JSONObject
@@ -34,11 +26,13 @@ import org.uqbar.xtrest.api.annotation.Get
 import org.uqbar.xtrest.api.annotation.Post
 import org.uqbar.xtrest.json.JSONUtils
 
+
 @Controller
 class RestHostAPI {
 	extension JSONUtils = new JSONUtils
 	RestHost restHost
 	RepositorioNotificacion repoNotificacion = RepositorioNotificacion.instance
+	AuxiliarDynamicJson auxiliar = new AuxiliarDynamicJson()
 
 	new(RestHost restHost) {
 		this.restHost = restHost
@@ -59,7 +53,7 @@ class RestHostAPI {
 
 		val Usuario usuario = body.fromJson(Usuario)
 		try {
-			val usuarioParseado = this.parsearObjeto(restHost.loguearUsuario(usuario.email, usuario.password),
+			val usuarioParseado = auxiliar.parsearObjeto(restHost.loguearUsuario(usuario.email, usuario.password),
 				ViewsUsuario.CredencialesView)
 
 			ok(usuarioParseado)
@@ -90,7 +84,7 @@ class RestHostAPI {
 	def amigosDelUsuarioById(){
 		
 		try{
-			val amigosDelUsuarioParseados = this.parsearObjeto(restHost.getAmigosDelUsuario(Long.valueOf(idUsuario)), ViewsUsuario.PerfilView)
+			val amigosDelUsuarioParseados = auxiliar.parsearObjeto(restHost.getAmigosDelUsuario(Long.valueOf(idUsuario)), ViewsUsuario.PerfilView)
 			
 			ok(amigosDelUsuarioParseados)
 		}catch (Exception e) {
@@ -104,7 +98,7 @@ class RestHostAPI {
 	def getPartidosByIdDelUsuario() {
 
 		try {
-			var partidoParseado = this.parsearObjeto(restHost.getPartidosDelUsuario(Long.valueOf(idUsuario)), ViewsPartido.ListView)
+			var partidoParseado = auxiliar.parsearObjeto(restHost.getPartidosDelUsuario(Long.valueOf(idUsuario)), ViewsPartido.ListView)
 			ok(partidoParseado)
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
@@ -145,7 +139,7 @@ class RestHostAPI {
 	def getEquiposDelUsuarioById() {
 
 		try {
-			var partidoParseado = this.parsearObjeto(restHost.getEquiposDelUsuario(Long.valueOf(idUsuario)), ViewsEquipo.ListView)
+			var partidoParseado = auxiliar.parsearObjeto(restHost.getEquiposDelUsuario(Long.valueOf(idUsuario)), ViewsEquipo.ListView)
 			ok(partidoParseado)
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
@@ -189,7 +183,7 @@ class RestHostAPI {
 	@Get("/empresas")
 	def getEmpresas() {
 		try {
-			var empresaParseada = this.parsearObjeto(restHost.getEmpresas(), ViewsEquipo.ListView)
+			var empresaParseada = auxiliar.parsearObjeto(restHost.getEmpresas(), ViewsEquipo.ListView)
 			ok(empresaParseada)
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
@@ -200,7 +194,7 @@ class RestHostAPI {
 	@Get("/empresas/:idEmpresa")
 	def getEmpresaById() {
 		try {
-			var empresaParseada = this.parsearObjeto(restHost.getEmpresaById(Long.valueOf(idEmpresa)), ViewsEmpresa.SetupView)
+			var empresaParseada = auxiliar.parsearObjeto(restHost.getEmpresaById(Long.valueOf(idEmpresa)), ViewsEmpresa.SetupView)
 			ok(empresaParseada)
 
 		} catch (ObjectDoesntExists e) {
@@ -216,7 +210,7 @@ class RestHostAPI {
 	@Get("/empresas-canchas/:idEmpresa")
 	def getCanchasDeLaEmpresaById() {
 		try {
-			var canchasParseadas = this.parsearObjeto(restHost.getCanchasDeLaEmpresaById(Long.valueOf(idEmpresa)),
+			var canchasParseadas = auxiliar.parsearObjeto(restHost.getCanchasDeLaEmpresaById(Long.valueOf(idEmpresa)),
 				ViewsCancha.DefaultView)
 			ok(canchasParseadas)
 
@@ -274,73 +268,6 @@ class RestHostAPI {
 		
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-		}
-	}
-
-	/* Auxiliares para pareo de JSONS (<3 Gracias Java, sos malisimo) */
-	
-	/* TODO: Capaz podes mandar todo a un archivo auxiliar y separar esta logica berreta. Por favor te lo pido*/
-	/* Cosas del "JsonIgnore Dinamico" con Jackson*/
-	def <ViewGeneric> parsearObjeto(Object elementoAParsear, Class<ViewGeneric> customView) {
-
-		var mapper = new ObjectMapper();
-		mapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
-
-		var result = mapper.writerWithView(customView).writeValueAsString(elementoAParsear);
-		return result
-	}
-
-	// GSON ADAPTERS SARASA
-	static class LocalDateAdapter implements JsonDeserializer<LocalDateTime> {
-		override deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-			println(json)
-			LocalDateTime.parse(json.getAsJsonPrimitive().getAsString())
-		}
-	}
-
-	static class UsuarioAdapter implements JsonDeserializer<Usuario> {
-		val repoUsuario = RepositorioUsuario.instance
-
-		override deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-			val idUsuario = json.getAsJsonPrimitive().getAsLong()
-			repoUsuario.searchById(idUsuario)
-		}
-	}
-
-	static class UsuarioListAdapter implements JsonDeserializer<List<Usuario>> {
-		val repoUsuario = RepositorioUsuario.instance
-
-		override deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-			val idUsuarios = json.getAsJsonArray()
-			val idUsuariosSinQuotes = idUsuarios.map[it.getAsJsonPrimitive().getAsLong()]
-			idUsuariosSinQuotes.map[repoUsuario.searchById(it)].toList
-		}
-	}
-
-	static class EquiposAdapter implements JsonDeserializer<Equipo> {
-		val repoEquipo = RepositorioEquipo.instance
-
-		override deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-			val idEquipo = json.getAsJsonPrimitive().getAsLong()
-			return repoEquipo.searchById(idEquipo)
-		}
-	}
-
-	static class EmpresaAdapter implements JsonDeserializer<Empresa> {
-		val repoEmpresa = RepositorioEmpresa.instance
-
-		override deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-			val idEmpresa = json.getAsJsonPrimitive().getAsLong()
-			return repoEmpresa.searchById(idEmpresa)
-		}
-	}
-
-	static class CanchaAdapter implements JsonDeserializer<Cancha> {
-		val repoCancha = RepositorioCancha.instance
-
-		override deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-			val idCancha = json.getAsJsonPrimitive().getAsLong()
-			return repoCancha.searchById(idCancha)
 		}
 	}
 
