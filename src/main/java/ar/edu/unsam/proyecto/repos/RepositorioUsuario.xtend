@@ -80,7 +80,7 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 
 	//TODO: Hacer en formato de query	
 	def getUsuariosEnElRangoDe(Usuario usuarioBuscado, int rangoDeBusqueda, String sexoBuscado, String posicionBuscada) {
-		coleccion.filter[usuario | usuario.estaDentroDelRango(usuarioBuscado.getUbicacion, rangoDeBusqueda * 100)]
+		coleccion.filter[usuario | usuario.estaDentroDelRango(usuarioBuscado.getUbicacion, rangoDeBusqueda)]
 	}
 	
 }

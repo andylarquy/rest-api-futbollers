@@ -137,6 +137,7 @@ class Partido {
 				val invitacion = new Notificacion()
 				invitacion.partido = this
 				invitacion.usuario = candidato
+				invitacion.descripcion = "¡Has recibido una invitación para un partido en "+invitacion.partido.empresa.direccion+" el día "+invitacion.partido.fechaDeReserva+"! (TODO: Formatear bien la fecha)"
 				
 				repoNotificacion.agregarNotificacion(invitacion)
 			]

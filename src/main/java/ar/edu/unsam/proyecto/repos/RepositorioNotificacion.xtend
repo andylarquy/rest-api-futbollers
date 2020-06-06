@@ -7,7 +7,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
 class RepositorioNotificacion {
-	
+
 	public static RepositorioNotificacion repoNotificacion
 
 	static def RepositorioNotificacion getInstance() {
@@ -20,23 +20,37 @@ class RepositorioNotificacion {
 	def reset() {
 		repoNotificacion = null
 	}
-	
+
 	Set<Notificacion> coleccion = new HashSet()
 	
-	def notificacionesDelUsuario(Long idUsuario){
-		coleccion.filter[notificacion| notificacion.esDelUsuario(idUsuario)].toSet
+	Long idAutoincremental = Long.valueOf(1)
+	
+	def asignarIdNotificacion(Notificacion noti) {
+		noti.idNotificacion = idAutoincremental
+		idAutoincremental++
 	}
-	
+
+	def notificacionesDelUsuario(Long idUsuario) {
+		coleccion.filter[notificacion|notificacion.esDelUsuario(idUsuario)].toSet
+	}
+
 	def agregarNotificacion(Notificacion notificacion) {
-		if(coleccion.exists[invitacion | 
-			invitacion.empresaTieneMail(notificacion.partido.empresa.email) &&
-			invitacion.esDelUsuario(notificacion.usuario.idUsuario)
-	
-		]){
-			
-		}else{
+		if (usuarioYaFueInvitadoAlPartido(notificacion) || usuarioAInvitarEsOwner(notificacion)) {
+		
+		} else {
+			asignarIdNotificacion(notificacion)
 			coleccion.add(notificacion)
 		}
 	}
 	
+	def usuarioAInvitarEsOwner(Notificacion notificacion) {
+		notificacion.partido.equipo1.owner.idUsuario === notificacion.usuario.idUsuario
+	}
+
+	def usuarioYaFueInvitadoAlPartido(Notificacion notificacion) {
+		coleccion.exists [ invitacion |
+			invitacion.empresaTieneMail(notificacion.partido.empresa.email) &&
+				invitacion.esDelUsuario(notificacion.usuario.idUsuario)
+		]
+	}
 }
