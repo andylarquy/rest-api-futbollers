@@ -24,7 +24,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 @JsonInclude(Include.NON_NULL)//En teoria si un campo es null no lo parsea 
 class Equipo {
 	
-	@JsonView(ViewsEquipo.ListView, ViewsNotificacion.NotificacionView)
+	@JsonView(ViewsEquipo.ListView, ViewsNotificacion.NotificacionView, ViewsPartido.DefaultView)
 	@Id @GeneratedValue  
 	Long idEquipo
 	

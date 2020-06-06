@@ -8,14 +8,21 @@ import ar.edu.unsam.proyecto.repos.RepositorioCancha
 import ar.edu.unsam.proyecto.repos.RepositorioEmpresa
 import ar.edu.unsam.proyecto.repos.RepositorioEquipo
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializerProvider
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
+import java.io.IOException
 import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.util.List
+import com.google.gson.JsonParseException
 
 /*
  * La biblioteca de Jackson tiene un sistema para elegir cuales propiedades mostrar y cuales no 
@@ -90,10 +97,12 @@ class AuxiliarDynamicJson {
 		}
 	}
 
+}
 
-
-
-
-
-	
+// Auxiliar para serilizer de Jackson
+class LocalDateTimeSerializer extends JsonSerializer<LocalDateTime> {
+    
+    override void serialize(LocalDateTime arg0, JsonGenerator arg1, SerializerProvider arg2) throws IOException {
+        arg1.writeString(arg0.toString())
+    }
 }

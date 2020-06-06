@@ -12,6 +12,8 @@ import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.annotation.JsonView
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -28,6 +30,7 @@ import javax.persistence.Id
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
+import ar.edu.unsam.proyecto.webApi.jsonViews.LocalDateTimeSerializer
 
 @Accessors
 @Entity
@@ -57,8 +60,9 @@ class Partido {
 	@ManyToOne
 	Cancha canchaReservada
 
+	@JsonSerialize(using = LocalDateTimeSerializer)
 	@Column()
-	@JsonView(ViewsPartido.DetallesView, ViewsNotificacion.NotificacionView)
+	@JsonView(ViewsPartido.DetallesView, ViewsNotificacion.NotificacionView, ViewsPartido.ListView)
 	LocalDateTime fechaDeReserva
 
 	@JsonView(ViewsPartido.DetallesView, ViewsNotificacion.NotificacionView)

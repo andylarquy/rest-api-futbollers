@@ -62,16 +62,17 @@ class RepositorioPartido extends Repositorio<Partido> {
 				val integrantesEquipo1 = tablaEquipo1.joinSet("integrantes", JoinType.INNER)
 				val integrantesEquipo2 = tablaEquipo2.joinSet("integrantes", JoinType.INNER)
 				
-				criteriosWhere.add(criteria.equal(integrantesEquipo1.get("idUsuario"), usuario.idUsuario))
-				criteriosWhere.add(criteria.equal(integrantesEquipo2.get("idUsuario"), usuario.idUsuario))
-				criteriosWhere.add(criteria.equal(from.get("estado"), true))
+				val criterio1 = criteria.equal(integrantesEquipo1.get("idUsuario"), usuario.idUsuario)
+				val criterio2 = criteria.equal(integrantesEquipo2.get("idUsuario"), usuario.idUsuario)
+				val criterio3 = criteria.or(criterio1, criterio2)
+				val criterio4 = criteria.equal(from.get("estado"), true)
 				
-				query.where(criteriosWhere)
-				
+				query.where(criteria.and(criterio3, criterio4))
 				return query
 			],
 		
 		[query | query.resultList]) as List<Partido>
+		
 		
 	}
 	
