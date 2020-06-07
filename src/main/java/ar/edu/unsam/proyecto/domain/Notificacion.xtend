@@ -20,7 +20,7 @@ class Notificacion{
 	@JsonView(ViewsNotificacion.NotificacionView)
 	Partido partido
 	
-	@JsonView() Usuario usuario
+	@JsonView(ViewsNotificacion.NotificacionView) Usuario usuario
 	
 	//TODO: Discutir si esto aca siquiera tiene sentido
 	@JsonView() @JsonIgnore Equipo equipo
@@ -31,6 +31,10 @@ class Notificacion{
 	
 	def empresaTieneMail(String email) {
 		partido.empresa.email.equals(email)
+	}
+	
+	def partidoTieneId(Long idPartido) {
+		partido.idPartido == idPartido
 	}
 	
 }

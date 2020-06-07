@@ -25,6 +25,13 @@ class RepositorioPartido extends Repositorio<Partido> {
 		repoPartido = null
 	}
 
+	Long idAutoincremental = Long.valueOf(1)
+
+	def asignarIdPartido(Partido partido) {
+		partido.idPartido = idAutoincremental
+		idAutoincremental++
+	}
+
 	private new() {}
 	
 	def coleccion(){
@@ -89,9 +96,13 @@ class RepositorioPartido extends Repositorio<Partido> {
 	def eliminarPartido(Partido partido){
 		partido.estado = false
 		update(partido)
-		
 	}
 
-	
+	def crearPartido(Partido partido){
+		if(partido.idPartido === null){
+			this.asignarIdPartido(partido)
+			this.create(partido)
+		}
+	}
 	
 }

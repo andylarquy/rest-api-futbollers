@@ -2,6 +2,7 @@ package ar.edu.unsam.proyecto.domain
 
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsUsuario
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -24,7 +25,7 @@ import org.uqbar.geodds.Point
 @JsonInclude(Include.NON_NULL)//En teoria si un campo es null no lo parsea 
 class Usuario {
 
-	@JsonView(ViewsUsuario.IdView, ViewsPartido.DefaultView, ViewsEquipo.ListView)
+	@JsonView(ViewsUsuario.IdView, ViewsPartido.DefaultView, ViewsEquipo.ListView, ViewsNotificacion.NotificacionView)
 	@Id @GeneratedValue
 	Long idUsuario
 

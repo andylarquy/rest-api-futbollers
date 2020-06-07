@@ -36,8 +36,8 @@ import org.eclipse.xtend.lib.annotations.Accessors
 @JsonInclude(Include.NON_NULL) //En teoria si un campo es null no lo parsea (<3 gracias Jackson!)
 class Partido {
 
-	@JsonView(ViewsPartido.ListView)
-	@Id @GeneratedValue
+	@JsonView(ViewsPartido.ListView, ViewsNotificacion.NotificacionView)
+	@Id
 	Long idPartido
 
 //TODO - En principio parece que no hace falta pero lo dejamos por las dudas
@@ -157,7 +157,7 @@ class Partido {
 	}
 
 	def tieneEquipoTemporal() {
-		return equipo1.idEquipo == ID_EQUIPO_TEMPORAL || equipo2.idEquipo == ID_EQUIPO_TEMPORAL
+		return equipo1.idEquipo < 0 || equipo2.idEquipo < 0
 	}
 
 	def mapearJugadoresTemporales() {

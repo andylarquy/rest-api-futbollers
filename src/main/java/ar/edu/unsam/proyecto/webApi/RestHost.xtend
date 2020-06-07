@@ -64,6 +64,8 @@ class RestHost {
 	
 	//https://i.imgur.com/j6UGUXn.jpg
 	def crearNuevoPartido(Partido partido) {
+
+		repoPartido.asignarIdPartido(partido)
 	
 		partido.mapearEmpresa()
 		

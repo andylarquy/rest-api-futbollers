@@ -341,9 +341,9 @@ class Bootstrap {
 		repoPromocion.create(promo2)
 		repoPromocion.create(promo3)
 		
-		repoPartido.create(partido1)
-		repoPartido.create(partido2)
-		repoPartido.create(partido3)
+		repoPartido.crearPartido(partido1)
+		repoPartido.crearPartido(partido2)
+		repoPartido.crearPartido(partido3)
 
 		//TODO: Pensar, no mandes un update innecesario
 		//andy.partidos = new ArrayList(Arrays.asList(partido1, partido2))
