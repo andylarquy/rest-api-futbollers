@@ -12,12 +12,15 @@ import ar.edu.unsam.proyecto.repos.RepositorioEquipo
 import ar.edu.unsam.proyecto.repos.RepositorioPartido
 import ar.edu.unsam.proyecto.repos.RepositorioPromocion
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
+import com.google.firebase.FirebaseOptions
 import io.github.cdimascio.dotenv.Dotenv
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.Arrays
 import java.util.HashSet
+import com.google.firebase.FirebaseApp
+import com.google.auth.oauth2.GoogleCredentials
 
 class Bootstrap {
 
@@ -29,10 +32,11 @@ class Bootstrap {
 		}
 		bootstrap
 	}
-	
+
 	Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load()
 
-	private new() {}
+	private new() {
+	}
 
 	RepositorioUsuario repoUsuarios = RepositorioUsuario.instance
 	RepositorioPartido repoPartido = RepositorioPartido.instance
@@ -117,7 +121,7 @@ class Bootstrap {
 		lat = -34.5768884
 		lon = -58.4904551
 	]
-	
+
 	Usuario pepe = new Usuario() => [
 		nombre = "Pepe"
 		password = dotenv.get("PASSWORD")
@@ -128,7 +132,7 @@ class Bootstrap {
 		lat = -34.6016244
 		lon = -58.4420183
 	]
-	
+
 	Usuario sofia = new Usuario() => [
 		nombre = "Sofia"
 		password = dotenv.get("PASSWORD")
@@ -150,7 +154,7 @@ class Bootstrap {
 		lat = -34.6016244
 		lon = -58.4420183
 	]
-	
+
 	Usuario juan = new Usuario() => [
 		nombre = "Juancete"
 		password = dotenv.get("PASSWORD")
@@ -179,7 +183,7 @@ class Bootstrap {
 	Equipo equipoIncompleto = new Equipo() => [
 		nombre = "Equipo incompleto"
 		owner = nikoBostero
-		foto="https://i.imgur.com/lvR3nt3.jpg"
+		foto = "https://i.imgur.com/lvR3nt3.jpg"
 		integrantes = new HashSet(Arrays.asList(sebaCapo, nikoBostero, andy))
 	]
 
@@ -280,7 +284,7 @@ class Bootstrap {
 		canchaReservada = vicLop2
 		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 4, 24), LocalTime.of(17, 00))
 	]
-	
+
 	Partido partido3 = new Partido() => [
 		equipo1 = equipazo
 		equipo2 = equipoIncompleto
@@ -294,13 +298,13 @@ class Bootstrap {
 		descripcion = "Con Coca-Cola te hacemos el aguante!"
 		porcentajeDescuento = 25
 	]
-	
+
 	Promocion promo2 = new Promocion() => [
 		codigo = "asd"
 		descripcion = "Esta promo es una prueba"
 		porcentajeDescuento = 50
 	]
-	
+
 	Promocion promo3 = new Promocion() => [
 		codigo = "nike"
 		descripcion = "Just Do It"
@@ -308,73 +312,76 @@ class Bootstrap {
 	]
 
 	def runBootstrap() {
-		
-		repoUsuarios.create(sebaCapo)
-		repoUsuarios.create(nikoBostero)
-		repoUsuarios.create(andy)
-		repoUsuarios.create(jugador1)
-		repoUsuarios.create(jugador2)
-		repoUsuarios.create(jugador3)
-		repoUsuarios.create(jugador4)
-		repoUsuarios.create(pepe)
-		repoUsuarios.create(sofia)
-		repoUsuarios.create(agustin)
-		repoUsuarios.create(juan)
 
-		repoEquipo.create(equipazo)
-		repoEquipo.create(equipoMalo)
-		repoEquipo.create(equipoIncompleto)
-		
-		repoCancha.create(urquiza1)
-		repoCancha.create(urquiza2)
-		repoCancha.create(vicLop1)
-		repoCancha.create(vicLop2)
-		repoCancha.create(vicLop3)
-		repoCancha.create(argen1)
-		repoCancha.create(argen2)
+//		repoUsuarios.create(sebaCapo)
+//		repoUsuarios.create(nikoBostero)
+//		repoUsuarios.create(andy)
+//		repoUsuarios.create(jugador1)
+//		repoUsuarios.create(jugador2)
+//		repoUsuarios.create(jugador3)
+//		repoUsuarios.create(jugador4)
+//		repoUsuarios.create(pepe)
+//		repoUsuarios.create(sofia)
+//		repoUsuarios.create(agustin)
+//		repoUsuarios.create(juan)
+//
+//		repoEquipo.create(equipazo)
+//		repoEquipo.create(equipoMalo)
+//		repoEquipo.create(equipoIncompleto)
+//
+//		repoCancha.create(urquiza1)
+//		repoCancha.create(urquiza2)
+//		repoCancha.create(vicLop1)
+//		repoCancha.create(vicLop2)
+//		repoCancha.create(vicLop3)
+//		repoCancha.create(argen1)
+//		repoCancha.create(argen2)
+//
+//		repoEmpresa.create(empresaUrquiza)
+//		repoEmpresa.create(empresaVicenteLopez)
+//		repoEmpresa.create(empresaArgentinos)
+//
+//		repoPromocion.create(promo1)
+//		repoPromocion.create(promo2)
+//		repoPromocion.create(promo3)
+//
+//		repoPartido.crearPartido(partido1)
+//		repoPartido.crearPartido(partido2)
+//		repoPartido.crearPartido(partido3)
+//
+//		// TODO: Pensar, no mandes un update innecesario
+//		// andy.partidos = new ArrayList(Arrays.asList(partido1, partido2))
+//		// sebaCapo.partidos = new ArrayList(Arrays.asList(partido2))
+//		// nikoBostero.partidos = new ArrayList(Arrays.asList(partido1))
+//		andy.crearAmistad(sebaCapo)
+//		andy.crearAmistad(nikoBostero)
+//		andy.crearAmistad(jugador1)
+//		andy.crearAmistad(jugador2)
+//		andy.crearAmistad(jugador3)
+//		andy.crearAmistad(jugador4)
+//
+//		nikoBostero.crearAmistad(sebaCapo)
+//		nikoBostero.crearAmistad(jugador1)
+//		nikoBostero.crearAmistad(jugador2)
+//		nikoBostero.crearAmistad(jugador3)
+//
+//		sebaCapo.crearAmistad(sebaCapo)
+//		sebaCapo.crearAmistad(jugador1)
+//		sebaCapo.crearAmistad(jugador2)
+//		sebaCapo.crearAmistad(jugador4)
+//
+//		repoUsuarios.update(sebaCapo)
+//		repoUsuarios.update(nikoBostero)
+//		repoUsuarios.update(andy)
+//		repoUsuarios.update(jugador1)
+//		repoUsuarios.update(jugador2)
+//		repoUsuarios.update(jugador3)
+//		repoUsuarios.update(jugador4)
 
-		repoEmpresa.create(empresaUrquiza)
-		repoEmpresa.create(empresaVicenteLopez)
-		repoEmpresa.create(empresaArgentinos)
-		
-		repoPromocion.create(promo1)
-		repoPromocion.create(promo2)
-		repoPromocion.create(promo3)
-		
-		repoPartido.crearPartido(partido1)
-		repoPartido.crearPartido(partido2)
-		repoPartido.crearPartido(partido3)
+		val options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.getApplicationDefault()).build()
 
-		//TODO: Pensar, no mandes un update innecesario
-		//andy.partidos = new ArrayList(Arrays.asList(partido1, partido2))
-		//sebaCapo.partidos = new ArrayList(Arrays.asList(partido2))
-		//nikoBostero.partidos = new ArrayList(Arrays.asList(partido1))
-		
-		andy.crearAmistad(sebaCapo)
-		andy.crearAmistad(nikoBostero)
-		andy.crearAmistad(jugador1)
-		andy.crearAmistad(jugador2)
-		andy.crearAmistad(jugador3)
-		andy.crearAmistad(jugador4)
-		
-		nikoBostero.crearAmistad(sebaCapo)
-		nikoBostero.crearAmistad(jugador1)
-		nikoBostero.crearAmistad(jugador2)
-		nikoBostero.crearAmistad(jugador3)
-		
-		sebaCapo.crearAmistad(sebaCapo)
-		sebaCapo.crearAmistad(jugador1)
-		sebaCapo.crearAmistad(jugador2)
-		sebaCapo.crearAmistad(jugador4)
-		
-		repoUsuarios.update(sebaCapo)
-		repoUsuarios.update(nikoBostero)
-		repoUsuarios.update(andy)
-		repoUsuarios.update(jugador1)
-		repoUsuarios.update(jugador2)
-		repoUsuarios.update(jugador3)
-		repoUsuarios.update(jugador4)
-		
+		FirebaseApp.initializeApp(options)
+
 	}
 
 }

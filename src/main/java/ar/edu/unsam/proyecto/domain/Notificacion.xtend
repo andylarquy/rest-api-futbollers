@@ -15,6 +15,9 @@ class Notificacion{
 	Long idNotificacion
 	
 	@JsonView(ViewsNotificacion.NotificacionView)
+	String titulo
+	
+	@JsonView(ViewsNotificacion.NotificacionView)
 	String descripcion
 
 	@JsonView(ViewsNotificacion.NotificacionView)

@@ -16,6 +16,7 @@ import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsUsuario
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import java.time.LocalDateTime
 import java.util.List
@@ -25,6 +26,7 @@ import org.uqbar.xtrest.api.annotation.Controller
 import org.uqbar.xtrest.api.annotation.Get
 import org.uqbar.xtrest.api.annotation.Post
 import org.uqbar.xtrest.json.JSONUtils
+import com.google.gson.reflect.TypeToken
 
 @Controller
 class RestHostAPI {
@@ -50,16 +52,19 @@ class RestHostAPI {
 	@Post("/login")
 	def loguearUsuario(@Body String body) {
 
-		val Usuario usuario = body.fromJson(Usuario)
 		try {
-			val usuarioParseado = auxiliar.parsearObjeto(restHost.loguearUsuario(usuario.email, usuario.password),
+			
+			val Usuario usuario = body.fromJson(Usuario)
+			val usuarioParseado = auxiliar.parsearObjeto(restHost.loguearUsuario(usuario),
 				ViewsUsuario.CredencialesView)
 
 			ok(usuarioParseado)
 		} catch (IncorrectCredentials e) {
 			forbidden('{"status":401, "message":"' + e.message + '"}')
+			throw e
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
 		}
 	}
 
@@ -272,6 +277,65 @@ class RestHostAPI {
 		
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+	}
+	
+	//Post o Put?
+//	@Post("/ubicacion")
+//	def updateUbicacionUsuarioById(@Body String body){
+//		try{
+//			
+//			println("LLEGO UNA UBICACION!")
+//			println(body)
+//			
+//			val usuarioParseado = new Gson().fromJson(body, Usuario)
+//			
+//			println(usuarioParseado.lat)
+//			
+//			restHost.updateUbicacion(usuarioParseado)
+//			ok('{"status":200, "message":"ok"}')
+//			
+//		}catch(Exception e){
+//			badRequest('{"status":400, "message":"' + e.message + '"}')
+//		}
+//	}
+	
+	@Post("/debug/notificacion/:id1")
+	def postDebugNotificacion(@Body String body){
+		try{
+			
+		
+			//val idUsuario2 = bodyJSON.getString("id1")
+			
+			restHost.debugNotificacion(Long.valueOf(id1))
+			
+		
+			ok('{"status":200, "message":"ok"}')
+			
+		}catch(Exception e){
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
+		}
+	}
+	
+	@Post("/debug/notificacion-multiple")
+	def postDebugNotificacion(@Body String body){
+		try{
+			
+		
+			val bodyJSON = new JSONObject(body) 
+			val ids = bodyJSON.getJSONArray("ids")
+			
+			val List<Long> idsPosta = new Gson().fromJson(ids.toString, new TypeToken<List<Long>>(){}.getType())
+			
+			restHost.debugNotificacionMultiple(idsPosta)
+			
+		
+			ok('{"status":200, "message":"ok"}')
+			
+		}catch(Exception e){
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
 		}
 	}
 

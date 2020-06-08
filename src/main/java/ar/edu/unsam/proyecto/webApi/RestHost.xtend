@@ -1,6 +1,7 @@
 package ar.edu.unsam.proyecto.webApi
 
 import ar.edu.unsam.proyecto.domain.Equipo
+import ar.edu.unsam.proyecto.domain.Notificacion
 import ar.edu.unsam.proyecto.domain.Partido
 import ar.edu.unsam.proyecto.domain.Usuario
 import ar.edu.unsam.proyecto.exceptions.IncorrectCredentials
@@ -13,6 +14,9 @@ import ar.edu.unsam.proyecto.repos.RepositorioPartido
 import ar.edu.unsam.proyecto.repos.RepositorioPromocion
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import java.time.LocalDateTime
+import java.util.HashSet
+import java.util.List
+import java.util.Set
 import javax.persistence.NoResultException
 import org.eclipse.xtend.lib.annotations.Accessors
 
@@ -30,12 +34,21 @@ class RestHost {
 		return '{ "message": "La API Rest esta funcionando!! :)" }'
 	}
 	
-	def loguearUsuario(String email, String password){
-		try{			
-			return repoUsuario.getUsuarioConCredenciales(email, password)
+	def loguearUsuario(Usuario usuario){
+		try{
+		val usuarioPosta = repoUsuario.getUsuarioConCredenciales(usuario.email, usuario.password)
+		
+		if(usuario.token !== null){
+			val deviceToken = usuario.token	
+			usuarioPosta.token = deviceToken
+			repoUsuario.update(usuarioPosta)
+		}		
+		return usuarioPosta
+
 		}catch(NoResultException e){
 			throw new IncorrectCredentials("Credenciales Invalidas")
 		}
+		
 	}
 	
 	def signUpUsuario(Usuario usuario) {
@@ -69,8 +82,25 @@ class RestHost {
 	
 		partido.mapearEmpresa()
 		
+		val Set<Usuario> destinatariosConocidos = new HashSet
+		val Set<Usuario> destinatariosDesconocidos = new HashSet
+		
 		partido.mapearJugadoresConocidos
-		partido.mapearJugadoresTemporales
+
+		destinatariosConocidos.addAll(partido.jugadoresConocidos)
+		
+		destinatariosConocidos.forEach[jugador |
+			if(!destinatariosConocidos.exists[user | user.idUsuario == jugador.idUsuario]){
+				destinatariosDesconocidos.add(jugador)
+			}
+		]
+		
+		println(destinatariosConocidos.map[idUsuario])
+		println(destinatariosDesconocidos.map[idUsuario])
+		
+		partido.enviarNotifiacionesAConocidos(destinatariosConocidos)
+		partido.enviarNotifiacionesADesconocidos(destinatariosDesconocidos)
+		
 		
 		partido.prepararParaPersistir()
 		
@@ -79,7 +109,8 @@ class RestHost {
 		repoEquipo.createIfNotExists(partido.equipo1)
 		repoEquipo.createIfNotExists(partido.equipo2)
 		
-		repoPartido.create(partido)
+		println("SE CREO UN PARTIDO: "+partido)
+		//repoPartido.create(partido)
 	}
 	
 	def getCanchas(){
@@ -122,5 +153,42 @@ class RestHost {
 		val partidoPosta = repoPartido.searchById(idPartido)
 		partidoPosta.confirmarPartido()
 	}
+	
+	def updateUbicacion(Usuario usuario) {
+		
+		val usuarioPosta = repoUsuario.searchById(usuario.idUsuario)
+		
+		usuarioPosta.lat = usuario.lat
+		usuarioPosta.lon = usuario.lon
+
+		repoUsuario.update(usuarioPosta)	
+	}
+	
+	def debugNotificacion(Long idUsuario) {
+	
+		val usuarioPosta = repoUsuario.searchById(idUsuario)
+		val notificacion = new Notificacion
+		notificacion.titulo = "[DEBUG]"
+		notificacion.descripcion = "Esta notificacion es una prueba"
+		notificacion.usuario = usuarioPosta
+		
+		repoNotificacion.enviarUnaNotificacion(notificacion)
+		
+	}
+	
+	def debugNotificacionMultiple(List<Long> ids) {
+		
+		val usuariosPosta = new HashSet()
+		
+		ids.forEach[id | usuariosPosta.add(repoUsuario.searchById(id))]
+		
+		val notificacion = new Notificacion
+		notificacion.titulo = "[DEBUG]"
+		notificacion.descripcion = "Esta notificacion es una prueba"
+		
+		repoNotificacion.enviarMultipleNotificacion(notificacion, usuariosPosta)
+		
+	}
+	
 
 }

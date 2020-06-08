@@ -2,7 +2,6 @@ package ar.edu.unsam.proyecto.repos
 
 import ar.edu.unsam.proyecto.domain.Equipo
 import ar.edu.unsam.proyecto.domain.Usuario
-import java.util.ArrayList
 import java.util.List
 import javax.persistence.NoResultException
 import javax.persistence.criteria.JoinType

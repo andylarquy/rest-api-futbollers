@@ -25,11 +25,11 @@ import java.util.Timer
 import java.util.TimerTask
 import javax.persistence.Column
 import javax.persistence.Entity
-import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
+import java.util.Set
 
 @Accessors
 @Entity
@@ -59,7 +59,7 @@ class Partido {
 	@ManyToOne
 	Cancha canchaReservada
 
-	@JsonSerialize(using = LocalDateTimeSerializer)
+	@JsonSerialize(using=LocalDateTimeSerializer)
 	@Column()
 	@JsonView(ViewsPartido.DetallesView, ViewsNotificacion.NotificacionView, ViewsPartido.ListView)
 	LocalDateTime fechaDeReserva
@@ -90,7 +90,7 @@ class Partido {
 	@Transient
 	transient RepositorioPartido repoPartido = RepositorioPartido.instance
 
-	transient static val ID_EQUIPO_TEMPORAL = -2
+	// transient static val ID_EQUIPO_TEMPORAL = -2
 	transient static val DIAS_PARA_CONFIRMAR = 2
 	transient static val DEBUG_SEGUNDOS_PARA_CONFIRMAR = 30
 
@@ -99,14 +99,14 @@ class Partido {
 		val fechaDeEliminacionDebug = LocalDateTime.now().plusSeconds(DEBUG_SEGUNDOS_PARA_CONFIRMAR)
 		var fechaDeEliminacionDebugAsDate = Date.from(
 			fechaDeEliminacionDebug.atZone(ZoneId.systemDefault()).toInstant())
-		
+
 		val fechaDeEliminacion = LocalDateTime.now().plusDays(DIAS_PARA_CONFIRMAR)
 		val fechaDeEliminacionAsDate = Date.from(fechaDeEliminacion.atZone(ZoneId.systemDefault()).toInstant())
 
 		// Desde el momento de creacion de un partido hay X dias para confirmarlo y asi evitar su autoeliminacion
 		new Timer().schedule(autoEliminarPartido, fechaDeEliminacionAsDate);
-	
-		//Para eliminar el warning
+
+		// Para eliminar el warning
 		fechaDeEliminacionDebugAsDate = fechaDeEliminacionDebugAsDate
 	}
 
@@ -160,37 +160,15 @@ class Partido {
 		return equipo1.idEquipo < 0 || equipo2.idEquipo < 0
 	}
 
-	def mapearJugadoresTemporales() {
+	def enviarNotifiaciones() {
+		val invitacion = new Notificacion()
+		invitacion.partido = this
+		invitacion.titulo = "¡Has recibido una invitacion de tu amigo " + invitacion.partido.equipo1.owner.nombre +
+			" para un partido!"
+		invitacion.descripcion = "Direccion: " + invitacion.partido.empresa.direccion + " Fecha y hora: " +
+			invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
 
-		if (this.tieneEquipoTemporal) {
-			jugadoresTemporalesDelPartido.forEach[jugador|buscarJugadorPorGPS(jugador, equipo1.owner)]
-		}
-	}
-
-	def void buscarJugadorPorGPS(Usuario usuarioABuscar, Usuario usuarioOwner) {
-		val int rangoDeBusqueda = Integer.parseInt(usuarioABuscar.email)
-		val sexoBuscado = usuarioABuscar.sexo
-		val posicionBuscada = usuarioABuscar.posicion
-
-		val candidatos = repoUsuario.getUsuariosEnElRangoDe(usuarioOwner, rangoDeBusqueda, sexoBuscado, posicionBuscada)
-
-		if (candidatos.size >= jugadoresTemporalesDelPartido.size) {
-
-			candidatos.forEach [ candidato |
-				val invitacion = new Notificacion()
-				invitacion.partido = this
-				invitacion.usuario = candidato
-				invitacion.descripcion = "¡Has recibido una invitación para un partido en " +
-					invitacion.partido.empresa.direccion + " el día " + invitacion.partido.fechaDeReserva +
-					"! (TODO: Formatear bien la fecha)"
-
-				repoNotificacion.agregarNotificacion(invitacion)
-			]
-
-		} else {
-			throw new InsufficientCandidates(
-				"No se han encontrado suficientes jugadores con esos parametros de busqueda")
-		}
+		repoNotificacion.enviarMultipleNotificacion(invitacion, getJugadoresConocidos)
 
 	}
 
@@ -207,11 +185,19 @@ class Partido {
 		return jugadores
 	}
 
-	def void jugadoresConocidos() {}
+	def getJugadoresConocidos() {
+		val conocidosEquipo1 = equipo1.integrantes.filter[esIntegranteConocido]
+		val conocidosEquipo2 = equipo2.integrantes.filter[esIntegranteConocido]
+		val jugadoresConocidos = new HashSet()
+		jugadoresConocidos.addAll(conocidosEquipo1)
+		jugadoresConocidos.addAll(conocidosEquipo2)
+		println(jugadoresConocidos.map[idUsuario])
+		return jugadoresConocidos
+	}
 
 	def mapearJugadoresConocidos() {
 		equipo1.mapearJugadoresConocidos
-		equipo2.mapearJugadoresConocidos
+		equipo2.mapearJugadoresConocidos 
 	}
 
 	def eliminarJugadoresTemporales() {
@@ -238,19 +224,19 @@ class Partido {
 		equipo2.asignarIdEquipoTemporal
 	}
 
-	def mapearEquipo(Equipo equipo){
-	
+	def mapearEquipo(Equipo equipo) {
+
 		val equipoAPrestitr = new Equipo()
-	
-		if(equipo.idEquipo === null){
+
+		if (equipo.idEquipo === null) {
 			equipoAPrestitr.idEquipo = equipo.idEquipo
 		}
-	
+
 		equipoAPrestitr.nombre = equipo.nombre
 		equipoAPrestitr.foto = equipo.foto
 		equipoAPrestitr.owner = equipo.owner
 		equipoAPrestitr.integrantes = equipo.integrantes
-	
+
 	}
 
 	def mapearCancha() {
@@ -265,8 +251,45 @@ class Partido {
 		confirmado = true
 		repoPartido.update(this)
 	}
-
 	
+	def jugadoresDesconocidos() {
+		val jugadoresDesconocidos = new HashSet()
+		if (this.tieneEquipoTemporal) {
+			jugadoresTemporalesDelPartido.forEach[jugador|
+				jugadoresDesconocidos.addAll(buscarCandidatoPorGPS(jugador, equipo1.owner))
+			]
+		}
+		return jugadoresDesconocidos
+	}
+	
+	def buscarCandidatoPorGPS(Usuario usuarioABuscar, Usuario usuarioOwner) {
+		val int rangoDeBusqueda = Integer.parseInt(usuarioABuscar.email)
+		val sexoBuscado = usuarioABuscar.sexo
+		val posicionBuscada = usuarioABuscar.posicion
+
+		repoUsuario.getUsuariosEnElRangoDe(usuarioOwner, rangoDeBusqueda, sexoBuscado, posicionBuscada).toSet
+	}
+	
+	def enviarNotifiacionesAConocidos(Set<Usuario> destinatarios) {
+		val invitacion = new Notificacion()
+		invitacion.partido = this
+		invitacion.titulo = "¡"+invitacion.partido.equipo1.owner.nombre +
+			" te invito a un partido!"
+		invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
+			invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
+
+		repoNotificacion.enviarMultipleNotificacion(invitacion, destinatarios)
+	}
+	
+	def enviarNotifiacionesADesconocidos(Set<Usuario> destinatarios) {
+		val invitacion = new Notificacion()
+		invitacion.partido = this
+		invitacion.titulo = "¡Has recibido una invitacion para un partido!"
+		invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
+			invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
+		repoNotificacion.enviarMultipleNotificacion(invitacion, destinatarios)
+	}
+
 }
 
 //TimerTask Auxiliar

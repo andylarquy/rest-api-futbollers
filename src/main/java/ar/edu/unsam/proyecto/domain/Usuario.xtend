@@ -52,6 +52,12 @@ class Usuario {
 	@Column()
 	@JsonView(ViewsUsuario.DefaultView)
 	String email
+	
+	@Column()
+	@JsonView(ViewsUsuario.CredencialesView)
+	String token
+	
+	
 
 	// Como la longitud y la latitud seran escribidas habitualmente y son datos mas bien volatiles
 	// Tomamos la decision de NO persistirlos en la base
