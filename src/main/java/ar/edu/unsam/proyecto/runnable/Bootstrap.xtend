@@ -45,7 +45,7 @@ class Bootstrap {
 	Usuario sebaCapo = new Usuario() => [
 		nombre = "sebaCapo"
 		password = dotenv.get("PASSWORD")
-		sexo = "M"
+		sexo = "Masculino"
 		posicion = "Delantero"
 		foto = "https://i.imgur.com/1PkBT5g.jpg"
 		email = dotenv.get("EMAIL_SEBA")
@@ -81,7 +81,7 @@ class Bootstrap {
 		sexo = "Masculino"
 		posicion = "Mediocampista"
 		foto = "https://i.imgur.com/dNrx8Ts.jpg"
-		email = "elmaildelnabo1@sarasa.com"
+		email = "elmaildeljugador1@sarasa.com"
 		lat = -34.6029831
 		lon = -58.4408178
 	]
@@ -92,7 +92,7 @@ class Bootstrap {
 		sexo = "Femenino"
 		posicion = "Arquero"
 		foto = "https://i.imgur.com/Q9bw6oP.jpg"
-		email = "elmaildelnabo2@sarasa.com"
+		email = "elmaildeljugador2@sarasa.com"
 		lat = -34.5768884
 		lon = -58.4904551
 	]
@@ -103,7 +103,7 @@ class Bootstrap {
 		sexo = "Masculino"
 		posicion = "Mediocampista"
 		foto = "https://i.imgur.com/zS9GKGi.jpg"
-		email = "elmaildelnabo3@sarasa.com"
+		email = "elmaildeljugador3@sarasa.com"
 		lat = -34.6029831
 		lon = -58.4408178
 	]
@@ -114,7 +114,7 @@ class Bootstrap {
 		sexo = "Femenino"
 		posicion = "Arquero"
 		foto = "https://i.imgur.com/vtmHBNo.jpg"
-		email = "elmaildelnabo4@sarasa.com"
+		email = "elmaildeljugador4@sarasa.com"
 		lat = -34.5768884
 		lon = -58.4904551
 	]
@@ -267,8 +267,8 @@ class Bootstrap {
 		lat = -34.6078057
 		lon = -58.4763221
 		canchas = new HashSet(Arrays.asList(argen1, argen2))
-		nombreDuenio = "No se mi nombre"
-		email = "niIdea@noSe.com"
+		nombreDuenio = "Esteban"
+		email = "esteban@cancha.com"
 		direccion = "Sarasa 123"
 		foto = "https://i.imgur.com/RUOAmuX.png"
 	]
