@@ -262,12 +262,12 @@ class Partido {
 		val jugadoresDesconocidos = new HashSet()
 		if (this.tieneEquipoTemporal) {
 			jugadoresTemporalesDelPartido.forEach[jugador|
-				jugadoresDesconocidos.addAll(buscarCandidatoPorGPS(jugador, equipo1.owner))
+				buscarCandidatoPorGPS(jugador, equipo1.owner).forEach[this.agregarUsuarioSiNoEsta(jugadoresDesconocidos, it)]
 			]
 		}
 		
-		if(jugadoresDesconocidos.size < 1){
-			throw new InsufficientCandidates('No se han encontrado usuarios con esos parametros de busqueda')
+		if(jugadoresDesconocidos.size < jugadoresTemporalesDelPartido.size){
+			throw new InsufficientCandidates('No se han encontrado suficentes jugadores para cubrir los puestos con esos parametros de busqueda')
 		}
 		
 		return jugadoresDesconocidos
@@ -281,6 +281,11 @@ class Partido {
 		repoUsuario.getUsuariosEnElRangoDe(usuarioOwner, rangoDeBusqueda, sexoBuscado, posicionBuscada).toSet
 	}
 	
+	def agregarUsuarioSiNoEsta(Set<Usuario> coleccion, Usuario usuario){
+		if(!coleccion.exists[jugador | jugador.idUsuario == usuario.idUsuario]){
+			coleccion.add(usuario)
+		}
+	}
 	
 	
 	def enviarNotifiacionesAConocidos(Set<Usuario> destinatarios, Usuario owner) {
@@ -303,8 +308,6 @@ class Partido {
 		repoNotificacion.enviarMultipleNotificacion(invitacion, destinatarios)
 	}
 	
-	
-
 }
 
 //TimerTask Auxiliar

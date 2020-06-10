@@ -141,5 +141,4 @@ class Equipo {
 		integrantes.filter[it.esIntegranteConocido]
 	}
 	
-	
 }

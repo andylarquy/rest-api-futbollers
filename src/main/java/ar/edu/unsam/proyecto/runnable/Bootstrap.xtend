@@ -47,7 +47,7 @@ class Bootstrap {
 		password = dotenv.get("PASSWORD")
 		sexo = "M"
 		posicion = "Delantero"
-		foto = "https://i.imgur.com/gF6Q26G.jpg"
+		foto = "https://i.imgur.com/1PkBT5g.jpg"
 		email = dotenv.get("EMAIL_SEBA")
 		lat = -34.5677486
 		lon = -58.489429
@@ -56,9 +56,9 @@ class Bootstrap {
 	Usuario nikoBostero = new Usuario() => [
 		nombre = "nikoBostero"
 		password = dotenv.get("PASSWORD")
-		sexo = "M"
+		sexo = "Masculino"
 		posicion = "Delantero"
-		foto = "https://i.imgur.com/a0UL9YQ.png"
+		foto = "https://i.imgur.com/es7dPKd.jpg"
 		email = dotenv.get("EMAIL_NIKO")
 		lat = -34.6344499
 		lon = -58.3672355
@@ -67,9 +67,9 @@ class Bootstrap {
 	Usuario andy = new Usuario() => [
 		nombre = "andy"
 		password = dotenv.get("PASSWORD")
-		sexo = "M"
+		sexo = "Masculino"
 		posicion = "Defensor"
-		foto = "https://i.imgur.com/tBUGRSa.jpg"
+		foto = "https://i.imgur.com/ajsPlMV.jpg"
 		email = dotenv.get("EMAIL_ANDY")
 		lat = -34.5724894
 		lon = -58.4766751
@@ -78,9 +78,9 @@ class Bootstrap {
 	Usuario jugador1 = new Usuario() => [
 		nombre = "Jugador 1"
 		password = dotenv.get("PASSWORD")
-		sexo = "M"
+		sexo = "Masculino"
 		posicion = "Mediocampista"
-		foto = "https://i.imgur.com/DyYpkmS.jpg"
+		foto = "https://i.imgur.com/dNrx8Ts.jpg"
 		email = "elmaildelnabo1@sarasa.com"
 		lat = -34.6029831
 		lon = -58.4408178
@@ -89,9 +89,9 @@ class Bootstrap {
 	Usuario jugador2 = new Usuario() => [
 		nombre = "Jugador 2"
 		password = dotenv.get("PASSWORD")
-		sexo = "F"
+		sexo = "Femenino"
 		posicion = "Arquero"
-		foto = "https://i.imgur.com/AofDmoH.jpg"
+		foto = "https://i.imgur.com/Q9bw6oP.jpg"
 		email = "elmaildelnabo2@sarasa.com"
 		lat = -34.5768884
 		lon = -58.4904551
@@ -100,9 +100,9 @@ class Bootstrap {
 	Usuario jugador3 = new Usuario() => [
 		nombre = "Jugador 3"
 		password = dotenv.get("PASSWORD")
-		sexo = "M"
+		sexo = "Masculino"
 		posicion = "Mediocampista"
-		foto = "https://i.imgur.com/mUPUwOS.jpg"
+		foto = "https://i.imgur.com/zS9GKGi.jpg"
 		email = "elmaildelnabo3@sarasa.com"
 		lat = -34.6029831
 		lon = -58.4408178
@@ -111,9 +111,9 @@ class Bootstrap {
 	Usuario jugador4 = new Usuario() => [
 		nombre = "Jugador 4"
 		password = dotenv.get("PASSWORD")
-		sexo = "F"
+		sexo = "Femenino"
 		posicion = "Arquero"
-		foto = "https://i.imgur.com/kzeiAar.jpg"
+		foto = "https://i.imgur.com/vtmHBNo.jpg"
 		email = "elmaildelnabo4@sarasa.com"
 		lat = -34.5768884
 		lon = -58.4904551
@@ -124,7 +124,7 @@ class Bootstrap {
 		password = dotenv.get("PASSWORD")
 		sexo = "Masculino"
 		posicion = "Defensor"
-		foto = "https://i.imgur.com/kzeiAar.jpg"
+		foto = "https://i.imgur.com/oXy8RKG.jpg"
 		email = "pepe@gmail.com"
 		lat = -34.6016244
 		lon = -58.4420183
@@ -135,7 +135,7 @@ class Bootstrap {
 		password = dotenv.get("PASSWORD")
 		sexo = "Femenino"
 		posicion = "Delantero"
-		foto = "https://i.imgur.com/kzeiAar.jpg"
+		foto = "https://i.imgur.com/C5hUv7k.jpg"
 		email = "sofia@gmail.com"
 		lat = -34.6016244
 		lon = -58.4420183
@@ -146,7 +146,7 @@ class Bootstrap {
 		password = dotenv.get("PASSWORD")
 		sexo = "Masculino"
 		posicion = "Mediocampista"
-		foto = "https://i.imgur.com/kzeiAar.jpg"
+		foto = "https://i.imgur.com/9qkIMhI.jpg"
 		email = "agustin@gmail.com"
 		lat = -34.6016244
 		lon = -58.4420183
@@ -157,7 +157,7 @@ class Bootstrap {
 		password = dotenv.get("PASSWORD")
 		sexo = "Masculino"
 		posicion = "Delantero"
-		foto = "https://i.imgur.com/kzeiAar.jpg"
+		foto = "https://i.imgur.com/NPD1nqC.jpg"
 		email = "juancete@gmail.com"
 		lat = -34.6016244
 		lon = -58.4420183
@@ -173,7 +173,7 @@ class Bootstrap {
 	Equipo equipoMalo = new Equipo() => [
 		nombre = "El equipo malo"
 		owner = andy
-		foto = "https://i.imgur.com/RhqYpUg.jpg"
+		foto = "https://i.imgur.com/BoQriOI.jpg"
 		integrantes = new HashSet(Arrays.asList(jugador1, jugador2, jugador3, jugador4, andy))
 	]
 	
@@ -187,7 +187,7 @@ class Bootstrap {
 	Equipo equipoIncompleto = new Equipo() => [
 		nombre = "Equipo incompleto"
 		owner = nikoBostero
-		foto = "https://i.imgur.com/lvR3nt3.jpg"
+		foto = "https://i.imgur.com/1gg90fn.jpg"
 		integrantes = new HashSet(Arrays.asList(sebaCapo, nikoBostero, andy))
 	]
 
@@ -361,16 +361,24 @@ class Bootstrap {
 		andy.crearAmistad(jugador2)
 		andy.crearAmistad(jugador3)
 		andy.crearAmistad(jugador4)
+		andy.crearAmistad(pepe)
+		andy.crearAmistad(sofia)
+		andy.crearAmistad(juan)
+		andy.crearAmistad(agustin)
 
 		nikoBostero.crearAmistad(sebaCapo)
 		nikoBostero.crearAmistad(jugador1)
 		nikoBostero.crearAmistad(jugador2)
 		nikoBostero.crearAmistad(jugador3)
+		nikoBostero.crearAmistad(juan)
+		nikoBostero.crearAmistad(pepe)
 
 		sebaCapo.crearAmistad(sebaCapo)
 		sebaCapo.crearAmistad(jugador1)
 		sebaCapo.crearAmistad(jugador2)
 		sebaCapo.crearAmistad(jugador4)
+		sebaCapo.crearAmistad(juan)
+		sebaCapo.crearAmistad(sofia)
 
 		repoUsuarios.update(sebaCapo)
 		repoUsuarios.update(nikoBostero)
@@ -379,6 +387,10 @@ class Bootstrap {
 		repoUsuarios.update(jugador2)
 		repoUsuarios.update(jugador3)
 		repoUsuarios.update(jugador4)
+		repoUsuarios.update(pepe)
+		repoUsuarios.update(sofia)
+		repoUsuarios.update(agustin)
+		repoUsuarios.update(juan)
 
 	}
 

@@ -27,6 +27,7 @@ import org.uqbar.xtrest.api.annotation.Get
 import org.uqbar.xtrest.api.annotation.Post
 import org.uqbar.xtrest.json.JSONUtils
 import com.google.gson.reflect.TypeToken
+import ar.edu.unsam.proyecto.exceptions.InsufficientCandidates
 
 @Controller
 class RestHostAPI {
@@ -116,6 +117,9 @@ class RestHostAPI {
 	def postPartidos(@Body String body) {
 		try {
 			// Seteo los adapter de ID a javaObject
+			
+			println(body)
+			
 			val gson = new GsonBuilder()
 			.registerTypeAdapter(LocalDateTime, new LocalDateAdapter())
 			.create()
@@ -125,6 +129,9 @@ class RestHostAPI {
 			restHost.crearNuevoPartido(partido)
 			
 			ok('{"status":200, "message":"ok"}')
+		} catch (InsufficientCandidates e){
+			println('{"status":404, "message":"' + e.message + '"}')
+			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 			throw e

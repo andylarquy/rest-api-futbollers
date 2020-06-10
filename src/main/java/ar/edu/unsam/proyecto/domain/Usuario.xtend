@@ -150,4 +150,8 @@ class Usuario {
 		new Point(lat, lon)
 	}
 	
+	def tieneSexo(String sexo) {
+		sexo.equals(sexo)
+	}
+	
 }
