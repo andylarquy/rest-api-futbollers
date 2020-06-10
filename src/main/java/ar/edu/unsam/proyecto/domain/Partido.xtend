@@ -1,6 +1,5 @@
 package ar.edu.unsam.proyecto.domain
 
-import ar.edu.unsam.proyecto.exceptions.InsufficientCandidates
 import ar.edu.unsam.proyecto.exceptions.ObjectAlreadyExists
 import ar.edu.unsam.proyecto.repos.RepositorioCancha
 import ar.edu.unsam.proyecto.repos.RepositorioEmpresa
@@ -21,6 +20,7 @@ import java.time.Period
 import java.time.ZoneId
 import java.util.Date
 import java.util.HashSet
+import java.util.Set
 import java.util.Timer
 import java.util.TimerTask
 import javax.persistence.Column
@@ -29,7 +29,7 @@ import javax.persistence.Id
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
-import java.util.Set
+import ar.edu.unsam.proyecto.exceptions.InsufficientCandidates
 
 @Accessors
 @Entity
@@ -134,6 +134,22 @@ class Partido {
 		equipo2.validar
 		empresa.validar
 		canchaReservada.validar
+		repoPartido.validarFechaCancha(fechaDeReserva)
+	}
+	
+	//TODO: Pensar bien estas validaciones
+	def validarCreacion() {
+		empresa.validar
+		canchaReservada.validar
+		repoPartido.validarFechaCancha(fechaDeReserva)
+	}
+	
+	def validarPersistir() {
+		equipo1.validarEstaVacio
+		equipo2.validarEstaVacio
+		empresa.validar
+		canchaReservada.validar
+		repoPartido.validarFechaCancha(fechaDeReserva)
 	}
 
 	// TODO: Separar en equipo y equipo completo
@@ -158,18 +174,6 @@ class Partido {
 
 	def tieneEquipoTemporal() {
 		return equipo1.idEquipo < 0 || equipo2.idEquipo < 0
-	}
-
-	def enviarNotifiaciones() {
-		val invitacion = new Notificacion()
-		invitacion.partido = this
-		invitacion.titulo = "¡Has recibido una invitacion de tu amigo " + invitacion.partido.equipo1.owner.nombre +
-			" para un partido!"
-		invitacion.descripcion = "Direccion: " + invitacion.partido.empresa.direccion + " Fecha y hora: " +
-			invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
-
-		repoNotificacion.enviarMultipleNotificacion(invitacion, getJugadoresConocidos)
-
 	}
 
 	def jugadoresTemporalesDelPartido() {
@@ -206,12 +210,17 @@ class Partido {
 	}
 
 	def prepararParaPersistir() {
-		eliminarJugadoresTemporales()
+		eliminarJugadores()
 		asignarNombreEquipos()
 		asignarIdEquiposTemporales()
 		mapearEquipo(equipo1)
 		mapearEquipo(equipo2)
 		mapearCancha()
+	}
+	
+	def eliminarJugadores() {
+		equipo1.eliminarJugadores
+		equipo2.eliminarJugadores
 	}
 
 	def asignarNombreEquipos() {
@@ -235,8 +244,6 @@ class Partido {
 		equipoAPrestitr.nombre = equipo.nombre
 		equipoAPrestitr.foto = equipo.foto
 		equipoAPrestitr.owner = equipo.owner
-		equipoAPrestitr.integrantes = equipo.integrantes
-
 	}
 
 	def mapearCancha() {
@@ -259,6 +266,11 @@ class Partido {
 				jugadoresDesconocidos.addAll(buscarCandidatoPorGPS(jugador, equipo1.owner))
 			]
 		}
+		
+		if(jugadoresDesconocidos.size < 1){
+			throw new InsufficientCandidates('No se han encontrado usuarios con esos parametros de busqueda')
+		}
+		
 		return jugadoresDesconocidos
 	}
 	
@@ -270,11 +282,13 @@ class Partido {
 		repoUsuario.getUsuariosEnElRangoDe(usuarioOwner, rangoDeBusqueda, sexoBuscado, posicionBuscada).toSet
 	}
 	
-	def enviarNotifiacionesAConocidos(Set<Usuario> destinatarios) {
+	
+	
+	def enviarNotifiacionesAConocidos(Set<Usuario> destinatarios, Usuario owner) {
+		
 		val invitacion = new Notificacion()
 		invitacion.partido = this
-		invitacion.titulo = "¡"+invitacion.partido.equipo1.owner.nombre +
-			" te invito a un partido!"
+		invitacion.titulo = "¡ "+owner.nombre+" te invito a un partido!"
 		invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
 			invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
 
@@ -289,6 +303,8 @@ class Partido {
 			invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
 		repoNotificacion.enviarMultipleNotificacion(invitacion, destinatarios)
 	}
+	
+	
 
 }
 

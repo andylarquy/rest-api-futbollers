@@ -145,6 +145,19 @@ class RestHostAPI {
 		}
 
 	}
+	
+	@Get("/equipos-owner/:idUsuario")
+	def getEquiposAdministradosPorElUsuarioById(){
+		try {
+			var partidoParseado = auxiliar.parsearObjeto(restHost.getEquiposAdministradosPorElUsuario(Long.valueOf(idUsuario)), ViewsEquipo.ListView)
+			ok(partidoParseado)
+		} catch (ObjectDoesntExists e) {
+			notFound('{"status":404, "message":"' + e.message + '"}')
+		} catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+		
+	}
 
 	@Post("/equipos")
 	def postEquipos(@Body String body) {
@@ -281,24 +294,24 @@ class RestHostAPI {
 	}
 	
 	//Post o Put?
-//	@Post("/ubicacion")
-//	def updateUbicacionUsuarioById(@Body String body){
-//		try{
-//			
-//			println("LLEGO UNA UBICACION!")
-//			println(body)
-//			
-//			val usuarioParseado = new Gson().fromJson(body, Usuario)
-//			
-//			println(usuarioParseado.lat)
-//			
-//			restHost.updateUbicacion(usuarioParseado)
-//			ok('{"status":200, "message":"ok"}')
-//			
-//		}catch(Exception e){
-//			badRequest('{"status":400, "message":"' + e.message + '"}')
-//		}
-//	}
+	@Post("/ubicacion")
+	def updateUbicacionUsuarioById(@Body String body){
+		try{
+			
+			println("ping ubicacion")
+			println(body)
+			
+			val usuarioParseado = new Gson().fromJson(body, Usuario)
+			
+			println(usuarioParseado.lat)
+			
+			restHost.updateUbicacion(usuarioParseado)
+			ok('{"status":200, "message":"ok"}')
+			
+		}catch(Exception e){
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+	}
 	
 	@Post("/debug/notificacion/:id1")
 	def postDebugNotificacion(@Body String body){

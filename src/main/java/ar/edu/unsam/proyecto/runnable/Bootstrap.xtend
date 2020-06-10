@@ -12,6 +12,8 @@ import ar.edu.unsam.proyecto.repos.RepositorioEquipo
 import ar.edu.unsam.proyecto.repos.RepositorioPartido
 import ar.edu.unsam.proyecto.repos.RepositorioPromocion
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
+import com.google.auth.oauth2.GoogleCredentials
+import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import io.github.cdimascio.dotenv.Dotenv
 import java.time.LocalDate
@@ -19,8 +21,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.Arrays
 import java.util.HashSet
-import com.google.firebase.FirebaseApp
-import com.google.auth.oauth2.GoogleCredentials
+import org.uqbar.geodds.Point
 
 class Bootstrap {
 
@@ -74,8 +75,8 @@ class Bootstrap {
 		posicion = "Defensor"
 		foto = "https://i.imgur.com/tBUGRSa.jpg"
 		email = dotenv.get("EMAIL_ANDY")
-		lat = -34.6016244
-		lon = -58.4420183
+		lat = -34.5724894
+		lon = -58.4766751
 	]
 
 	Usuario jugador1 = new Usuario() => [
@@ -178,6 +179,13 @@ class Bootstrap {
 		owner = andy
 		foto = "https://i.imgur.com/RhqYpUg.jpg"
 		integrantes = new HashSet(Arrays.asList(jugador1, jugador2, jugador3, jugador4, andy))
+	]
+	
+	Equipo equipoCampeon = new Equipo() => [
+		nombre = "Supercampeones"
+		owner = andy
+		foto = "https://i.imgur.com/M9N9o78.jpg"
+		integrantes = new HashSet(Arrays.asList(pepe, juan, sofia, nikoBostero, andy))
 	]
 
 	Equipo equipoIncompleto = new Equipo() => [
@@ -313,75 +321,88 @@ class Bootstrap {
 
 	def runBootstrap() {
 
-//		repoUsuarios.create(sebaCapo)
-//		repoUsuarios.create(nikoBostero)
-//		repoUsuarios.create(andy)
-//		repoUsuarios.create(jugador1)
-//		repoUsuarios.create(jugador2)
-//		repoUsuarios.create(jugador3)
-//		repoUsuarios.create(jugador4)
-//		repoUsuarios.create(pepe)
-//		repoUsuarios.create(sofia)
-//		repoUsuarios.create(agustin)
-//		repoUsuarios.create(juan)
+		repoUsuarios.create(sebaCapo)
+		repoUsuarios.create(nikoBostero)
+		repoUsuarios.create(andy)
+		repoUsuarios.create(jugador1)
+		repoUsuarios.create(jugador2)
+		repoUsuarios.create(jugador3)
+		repoUsuarios.create(jugador4)
+		repoUsuarios.create(pepe)
+		repoUsuarios.create(sofia)
+		repoUsuarios.create(agustin)
+		repoUsuarios.create(juan)
+
+		repoEquipo.create(equipazo)
+		repoEquipo.create(equipoMalo)
+		repoEquipo.create(equipoIncompleto)
+		repoEquipo.create(equipoCampeon)
+
+		repoCancha.create(urquiza1)
+		repoCancha.create(urquiza2)
+		repoCancha.create(vicLop1)
+		repoCancha.create(vicLop2)
+		repoCancha.create(vicLop3)
+		repoCancha.create(argen1)
+		repoCancha.create(argen2)
+
+		repoEmpresa.create(empresaUrquiza)
+		repoEmpresa.create(empresaVicenteLopez)
+		repoEmpresa.create(empresaArgentinos)
+
+		repoPromocion.create(promo1)
+		repoPromocion.create(promo2)
+		repoPromocion.create(promo3)
+
+		repoPartido.crearPartido(partido1)
+		repoPartido.crearPartido(partido2)
+		repoPartido.crearPartido(partido3)
+
+		// TODO: Pensar, no mandes un update innecesario
+		// andy.partidos = new ArrayList(Arrays.asList(partido1, partido2))
+		// sebaCapo.partidos = new ArrayList(Arrays.asList(partido2))
+		// nikoBostero.partidos = new ArrayList(Arrays.asList(partido1))
+		andy.crearAmistad(sebaCapo)
+		andy.crearAmistad(nikoBostero)
+		andy.crearAmistad(jugador1)
+		andy.crearAmistad(jugador2)
+		andy.crearAmistad(jugador3)
+		andy.crearAmistad(jugador4)
+
+		nikoBostero.crearAmistad(sebaCapo)
+		nikoBostero.crearAmistad(jugador1)
+		nikoBostero.crearAmistad(jugador2)
+		nikoBostero.crearAmistad(jugador3)
+
+		sebaCapo.crearAmistad(sebaCapo)
+		sebaCapo.crearAmistad(jugador1)
+		sebaCapo.crearAmistad(jugador2)
+		sebaCapo.crearAmistad(jugador4)
+
+		repoUsuarios.update(sebaCapo)
+		repoUsuarios.update(nikoBostero)
+		repoUsuarios.update(andy)
+		repoUsuarios.update(jugador1)
+		repoUsuarios.update(jugador2)
+		repoUsuarios.update(jugador3)
+		repoUsuarios.update(jugador4)
+
+//val andyGPSPosta = new Point(-34.5724547,-58.4778862)
+//val nicoGPSPosta = new Point(-34.594554,-58.5624362)
 //
-//		repoEquipo.create(equipazo)
-//		repoEquipo.create(equipoMalo)
-//		repoEquipo.create(equipoIncompleto)
+//val andyGPSBase = new Point(-34.5724894, -58.4766751)
+//val nicoGPSBase = new Point(-34.5950132, -58.5629575)
 //
-//		repoCancha.create(urquiza1)
-//		repoCancha.create(urquiza2)
-//		repoCancha.create(vicLop1)
-//		repoCancha.create(vicLop2)
-//		repoCancha.create(vicLop3)
-//		repoCancha.create(argen1)
-//		repoCancha.create(argen2)
-//
-//		repoEmpresa.create(empresaUrquiza)
-//		repoEmpresa.create(empresaVicenteLopez)
-//		repoEmpresa.create(empresaArgentinos)
-//
-//		repoPromocion.create(promo1)
-//		repoPromocion.create(promo2)
-//		repoPromocion.create(promo3)
-//
-//		repoPartido.crearPartido(partido1)
-//		repoPartido.crearPartido(partido2)
-//		repoPartido.crearPartido(partido3)
-//
-//		// TODO: Pensar, no mandes un update innecesario
-//		// andy.partidos = new ArrayList(Arrays.asList(partido1, partido2))
-//		// sebaCapo.partidos = new ArrayList(Arrays.asList(partido2))
-//		// nikoBostero.partidos = new ArrayList(Arrays.asList(partido1))
-//		andy.crearAmistad(sebaCapo)
-//		andy.crearAmistad(nikoBostero)
-//		andy.crearAmistad(jugador1)
-//		andy.crearAmistad(jugador2)
-//		andy.crearAmistad(jugador3)
-//		andy.crearAmistad(jugador4)
-//
-//		nikoBostero.crearAmistad(sebaCapo)
-//		nikoBostero.crearAmistad(jugador1)
-//		nikoBostero.crearAmistad(jugador2)
-//		nikoBostero.crearAmistad(jugador3)
-//
-//		sebaCapo.crearAmistad(sebaCapo)
-//		sebaCapo.crearAmistad(jugador1)
-//		sebaCapo.crearAmistad(jugador2)
-//		sebaCapo.crearAmistad(jugador4)
-//
-//		repoUsuarios.update(sebaCapo)
-//		repoUsuarios.update(nikoBostero)
-//		repoUsuarios.update(andy)
-//		repoUsuarios.update(jugador1)
-//		repoUsuarios.update(jugador2)
-//		repoUsuarios.update(jugador3)
-//		repoUsuarios.update(jugador4)
+//println("DISTANCIA: "+andyGPSPosta.distance(nicoGPSPosta) )
+//println("DISTANCIA2: "+andyGPSBase.distance(nicoGPSBase) )
 
 		val options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.getApplicationDefault()).build()
 
 		FirebaseApp.initializeApp(options)
 
 	}
+
+
+
 
 }

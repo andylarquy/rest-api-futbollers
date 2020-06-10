@@ -66,6 +66,18 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 		
 	}
 	
+	def getEquiposAdministradosPorElUsuario(Usuario usuario){
+		queryTemplate(
+			[criteria, query, from |
+				
+				from.fetch("integrantes", JoinType.LEFT)
+				from.fetch("owner", JoinType.LEFT)
+				query.where(criteria.equal(from.get("owner"), usuario.idUsuario))
+				return query
+			],
+		
+			[query | query.resultList]) as List<Equipo>
+	}
 	
 	def noExisteEquipoConId(String idEquipo) {
 		!coleccion.exists[it.getIdEquipo.equals(idEquipo)]

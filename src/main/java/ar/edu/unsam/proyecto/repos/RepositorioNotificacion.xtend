@@ -1,18 +1,19 @@
 package ar.edu.unsam.proyecto.repos
 
 import ar.edu.unsam.proyecto.domain.Notificacion
+import ar.edu.unsam.proyecto.domain.Usuario
 import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson
 import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson.LocalDateAdapter
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion.NotificacionView
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.Message
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import io.github.cdimascio.dotenv.Dotenv
 import java.time.LocalDateTime
 import java.util.ArrayList
 import java.util.List
+import java.util.Set
 import org.apache.http.client.methods.HttpPost
+import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClients
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.json.JSONObject
@@ -20,10 +21,6 @@ import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPoolConfig
 import redis.clients.jedis.exceptions.JedisConnectionException
-import org.apache.http.entity.StringEntity
-import ar.edu.unsam.proyecto.domain.Usuario
-import java.util.HashSet
-import java.util.Set
 
 @Accessors
 class RepositorioNotificacion {

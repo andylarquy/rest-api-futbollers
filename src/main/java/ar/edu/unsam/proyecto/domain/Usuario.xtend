@@ -38,7 +38,7 @@ class Usuario {
 	String password = ""
 
 	@Column()
-	@JsonView(ViewsUsuario.PerfilView)
+	@JsonView(ViewsUsuario.CredencialesView, ViewsUsuario.PerfilView)
 	String foto
 
 	@Column()
@@ -143,7 +143,6 @@ class Usuario {
 	
 	def estaDentroDelRango(Point ubicacionBuscada, int rango) {
 		val ubicacionUsuario = getUbicacion
-		
 		ubicacionUsuario.distance(ubicacionBuscada) <= rango
 	}
 	

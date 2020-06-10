@@ -84,7 +84,7 @@ class RepositorioPartido extends Repositorio<Partido> {
 		 
 	}
 	
-	def validarFechaCancha(LocalDateTime fecha){
+	def void validarFechaCancha(LocalDateTime fecha){
 		coleccion.forEach[it.validarFechaEstaLibre(fecha)]
 	}
 	

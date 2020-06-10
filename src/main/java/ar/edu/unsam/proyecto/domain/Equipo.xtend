@@ -129,5 +129,17 @@ class Equipo {
 		}
 	}
 	
+	def validarEstaVacio() {
+		integrantes.size > 0 ? throw new Exception("Server Error: El equipo no debe tener integrantes para persistir en la base")
+	}
+	
+	def getEliminarJugadores() {
+		integrantes = new HashSet
+	}
+	
+	def getIntegrantesConocidos(){
+		integrantes.filter[it.esIntegranteConocido]
+	}
+	
 	
 }
