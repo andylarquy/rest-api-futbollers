@@ -78,11 +78,9 @@ class RepositorioNotificacion {
 
 				val listType = new TypeToken<List<Notificacion>>() {
 				}.getType()
-				println(notificacionesJSON)
 
 				val gson = new GsonBuilder().registerTypeAdapter(LocalDateTime, new LocalDateAdapter()).create()
 				val List<Notificacion> notificaciones = gson.fromJson(notificacionesJSON, listType)
-				// notificaciones.mapearVuelosDePasajes
 				return notificaciones
 			}
 
@@ -92,6 +90,7 @@ class RepositorioNotificacion {
 
 	}
 
+	//TODO: Do nothing... por favor, no
 	def agregarNotificacion(Notificacion notificacion) {
 		if (usuarioYaFueInvitadoAlPartido(notificacion) || usuarioAInvitarEsOwner(notificacion)) {
 			// Do nothing
@@ -103,7 +102,6 @@ class RepositorioNotificacion {
 				notis.add(notificacion)
 
 				val notisJson = auxiliar.parsearObjeto(notis, NotificacionView)
-				println(notisJson)
 				jedis.set(notificacion.usuario.idUsuario.toString, notisJson)
 			])
 		}
@@ -123,55 +121,46 @@ class RepositorioNotificacion {
 	}
 
 	def enviarUnaNotificacion(Notificacion notificacion) {
-		
-		//if (usuarioYaFueInvitadoAlPartido(notificacion) || usuarioAInvitarEsOwner(notificacion)) {
-			// Do nothing
-		//} else {
-			
-			if(notificacion.usuario.token !== null){			
-				postNotificacion(notificacion, "to", notificacion.usuario.token)
-			}	
-	//	}
-	
+
+		if (notificacion.usuario.token !== null) {
+			postNotificacion(notificacion, "to", notificacion.usuario.token)
+		}
+
 	}
-	
-	def enviarMultipleNotificacion(Notificacion notificacion, Set<Usuario> usuarios){
-		
+
+	def enviarMultipleNotificacion(Notificacion notificacion, Set<Usuario> usuarios) {
+
 		val List<String> deviceTokens = usuarios.map[repoUsuario.searchById(it.idUsuario).token].toList
 		val List<String> listOfTokens = new ArrayList<String>()
 		deviceTokens.forEach[listOfTokens.add(it)]
-		
+
 		postNotificacion(notificacion, "registration_ids", deviceTokens)
-		
+
 	}
-	
-	//Object destinatario es un String o un JSONArray, IMPORTANTE!!
-	def postNotificacion(Notificacion notificacion, String tipoDestinatario, Object destinatario){
+
+	// Object destinatario es un String o un JSONArray, IMPORTANTE!!
+	def postNotificacion(Notificacion notificacion, String tipoDestinatario, Object destinatario) {
 
 		val httpClient = HttpClients.createDefault()
 		val httpPost = new HttpPost("https://fcm.googleapis.com/fcm/send")
-		
+
 		val jsonNotificacion = new JSONObject()
 		jsonNotificacion.put("title", notificacion.titulo)
 		jsonNotificacion.put("text", notificacion.descripcion);
-		
+
 		val jsonPetition = new JSONObject()
-		
+
 		jsonPetition.put("notification", jsonNotificacion)
 		jsonPetition.put("project_id", PROJECT_ID)
-		
+
 		jsonPetition.put(tipoDestinatario, destinatario)
-		
-		println(jsonPetition.toString)
-		
+
 		val entity = new StringEntity(jsonPetition.toString)
-		
-		
+
 		httpPost.setEntity(entity)
 		httpPost.setHeader("Content-type", "application/json")
-		httpPost.setHeader("Authorization", "key="+SERVER_KEY)
-		
-		
+		httpPost.setHeader("Authorization", "key=" + SERVER_KEY)
+
 		httpClient.execute(httpPost)
 	}
 

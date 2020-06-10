@@ -127,7 +127,7 @@ class RestHost {
 		
 		repoPartido.create(partido)
 		
-		println("SE CREO UN PARTIDO: " + partido.idPartido)
+		println("Se ha creado un partido con id: " + partido.idPartido)
 	}
 
 	def getCanchas() {

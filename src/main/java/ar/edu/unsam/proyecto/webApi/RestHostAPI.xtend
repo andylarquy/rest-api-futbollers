@@ -102,7 +102,6 @@ class RestHostAPI {
 
 		try {
 			var partidoParseado = auxiliar.parsearObjeto(restHost.getPartidosDelUsuario(Long.valueOf(idUsuario)), ViewsPartido.ListView)
-			println(partidoParseado)
 			ok(partidoParseado)
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
@@ -298,12 +297,9 @@ class RestHostAPI {
 	def updateUbicacionUsuarioById(@Body String body){
 		try{
 			
-			println("ping ubicacion")
-			println(body)
-			
 			val usuarioParseado = new Gson().fromJson(body, Usuario)
 			
-			println(usuarioParseado.lat)
+			println("ping ubicacion del usuario: "+usuarioParseado.idUsuario)
 			
 			restHost.updateUbicacion(usuarioParseado)
 			ok('{"status":200, "message":"ok"}')

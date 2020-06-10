@@ -93,15 +93,9 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 	
 	//TODO: Un Try catch quizas no es lo mas adecuado
 	def createIfNotExists(Equipo equipo) {
-		
 		try{
-			println(equipo.idEquipo)
 			repoEquipo.searchById(equipo.idEquipo)	
 		}catch(NoResultException e){
-			
-			println("NO SE ENCONTRO EL EQUIPO CON ID: "+equipo.idEquipo)
-			println(equipo.integrantes.map[idUsuario])
-			println(equipo.owner.idUsuario)
 			repoEquipo.create(equipo)
 		}
 		

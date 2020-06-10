@@ -195,7 +195,6 @@ class Partido {
 		val jugadoresConocidos = new HashSet()
 		jugadoresConocidos.addAll(conocidosEquipo1)
 		jugadoresConocidos.addAll(conocidosEquipo2)
-		println(jugadoresConocidos.map[idUsuario])
 		return jugadoresConocidos
 	}
 
