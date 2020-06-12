@@ -29,7 +29,7 @@ class Usuario {
 	@Id @GeneratedValue
 	Long idUsuario
 
-	@JsonView(ViewsUsuario.DefaultView)
+	@JsonView(ViewsUsuario.DefaultView, ViewsNotificacion.NotificacionView)
 	@Column()
 	String nombre = ""
 	
@@ -38,7 +38,7 @@ class Usuario {
 	String password = ""
 
 	@Column()
-	@JsonView(ViewsUsuario.CredencialesView, ViewsUsuario.PerfilView)
+	@JsonView(ViewsUsuario.CredencialesView, ViewsUsuario.PerfilView, ViewsNotificacion.NotificacionView)
 	String foto
 
 	@Column()
@@ -46,7 +46,7 @@ class Usuario {
 	String sexo
 
 	@Column()
-	@JsonView(ViewsUsuario.PerfilView)
+	@JsonView(ViewsUsuario.PerfilView, ViewsNotificacion.NotificacionView)
 	String posicion
 
 	@Column()
@@ -72,8 +72,8 @@ class Usuario {
 	@ManyToMany
 	Set <Usuario> amigos = new HashSet
 	
-	//@Transient
-	//transient Set<NotificacionCandidato> candidatos = new HashSet()
+	@ManyToMany
+	Set<Notificacion> invitaciones = new HashSet
 	
 	@Transient
 	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
@@ -156,6 +156,10 @@ class Usuario {
 	
 	def getIdDeSusAmigos() {
 		amigos.map[idUsuario]
+	}
+	
+	def agregarNotificacion(Notificacion notificacion) {
+		invitaciones.add(notificacion)
 	}
 	
 }

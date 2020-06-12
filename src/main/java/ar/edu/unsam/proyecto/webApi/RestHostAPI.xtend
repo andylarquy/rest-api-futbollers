@@ -298,6 +298,19 @@ class RestHostAPI {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
+
+	@Get("/notificaciones-candidatos/:idUsuario")
+	def getNotificacionesCandidatosDelUsuarioById(){
+		try{
+			//Si precisas mostrar mas cosas agregales ViewsNotificacion.NotificacionView
+			var notificacionesParseadas = auxiliar.parsearObjeto(restHost.getNotificacionesCandidatosDelUsuario(Long.valueOf(idUsuario)), ViewsNotificacion.NotificacionView)
+			ok(notificacionesParseadas)
+		
+		} catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+	}
+
 	
 	//Post o Put?
 	@Post("/ubicacion")

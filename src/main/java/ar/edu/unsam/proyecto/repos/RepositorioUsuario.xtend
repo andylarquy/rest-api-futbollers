@@ -6,6 +6,8 @@ import javax.persistence.criteria.JoinType
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.commons.model.annotations.Observable
 import java.util.ArrayList
+import java.util.Set
+import ar.edu.unsam.proyecto.domain.Notificacion
 
 @Observable
 @Accessors
@@ -31,7 +33,7 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 		queryTemplate(
 			
 			[criteria, query, from |
-				
+				from.fetch("invitaciones", JoinType.LEFT)
 				return query
 			], 
 			[query | query.resultList]) as List<Usuario>
@@ -44,6 +46,7 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 	def searchById(Long idUsuario) {
 		queryTemplate(
 			[criteria, query, from |
+				from.fetch("invitaciones", JoinType.LEFT)
 				query.where(criteria.equal(from.get("idUsuario"), idUsuario))
 				return query
 			], 
@@ -81,6 +84,7 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 	def getCandidatosDelUsuario(Usuario usuario) {
 		queryTemplate([criteria, query, from |
 			
+			
 			val criteriosWhere = new ArrayList()
 			
 			if (!usuario.amigos.empty) {
@@ -94,6 +98,17 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 
 	}
 	
+	def notificacionesDelUsuario(Long idUsuario) {
+		val usuario = queryTemplate([criteria, query, from |
+				from.fetch("invitaciones", JoinType.LEFT)
+				query.where(criteria.equal(from.get("idUsuario"), idUsuario))
+				return query
+			], 
+			[query | query.singleResult]) as Usuario
+			
+			
+			return usuario.invitaciones
+	}
 	
 
 	//TODO: Hacer en formato de query	

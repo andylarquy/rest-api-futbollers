@@ -128,6 +128,32 @@ class RestHost {
 		repoPartido.create(partido)
 		
 		println("Se ha creado un partido con id: " + partido.idPartido)
+		
+		destinatariosConocidos.forEach[ destinatario |
+			val invitacion = new Notificacion()
+			invitacion.partido = partido
+			invitacion.usuario = partido.equipo1.owner
+			invitacion.titulo = "¡ "+partido.equipo1.owner.nombre+" te invito a un partido!"
+		invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
+			invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
+			invitacion.usuarioReceptor = destinatario
+			
+			repoNotificacion.agregarNotificacionAUsuario(invitacion, destinatario)
+			
+		]
+		
+		destinatariosDesconocidos.forEach[ destinatario |
+			val invitacion = new Notificacion()
+			invitacion.partido = partido
+			invitacion.usuario = partido.equipo1.owner
+			invitacion.titulo = "¡Has recibido una invitacion para un partido!"
+		invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
+			invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
+			invitacion.usuarioReceptor = destinatario
+			
+			repoNotificacion.agregarNotificacionAUsuario(invitacion, destinatario)
+		]
+		
 	}
 
 	def getCanchas() {
@@ -163,7 +189,7 @@ class RestHost {
 	}
 
 	def getNotificacionesDelUsuario(Long idUsuario) {
-		repoNotificacion.notificacionesDelUsuario(idUsuario)
+		repoUsuario.notificacionesDelUsuario(idUsuario)
 	}
 
 	def confirmarPartidoDeId(Long idPartido) {
@@ -211,6 +237,10 @@ class RestHost {
 	
 	def getCandidatosDelUsuario(Long idUsuario) {
 		repoUsuario.getCandidatosDelUsuario(repoUsuario.searchByIdConAmigos(idUsuario))
+	}
+	
+	def getNotificacionesCandidatosDelUsuario(Long idUsuario) {
+		repoNotificacion.getNotificacionesCandidatosByIdUsuario(idUsuario)
 	}
 	
 
