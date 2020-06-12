@@ -5,6 +5,7 @@ import java.util.List
 import javax.persistence.criteria.JoinType
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.commons.model.annotations.Observable
+import java.util.ArrayList
 
 @Observable
 @Accessors
@@ -77,6 +78,22 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 		usuario.amigos
 	}
 	
+	def getCandidatosDelUsuario(Usuario usuario) {
+		queryTemplate([criteria, query, from |
+			
+			val criteriosWhere = new ArrayList()
+			
+			if (!usuario.amigos.empty) {
+				criteriosWhere.add(criteria.not(from.get("idUsuario").in(usuario.idDeSusAmigos.toSet)))
+			}
+
+			criteriosWhere.add(criteria.notEqual(from.get("idUsuario"), usuario.idUsuario))
+			
+			query.where(criteriosWhere)
+		], [query | query.resultList.toSet])
+
+	}
+	
 	
 
 	//TODO: Hacer en formato de query	
@@ -92,6 +109,16 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 		
 		return filtroPorRango
 		
+	}
+	
+	def searchByIdConAmigos(Long idUsuario) {
+		queryTemplate(
+			[criteria, query, from |
+				from.fetch("amigos", JoinType.LEFT)
+				query.where(criteria.equal(from.get("idUsuario"), idUsuario))
+				return query
+			], 
+			[query | query.singleResult]) as Usuario
 	}
 	
 }

@@ -209,6 +209,10 @@ class RestHost {
 
 	}
 	
+	def getCandidatosDelUsuario(Long idUsuario) {
+		repoUsuario.getCandidatosDelUsuario(repoUsuario.searchByIdConAmigos(idUsuario))
+	}
+	
 
 
 }

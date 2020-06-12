@@ -154,4 +154,8 @@ class Usuario {
 		sexo.equals(sexo)
 	}
 	
+	def getIdDeSusAmigos() {
+		amigos.map[idUsuario]
+	}
+	
 }

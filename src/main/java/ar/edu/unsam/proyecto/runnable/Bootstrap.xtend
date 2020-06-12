@@ -354,17 +354,15 @@ class Bootstrap {
 		repoPartido.crearPartido(partido2)
 		repoPartido.crearPartido(partido3)
 
-		// TODO: Pensar, no mandes un update innecesario
+		// TODO: Pensar si podes evitar mandar un update
 		andy.crearAmistad(sebaCapo)
 		andy.crearAmistad(nikoBostero)
 		andy.crearAmistad(jugador1)
 		andy.crearAmistad(jugador2)
-		andy.crearAmistad(jugador3)
 		andy.crearAmistad(jugador4)
 		andy.crearAmistad(pepe)
 		andy.crearAmistad(sofia)
-		andy.crearAmistad(juan)
-		andy.crearAmistad(agustin)
+
 
 		nikoBostero.crearAmistad(sebaCapo)
 		nikoBostero.crearAmistad(jugador1)

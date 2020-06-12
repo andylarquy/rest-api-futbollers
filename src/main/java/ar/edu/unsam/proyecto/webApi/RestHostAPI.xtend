@@ -316,6 +316,17 @@ class RestHostAPI {
 		}
 	}
 	
+	@Get("/candidatos/:idUsuario")
+	def getCandidatosByIdUsuario(){
+		
+		try{
+			val candidatosParseados= auxiliar.parsearObjeto(restHost.getCandidatosDelUsuario(Long.valueOf(idUsuario)), ViewsUsuario.PerfilView)
+			ok(candidatosParseados)
+		} catch(Exception e){
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+	}
+	
 	@Post("/debug/notificacion/:id1")
 	def postDebugNotificacion(@Body String body){
 		try{
