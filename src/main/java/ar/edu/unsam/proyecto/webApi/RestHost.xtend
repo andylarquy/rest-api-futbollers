@@ -62,7 +62,7 @@ class RestHost {
 
 	def getPartidosDelUsuario(Long idUsuario) {
 		val usuarioPosta = repoUsuario.searchById(idUsuario)
-		repoPartido.getPartidosDelUsuario(usuarioPosta)
+		repoNotificacion.getPartidosDelUsuario(usuarioPosta)
 	}
 
 	def getEquiposDelUsuario(Long idUsuario) {
@@ -104,7 +104,8 @@ class RestHost {
 
 		partido.jugadoresDesconocidos.forEach [ jugador |
 			if (!usuarioEstaSiendoNotificado(destinatariosConocidos, jugador) &&
-				!usuarioEstaSiendoNotificado(destinatariosDesconocidos, jugador)) {
+				!usuarioEstaSiendoNotificado(destinatariosDesconocidos, jugador)&& 
+				!destinatariosConocidos.contains(jugador)){
 
 				destinatariosDesconocidos.add(jugador)
 			}

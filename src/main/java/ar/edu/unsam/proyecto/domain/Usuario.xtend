@@ -184,4 +184,8 @@ class Usuario {
 		
 	}
 	
+	def esUnJugadorReservado() {
+		return nombre.equals("RESERVA JUGADOR")
+	}
+	
 }

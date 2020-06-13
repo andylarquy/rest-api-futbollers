@@ -123,12 +123,13 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 			
 			return usuario.invitaciones
 	}
-	
+
 
 	//TODO: Hacer en formato de query	
 	def getUsuariosEnElRangoDe(Usuario usuarioBuscado, int rangoDeBusqueda, String sexoBuscado, String posicionBuscada) {
 		
 		val filtroPorRango = coleccion.filter[usuario | 
+			!usuario.esUnJugadorReservado &&
 			usuario.estaDentroDelRango(usuarioBuscado.getUbicacion, rangoDeBusqueda)
 		]
 		

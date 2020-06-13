@@ -13,6 +13,7 @@ import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClients
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.json.JSONObject
+import ar.edu.unsam.proyecto.domain.Partido
 
 @Accessors
 class RepositorioNotificacion extends Repositorio<Notificacion> {
@@ -53,6 +54,21 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 	def aceptarInvitacion(Notificacion notificacion){
 		notificacion.aceptado = true
 		this.update(notificacion)
+	}
+
+		// TODO: Revisar si esta query hace las cosas bien
+		def getPartidosDelUsuario(Usuario usuario){
+			
+		val notificaciones = queryTemplate(
+			[criteria, query, from |
+				
+				query.where(criteria.equal(from.get("aceptado"), true))
+				return query
+			],
+		
+		[query | query.resultList]) as List<Notificacion>
+		
+		return notificaciones.map[partido]
 	}
 
 	def getInvitacionesDelUsuario(Long idUsuario){

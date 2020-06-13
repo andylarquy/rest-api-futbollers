@@ -63,10 +63,8 @@ class RestHostAPI {
 			ok(usuarioParseado)
 		} catch (IncorrectCredentials e) {
 			forbidden('{"status":401, "message":"' + e.message + '"}')
-			throw e
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 	}
 
@@ -94,7 +92,6 @@ class RestHostAPI {
 			ok(amigosDelUsuarioParseados)
 		}catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 		
 	}
@@ -107,10 +104,8 @@ class RestHostAPI {
 			ok(partidoParseado)
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
-			throw e
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 	}
 
@@ -135,7 +130,6 @@ class RestHostAPI {
 			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 	}
 
@@ -334,7 +328,6 @@ class RestHostAPI {
 	
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 			
 	}
@@ -382,7 +375,6 @@ class RestHostAPI {
 			
 		}catch(Exception e){
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 	}
 	
@@ -403,7 +395,6 @@ class RestHostAPI {
 			
 		}catch(Exception e){
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 	}
 
