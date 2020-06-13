@@ -70,4 +70,12 @@ class Notificacion{
 		repoPartido.update(partido)
 	}
 	
+	def receptorFueAdmitido() {
+		partido.participaUsuario(usuarioReceptor)
+	}
+	
+	def esOwnerDelPartido(Usuario usuario) {
+		partido.equipo1.esOwner(usuario)
+	}
+	
 }

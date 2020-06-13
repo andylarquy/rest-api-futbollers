@@ -36,6 +36,8 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 	transient val PROJECT_ID = dotenv.get("PROJECT_ID")
 	transient val SERVER_KEY = dotenv.get("SERVER_KEY")
 	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
+	transient RepositorioPartido repoPartido = RepositorioPartido.instance
+	transient RepositorioEquipo repoEquipo = RepositorioEquipo.instance
 
 	override entityId(Notificacion notificacion){
 		notificacion.idNotificacion
@@ -57,18 +59,37 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 	}
 
 		// TODO: Revisar si esta query hace las cosas bien
-		def getPartidosDelUsuario(Usuario usuario){
-			
-		val notificaciones = queryTemplate(
+		def getPartidosDelUsuario(Usuario usuario){	
+		var notificaciones = queryTemplate(
 			[criteria, query, from |
 				
 				query.where(criteria.equal(from.get("aceptado"), true))
+
 				return query
 			],
 		
 		[query | query.resultList]) as List<Notificacion>
 		
-		return notificaciones.map[partido]
+		notificaciones.forEach[noti | 
+			noti.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(noti.partido.equipo1.idEquipo)
+			noti.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(noti.partido.equipo2.idEquipo)
+		]
+		
+		notificaciones = notificaciones.filter[noti | noti.receptorFueAdmitido()].toList
+		
+		val partidosDelUsuario = new ArrayList
+		partidosDelUsuario.addAll(notificaciones.map[partido])
+	
+		repoPartido.coleccion.forEach[ partido |
+			
+			if(partido.equipo1.esOwner(usuario) && !partidosDelUsuario.exists[it.idPartido == partido.idPartido]){
+				partidosDelUsuario.add(partido)
+			}
+		]
+		
+		
+		return partidosDelUsuario
+		
 	}
 
 	def getInvitacionesDelUsuario(Long idUsuario){
@@ -84,7 +105,7 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 	}
 
 	def getNotificacionesCandidatosByIdUsuario(Long idUsuario) {
-		queryTemplate([ criteria, query, from |
+		val notificaciones = queryTemplate([ criteria, query, from |
 
 			val criterio1 = criteria.equal(from.get("usuario"), idUsuario)
 			val criterio2 = criteria.equal(from.get("aceptado"), true)
@@ -93,6 +114,19 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 
 			return query
 		], [query|query.resultList]) as List<Notificacion>
+		
+		notificaciones.forEach[noti | 
+			noti.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(noti.partido.equipo1.idEquipo)
+			noti.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(noti.partido.equipo2.idEquipo)
+		]
+		
+		notificaciones.forEach[ noti|
+			noti.usuarioReceptor = repoUsuario.searchByIdConAmigos(noti.usuarioReceptor.idUsuario)
+		]
+		
+		return notificaciones.filter[notificacion | !notificacion.usuarioReceptor.esAmigoDe(notificacion.partido.equipo1.owner) && !notificacion.receptorFueAdmitido].toList
+
+		
 	}
 
 	def agregarNotificacionAUsuario(Notificacion notificacion, Usuario usuario) {

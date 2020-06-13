@@ -104,8 +104,10 @@ class RestHostAPI {
 			ok(partidoParseado)
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
+			throw e
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
 		}
 	}
 
@@ -330,6 +332,18 @@ class RestHostAPI {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 			
+	}
+	
+	@Post("/candidato-aceptar/:idNotificacion")
+	def aceptarCandidatoById(){
+		try{
+			
+			restHost.aceptarCandidato(Long.valueOf(idNotificacion))
+			
+			ok('{"status":200, "message":"ok"}')
+		}catch(Exception e){
+			badRequest('{"status":400, "message":"'+e.message+'"}')
+		}
 	}
 
 	

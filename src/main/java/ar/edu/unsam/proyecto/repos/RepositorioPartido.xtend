@@ -6,6 +6,7 @@ import java.util.List
 import javax.persistence.criteria.JoinType
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.commons.model.annotations.Observable
+import ar.edu.unsam.proyecto.domain.Usuario
 
 @Observable
 @Accessors
@@ -76,6 +77,10 @@ class RepositorioPartido extends Repositorio<Partido> {
 			this.asignarIdPartido(partido)
 			this.create(partido)
 		}
+	}
+	
+	def partidosOwnereadosDelUsuario(Usuario usuario) {
+		coleccion.filter[partido | partido.equipo1.esOwner(usuario)].toList
 	}
 	
 }

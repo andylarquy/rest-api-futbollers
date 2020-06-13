@@ -188,4 +188,8 @@ class Usuario {
 		return nombre.equals("RESERVA JUGADOR")
 	}
 	
+	def esAmigoDe(Usuario usuarioBuscado) {
+		amigos.exists[usuarioBuscado.idUsuario == idUsuario]
+	}
+	
 }

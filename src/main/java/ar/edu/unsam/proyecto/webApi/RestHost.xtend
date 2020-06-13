@@ -255,12 +255,20 @@ class RestHost {
 		notificacionPosta.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(notificacionPosta.partido.equipo1.idEquipo)
 		notificacionPosta.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(notificacionPosta.partido.equipo2.idEquipo)
 		
-		notificacionPosta.agregarIntegranteAlPartido()
-		
 		repoNotificacion.aceptarInvitacion(notificacionPosta)
 		//TODO: Enviar notificacion con firebase
 		
 		
+	}
+	
+	def aceptarCandidato(Long idNotificacion) {
+		val notificacionPosta = repoNotificacion.searchById(idNotificacion)
+		
+		notificacionPosta.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(notificacionPosta.partido.equipo1.idEquipo)
+		notificacionPosta.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(notificacionPosta.partido.equipo2.idEquipo)
+		
+		notificacionPosta.agregarIntegranteAlPartido()
+		//TODO: Quizas enviar notificaion con firebase
 	}
 	
 
