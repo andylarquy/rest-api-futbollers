@@ -44,6 +44,21 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 			[query | query.singleResult]) as Equipo
 		
 	}
+	
+	def searchByIdConIntegrantes(Long equipoId) {
+		
+		queryTemplate(
+			[criteria, query, from |
+				
+				from.fetch("integrantes")
+				
+				query.where(criteria.equal(from.get("idEquipo"), equipoId))
+				return query
+			],
+		
+			[query | query.singleResult]) as Equipo
+		
+	}
 
 	def getEquiposDelUsuario(Usuario usuario) {
 		queryTemplate(
@@ -89,6 +104,10 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 	
 	override entityType() {
 		Equipo
+	}
+	
+	override entityId(Equipo equipo){
+		equipo.idEquipo
 	}
 	
 	//TODO: Un Try catch quizas no es lo mas adecuado

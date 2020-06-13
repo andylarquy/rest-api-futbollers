@@ -1,5 +1,6 @@
 package ar.edu.unsam.proyecto.domain
 
+import ar.edu.unsam.proyecto.repos.RepositorioPartido
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
@@ -9,6 +10,7 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.OneToOne
+import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
@@ -45,6 +47,9 @@ class Notificacion{
 	Boolean aceptado = false
 	//DEBUG: Hardcodear despues a false
 	
+	@Transient
+	transient RepositorioPartido repoPartido = RepositorioPartido.instance
+	
 	//TODO: Discutir si esto aca siquiera tiene sentido
 	//@JsonView() @JsonIgnore Equipo equipo
 	
@@ -58,6 +63,11 @@ class Notificacion{
 	
 	def partidoTieneId(Long idPartido) {
 		partido.idPartido == idPartido
+	}
+	
+	def agregarIntegranteAlPartido() {
+		partido.agregarIntegrante(usuarioReceptor)
+		repoPartido.update(partido)
 	}
 	
 }

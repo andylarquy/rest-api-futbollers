@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.annotation.JsonView
 import java.util.HashSet
 import java.util.Set
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -69,10 +70,10 @@ class Usuario {
 	Double lon
 	
 	@JoinTable(name="Amistades")
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.REMOVE)
 	Set <Usuario> amigos = new HashSet
 	
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.REMOVE)
 	Set<Notificacion> invitaciones = new HashSet
 	
 	@Transient
@@ -150,8 +151,8 @@ class Usuario {
 		new Point(lat, lon)
 	}
 	
-	def tieneSexo(String sexo) {
-		sexo.equals(sexo)
+	def tieneSexo(String sexo_) {
+		sexo.equals(sexo_)
 	}
 	
 	def getIdDeSusAmigos() {
@@ -160,6 +161,27 @@ class Usuario {
 	
 	def agregarNotificacion(Notificacion notificacion) {
 		invitaciones.add(notificacion)
+	}
+	
+	def esJugadorReservado(){
+		nombre.equals("RESERVA JUGADOR")
+	}
+	
+	def jugadorReservadoAdmite(Usuario usuario) {
+		
+		var admite = false
+		
+		if(!nombre.equals("Mixto") && sexo.equals(usuario.sexo)){
+			admite = true
+		}
+		
+		//TODO: Aceptar cualquier posicion
+		if(posicion?.equals(usuario.posicion)){
+			admite = true
+		}
+		
+		return admite
+		
 	}
 	
 }

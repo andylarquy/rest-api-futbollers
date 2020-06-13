@@ -31,6 +31,10 @@ class RepositorioPartido extends Repositorio<Partido> {
 		partido.idPartido = idAutoincremental
 		idAutoincremental++
 	}
+	
+	override entityId(Partido partido){
+		partido.idPartido
+	}
 
 	private new() {}
 	

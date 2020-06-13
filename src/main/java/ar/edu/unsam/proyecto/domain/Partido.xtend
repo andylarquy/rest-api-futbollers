@@ -145,8 +145,8 @@ class Partido {
 	}
 	
 	def validarPersistir() {
-		equipo1.validarEstaVacio
-		equipo2.validarEstaVacio
+		//equipo1.validarEstaVacio
+		//equipo2.validarEstaVacio
 		empresa.validar
 		canchaReservada.validar
 		repoPartido.validarFechaCancha(fechaDeReserva)
@@ -209,7 +209,10 @@ class Partido {
 	}
 
 	def prepararParaPersistir() {
-		eliminarJugadores()
+		
+		eliminarJugadoresConocidos()
+		println(equipo2.integrantes.map[sexo])
+		mapearJugadoresTemporales()
 		asignarNombreEquipos()
 		asignarIdEquiposTemporales()
 		mapearEquipo(equipo1)
@@ -217,9 +220,14 @@ class Partido {
 		mapearCancha()
 	}
 	
-	def eliminarJugadores() {
-		equipo1.eliminarJugadores
-		equipo2.eliminarJugadores
+	def mapearJugadoresTemporales() {
+		equipo1.mapearJugadoresTemporales
+		equipo2.mapearJugadoresTemporales
+	}
+	
+	def eliminarJugadoresConocidos(){
+		equipo1.eliminarJugadoresConocidos
+		equipo2.eliminarJugadoresConocidos
 	}
 
 	def asignarNombreEquipos() {
@@ -306,6 +314,17 @@ class Partido {
 		invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
 			invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
 		repoNotificacion.enviarMultipleNotificacion(invitacion, destinatarios)
+	}
+	
+	def agregarIntegrante(Usuario usuario) {
+		
+		if(equipo1.tienePuestoLibrePara(usuario)){
+			equipo1.agregarIntegranteAPuesto(usuario)
+		}else if (equipo2.tienePuestoLibrePara(usuario)){
+			equipo2.agregarIntegranteAPuesto(usuario)
+		}else{
+			throw new Exception('No hay hueco en el partido para este jugador')
+		}
 	}
 	
 }

@@ -23,8 +23,24 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 	def reset() {
 		repoUsuario = null
 	}
+	
+	int idAutoDecremental = -2
+	
+	def crearUsuarioTemporal(Usuario usuario){
+		//asignarIdTemporal(usuario)
+		create(usuario)
+	}
+	
+	def asignarIdTemporal(Usuario usuario){
+		usuario.idUsuario = Long.valueOf(idAutoDecremental)
+		idAutoDecremental--
+	}
 
 	private new() {}
+	
+	override entityId(Usuario usuario){
+		usuario.idUsuario
+	}
 	
 	def coleccion(){
 		
@@ -117,8 +133,11 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 		]
 		
 		if(!sexoBuscado.equals("Mixto")){
-			return filtroPorRango.filter[usuario | usuario.tieneSexo(sexoBuscado)]
+			val a = filtroPorRango.filter[usuario | usuario.tieneSexo(sexoBuscado)]
+			return a
 		}
+		
+		
 		
 		return filtroPorRango
 		

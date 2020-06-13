@@ -141,4 +141,48 @@ class Equipo {
 		integrantes.filter[it.esIntegranteConocido]
 	}
 	
+	def mapearJugadoresTemporales() {
+		
+		val integrantesMapeados = new HashSet
+		
+		integrantes.forEach[jugador | 
+			if(jugador.idUsuario < 0){
+				
+				val nuevoUsuario = new Usuario()
+				nuevoUsuario.nombre = "RESERVA JUGADOR"
+				nuevoUsuario.posicion = jugador.posicion
+				nuevoUsuario.sexo = jugador.sexo
+				
+				repoUsuario.create(nuevoUsuario)
+				integrantesMapeados.add(nuevoUsuario)
+			}
+		]
+		
+		this.eliminarIntegrantesDesconocidos
+		integrantes.addAll(integrantesMapeados)
+	}
+	
+	def eliminarJugadoresConocidos() {
+		integrantes.removeIf[esIntegranteConocido]
+	}
+	
+	def eliminarIntegrantesDesconocidos(){
+		integrantes.removeIf[!esIntegranteConocido]
+	}
+	
+	def tienePuestoLibrePara(Usuario usuario){
+		integrantes.exists[ jugador |
+			jugador.esJugadorReservado() && jugador.jugadorReservadoAdmite(usuario)
+		]
+	}
+	
+	def agregarIntegranteAPuesto(Usuario usuario) {
+		val jugadorReservado = integrantes.findFirst[jugador | jugador.jugadorReservadoAdmite(usuario)]
+		integrantes.remove(jugadorReservado)
+		integrantes.add(usuario)
+		repoEquipo.update(this)
+		repoUsuario.delete(jugadorReservado)
+	}
+
+	
 }

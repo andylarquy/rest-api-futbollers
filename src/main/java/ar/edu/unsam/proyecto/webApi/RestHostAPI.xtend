@@ -324,7 +324,7 @@ class RestHostAPI {
 		}
 	}
 	
-	@Put("/invitaciones-aceptar/:idNotificacion")
+	@Post("/invitaciones-aceptar/:idNotificacion")
 	def aceptarInvitacionById(){
 		try{
 			
@@ -334,6 +334,7 @@ class RestHostAPI {
 	
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
 		}
 			
 	}

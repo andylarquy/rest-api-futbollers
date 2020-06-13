@@ -18,6 +18,10 @@ class RepositorioEmpresa extends Repositorio<Empresa> {
 		repoEmpresa
 	}
 
+	override entityId(Empresa empresa){
+		empresa.idEmpresa
+	}
+
 	def reset() {
 		repoEmpresa = null
 	}

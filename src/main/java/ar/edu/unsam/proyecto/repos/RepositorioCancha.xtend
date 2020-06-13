@@ -18,6 +18,9 @@ class RepositorioCancha extends Repositorio<Cancha> {
 		repoCancha = null
 	}
 
+	override entityId(Cancha cancha){
+		cancha.idCancha
+	}
 	private new() {}
 
 	def coleccion() {

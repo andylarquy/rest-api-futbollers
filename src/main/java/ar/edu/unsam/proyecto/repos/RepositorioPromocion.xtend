@@ -19,6 +19,10 @@ class RepositorioPromocion extends Repositorio<Promocion> {
 	}
 
 	private new() {}
+	
+	override entityId(Promocion promocion){
+		promocion.idPromocion
+	}
 
 	def coleccion(){
 		

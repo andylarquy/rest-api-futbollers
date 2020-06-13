@@ -7,6 +7,7 @@ import io.github.cdimascio.dotenv.Dotenv
 import java.util.ArrayList
 import java.util.List
 import java.util.Set
+import javax.persistence.criteria.JoinType
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClients
@@ -35,6 +36,10 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 	transient val SERVER_KEY = dotenv.get("SERVER_KEY")
 	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
 
+	override entityId(Notificacion notificacion){
+		notificacion.idNotificacion
+	}
+
 	def searchById(Long idNotificacion) {
 		queryTemplate([ criteria, query, from |
 			
@@ -43,6 +48,7 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 		],
 		[query|query.singleResult]) as Notificacion
 	}
+
 	
 	def aceptarInvitacion(Notificacion notificacion){
 		notificacion.aceptado = true
@@ -140,5 +146,7 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 	override entityType() {
 		Notificacion
 	}
+	
+	
 
 }

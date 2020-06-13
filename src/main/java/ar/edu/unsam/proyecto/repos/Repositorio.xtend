@@ -39,6 +39,7 @@ abstract class Repositorio<T> {
 	}
 
 	def Class<T> entityType()
+	def Long entityId(T t)
 
 	def create(T t) {
 		val entityManager = this.entityManager
@@ -68,6 +69,23 @@ abstract class Repositorio<T> {
 				merge(t)
 				transaction.commit
 			]
+		} catch (PersistenceException e) {
+			e.printStackTrace
+			entityManager.transaction.rollback
+			throw new RuntimeException("Ocurrió un error, la operación no puede completarse", e)
+		} finally {
+			entityManager?.close
+		}
+	}
+	
+	def delete(T t){
+		val entityManager = this.entityManager
+		try {
+			entityManager.transaction.begin
+			val entity = entityManager.find(entityType, entityId(t))
+			entityManager.remove(entity)
+			entityManager.transaction.commit
+			
 		} catch (PersistenceException e) {
 			e.printStackTrace
 			entityManager.transaction.rollback
