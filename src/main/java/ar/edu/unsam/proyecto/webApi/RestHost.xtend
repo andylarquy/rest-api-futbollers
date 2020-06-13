@@ -243,6 +243,18 @@ class RestHost {
 		repoNotificacion.getNotificacionesCandidatosByIdUsuario(idUsuario)
 	}
 	
+	def getInvitacionesDelUsuario(Long idUsuario) {
+		repoNotificacion.getInvitacionesDelUsuario(idUsuario)
+	}
+	
+	def aceptarInvitacion(Long idNotificacion) {
+	
+		val notificacionPosta = repoNotificacion.searchById(idNotificacion)
+		
+		repoNotificacion.aceptarInvitacion(notificacionPosta)
+		//TODO: Enviar notificacion con firebase
+	}
+	
 
 
 }

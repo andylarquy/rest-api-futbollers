@@ -42,7 +42,7 @@ class Notificacion{
 	Usuario usuarioReceptor
 	
 	@Column
-	Boolean aceptado = true
+	Boolean aceptado = false
 	//DEBUG: Hardcodear despues a false
 	
 	//TODO: Discutir si esto aca siquiera tiene sentido

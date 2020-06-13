@@ -28,6 +28,7 @@ import org.uqbar.xtrest.api.annotation.Post
 import org.uqbar.xtrest.json.JSONUtils
 import com.google.gson.reflect.TypeToken
 import ar.edu.unsam.proyecto.exceptions.InsufficientCandidates
+import org.uqbar.xtrest.api.annotation.Put
 
 @Controller
 class RestHostAPI {
@@ -309,6 +310,32 @@ class RestHostAPI {
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
+	}
+	
+	@Get("/notificaciones-invitaciones/:idUsuario")
+	def getInvitacionesDelUsuarioById(){
+		try{
+			
+			var notificacionesParseadas = auxiliar.parsearObjeto(restHost.getInvitacionesDelUsuario(Long.valueOf(idUsuario)), ViewsNotificacion.NotificacionView)
+			ok(notificacionesParseadas)
+		
+		} catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+	}
+	
+	@Put("/invitaciones-aceptar/:idNotificacion")
+	def aceptarInvitacionById(){
+		try{
+			
+			restHost.aceptarInvitacion(Long.valueOf(idNotificacion))
+			
+			ok('{"status":200, "message":"ok"}')
+	
+		} catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+			
 	}
 
 	

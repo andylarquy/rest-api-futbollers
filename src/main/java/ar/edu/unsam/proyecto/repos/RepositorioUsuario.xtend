@@ -1,13 +1,11 @@
 package ar.edu.unsam.proyecto.repos
 
 import ar.edu.unsam.proyecto.domain.Usuario
+import java.util.ArrayList
 import java.util.List
 import javax.persistence.criteria.JoinType
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.commons.model.annotations.Observable
-import java.util.ArrayList
-import java.util.Set
-import ar.edu.unsam.proyecto.domain.Notificacion
 
 @Observable
 @Accessors

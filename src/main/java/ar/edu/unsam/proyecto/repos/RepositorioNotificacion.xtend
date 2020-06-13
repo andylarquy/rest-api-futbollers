@@ -35,13 +35,42 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 	transient val SERVER_KEY = dotenv.get("SERVER_KEY")
 	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
 
+	def searchById(Long idNotificacion) {
+		queryTemplate([ criteria, query, from |
+			
+			query.where(criteria.equal(from.get("idNotificacion"), idNotificacion))
+			
+		],
+		[query|query.singleResult]) as Notificacion
+	}
+	
+	def aceptarInvitacion(Notificacion notificacion){
+		notificacion.aceptado = true
+		this.update(notificacion)
+	}
+
+	def getInvitacionesDelUsuario(Long idUsuario){
+		queryTemplate([ criteria, query, from |
+
+			val criterio1 = criteria.equal(from.get("usuarioReceptor"), idUsuario)
+			val criterio2 = criteria.equal(from.get("aceptado"), false)
+			
+			query.where(criteria.and(criterio1, criterio2))
+			
+			return query
+		], [query|query.resultList]) as List<Notificacion>
+	}
+
 	def getNotificacionesCandidatosByIdUsuario(Long idUsuario) {
 		queryTemplate([ criteria, query, from |
 
-			query.where(criteria.equal(from.get("usuario"), idUsuario))
-			query.where(criteria.equal(from.get("aceptado"), true))
+			val criterio1 = criteria.equal(from.get("usuario"), idUsuario)
+			val criterio2 = criteria.equal(from.get("aceptado"), true)
+
+			query.where(criteria.and(criterio1, criterio2))
+
 			return query
-		], [query|query.resultList])
+		], [query|query.resultList]) as List<Notificacion>
 	}
 
 	def agregarNotificacionAUsuario(Notificacion notificacion, Usuario usuario) {
