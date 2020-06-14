@@ -94,6 +94,19 @@ class RestHostAPI {
 		}
 		
 	}
+	
+	@Post("/usuario/:idUsuario/amigo/:idAmigo")
+	def agregarAmigoAUsuario(){
+		
+		try{
+			restHost.agregarAmigoAUsuario(Long.valueOf(idUsuario), Long.valueOf(idAmigo))
+			
+			ok('{"status": 200}')
+		}catch(Exception e){
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+		
+	}
 
 	@Get("/partidos/:idUsuario")
 	def getPartidosByIdDelUsuario() {
@@ -341,7 +354,6 @@ class RestHostAPI {
 	}
 
 	
-	//Post o Put?
 	@Post("/ubicacion")
 	def updateUbicacionUsuarioById(@Body String body){
 		try{

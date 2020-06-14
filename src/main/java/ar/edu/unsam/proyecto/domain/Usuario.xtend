@@ -13,7 +13,6 @@ import java.util.Set
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
-import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
@@ -58,11 +57,6 @@ class Usuario {
 	@JsonView(ViewsUsuario.CredencialesView)
 	String token
 	
-	
-
-	// Como la longitud y la latitud seran escribidas habitualmente y son datos mas bien volatiles
-	// Tomamos la decision de NO persistirlos en la base
-	//TODO: Hacer eso y que no se rompa POST partido
 	@JsonView(ViewsUsuario.UbicacionView)
 	Double lat
 

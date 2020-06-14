@@ -13,6 +13,7 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.OneToMany
+import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.geodds.Point
 
@@ -26,36 +27,36 @@ class Empresa {
 	@Id @GeneratedValue
 	Long idEmpresa
 	
-	@Column()
+	@Column
 	@JsonView(ViewsEmpresa.DefaultView, ViewsEquipo.ListView, ViewsPartido.ListView) 
 	String nombre
 
 	//Revisar si tienen q estar
-	@Column()
+	@Column
 	@JsonView(ViewsEmpresa.DetallesView) 
 	Double lat
 	
-	@Column()
+	@Column
 	@JsonView(ViewsEmpresa.DetallesView) 
 	Double lon
 	
-	@Column()
+	@Column
 	@JsonView(ViewsEmpresa.DetallesView)
 	String nombreDuenio
 	
-	@Column() 
+	@Column
 	@JsonView(ViewsEmpresa.ListView, ViewsEmpresa.DetallesView) 
 	String email
 	
-//	@Column()
+	@Transient
 	@JsonView(ViewsEmpresa.DetallesView) 
 	transient Point lugar
 	
-	@Column()
+	@Column
 	@JsonView(ViewsEmpresa.ListView, ViewsEquipo.ListView, ViewsEmpresa.DefaultView, ViewsPartido.ListView, ViewsNotificacion.NotificacionView) 
 	String direccion
 	
-	@Column()
+	@Column
 	@JsonView(ViewsEmpresa.ListView, ViewsEmpresa.DefaultView, ViewsEquipo.ListView, ViewsPartido.ListView, ViewsNotificacion.NotificacionView) 
 	String foto
 	

@@ -272,6 +272,25 @@ class RestHost {
 		//TODO: Quizas enviar notificaion con firebase
 	}
 	
+	def agregarAmigoAUsuario(Long idUsuario, Long idAmigo){
+		
+		val usuarioPosta = repoUsuario.searchByIdConAmigos(idUsuario)
+		val amigoPosta = repoUsuario.searchByIdConAmigos(idAmigo)
+		usuarioPosta.crearAmistad(amigoPosta)
+		
+		repoUsuario.update(usuarioPosta)
+		repoUsuario.update(amigoPosta)
+		
+		val notiDeAmistad = new Notificacion
+		notiDeAmistad.titulo = "¡"+usuarioPosta.nombre+" y tu ahora son amigos!"
+		notiDeAmistad.descripcion = "Si no querias jodete!"
+		notiDeAmistad.usuario = amigoPosta
+		repoNotificacion.enviarUnaNotificacion(notiDeAmistad)
+		
+		
+		
+	}
+	
 
 
 }

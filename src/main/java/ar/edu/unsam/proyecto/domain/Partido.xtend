@@ -40,9 +40,6 @@ class Partido {
 	@Id
 	Long idPartido
 
-//TODO - En principio parece que no hace falta pero lo dejamos por las dudas
-//	@JsonView(ViewsPartido.DefaultView)
-//	transient Usuario owner
 	@JsonView(ViewsPartido.ListView, ViewsNotificacion.NotificacionView)
 	@ManyToOne
 	Equipo equipo1
@@ -146,8 +143,6 @@ class Partido {
 	}
 	
 	def validarPersistir() {
-		//equipo1.validarEstaVacio
-		//equipo2.validarEstaVacio
 		empresa.validar
 		canchaReservada.validar
 		repoPartido.validarFechaCancha(fechaDeReserva)
