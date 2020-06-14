@@ -7,13 +7,11 @@ import io.github.cdimascio.dotenv.Dotenv
 import java.util.ArrayList
 import java.util.List
 import java.util.Set
-import javax.persistence.criteria.JoinType
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClients
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.json.JSONObject
-import ar.edu.unsam.proyecto.domain.Partido
 
 @Accessors
 class RepositorioNotificacion extends Repositorio<Notificacion> {

@@ -4,6 +4,7 @@ import ar.edu.unsam.proyecto.domain.Equipo
 import ar.edu.unsam.proyecto.domain.Partido
 import ar.edu.unsam.proyecto.domain.Usuario
 import ar.edu.unsam.proyecto.exceptions.IncorrectCredentials
+import ar.edu.unsam.proyecto.exceptions.InsufficientCandidates
 import ar.edu.unsam.proyecto.exceptions.ObjectAlreadyExists
 import ar.edu.unsam.proyecto.exceptions.ObjectDoesntExists
 import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson
@@ -18,6 +19,7 @@ import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsUsuario
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import java.time.LocalDateTime
 import java.util.List
 import org.json.JSONObject
@@ -26,9 +28,6 @@ import org.uqbar.xtrest.api.annotation.Controller
 import org.uqbar.xtrest.api.annotation.Get
 import org.uqbar.xtrest.api.annotation.Post
 import org.uqbar.xtrest.json.JSONUtils
-import com.google.gson.reflect.TypeToken
-import ar.edu.unsam.proyecto.exceptions.InsufficientCandidates
-import org.uqbar.xtrest.api.annotation.Put
 
 @Controller
 class RestHostAPI {
@@ -104,10 +103,8 @@ class RestHostAPI {
 			ok(partidoParseado)
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
-			throw e
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 	}
 
@@ -115,8 +112,6 @@ class RestHostAPI {
 	def postPartidos(@Body String body) {
 		try {
 			// Seteo los adapter de ID a javaObject
-			
-			println(body)
 			
 			val gson = new GsonBuilder()
 			.registerTypeAdapter(LocalDateTime, new LocalDateAdapter())
@@ -128,7 +123,6 @@ class RestHostAPI {
 			
 			ok('{"status":200, "message":"ok"}')
 		} catch (InsufficientCandidates e){
-			println('{"status":404, "message":"' + e.message + '"}')
 			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')

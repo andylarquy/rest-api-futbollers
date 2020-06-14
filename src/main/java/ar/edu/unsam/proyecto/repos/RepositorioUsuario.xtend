@@ -25,15 +25,22 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 	}
 	
 	int idAutoDecremental = -2
+	int idAutoIncremental = 1
 	
 	def crearUsuarioTemporal(Usuario usuario){
-		//asignarIdTemporal(usuario)
+		asignarIdTemporal(usuario)
 		create(usuario)
 	}
 	
 	def asignarIdTemporal(Usuario usuario){
 		usuario.idUsuario = Long.valueOf(idAutoDecremental)
 		idAutoDecremental--
+	}
+	
+	def crearUsuario(Usuario usuario){
+		usuario.idUsuario = Long.valueOf(idAutoIncremental)
+		idAutoIncremental++
+		create(usuario)
 	}
 
 	private new() {}

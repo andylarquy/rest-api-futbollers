@@ -139,6 +139,7 @@ class Partido {
 	
 	//TODO: Pensar bien estas validaciones
 	def validarCreacion() {
+
 		empresa.validar
 		canchaReservada.validar
 		repoPartido.validarFechaCancha(fechaDeReserva)
@@ -211,13 +212,11 @@ class Partido {
 	def prepararParaPersistir() {
 		
 		eliminarJugadoresConocidos()
-		println(equipo2.integrantes.map[sexo])
 		mapearJugadoresTemporales()
 		asignarNombreEquipos()
 		asignarIdEquiposTemporales()
 		mapearEquipo(equipo1)
 		mapearEquipo(equipo2)
-		mapearCancha()
 	}
 	
 	def mapearJugadoresTemporales() {
@@ -254,11 +253,15 @@ class Partido {
 	}
 
 	def mapearCancha() {
-		canchaReservada = repoCancha.searchById(canchaReservada.idCancha)
+		val canchaPosta = repoCancha.searchById(canchaReservada.idCancha)
+		canchaPosta === null ? throw new Exception('El ID de la cancha no es valido')
+		canchaReservada = canchaPosta
 	}
 
 	def mapearEmpresa() {
-		empresa = repoEmpresa.searchById(empresa.idEmpresa)
+		val empresaPosta = repoEmpresa.searchById(empresa.idEmpresa)
+		empresaPosta === null ? throw new Exception('El ID de la empresa no es valido')
+		empresa = empresaPosta
 	}
 
 	def confirmarPartido() {

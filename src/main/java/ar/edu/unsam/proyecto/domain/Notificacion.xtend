@@ -45,7 +45,6 @@ class Notificacion{
 	
 	@Column
 	Boolean aceptado = false
-	//DEBUG: Hardcodear despues a false
 	
 	@Transient
 	transient RepositorioPartido repoPartido = RepositorioPartido.instance

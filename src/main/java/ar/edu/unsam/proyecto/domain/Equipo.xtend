@@ -153,7 +153,7 @@ class Equipo {
 				nuevoUsuario.posicion = jugador.posicion
 				nuevoUsuario.sexo = jugador.sexo
 				
-				repoUsuario.create(nuevoUsuario)
+				repoUsuario.crearUsuarioTemporal(nuevoUsuario)
 				integrantesMapeados.add(nuevoUsuario)
 			}
 		]

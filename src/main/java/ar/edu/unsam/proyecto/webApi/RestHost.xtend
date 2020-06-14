@@ -94,6 +94,7 @@ class RestHost {
 		repoPartido.asignarIdPartido(partido)
 
 		partido.mapearEmpresa()
+		partido.mapearCancha()
 
 		val Set<Usuario> destinatariosConocidos = new HashSet
 		val Set<Usuario> destinatariosDesconocidos = new HashSet

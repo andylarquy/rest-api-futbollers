@@ -317,17 +317,17 @@ class Bootstrap {
 
 	def runBootstrap() {
 
-		repoUsuarios.create(sebaCapo)
-		repoUsuarios.create(nikoBostero)
-		repoUsuarios.create(andy)
-		repoUsuarios.create(jugador1)
-		repoUsuarios.create(jugador2)
-		repoUsuarios.create(jugador3)
-		repoUsuarios.create(jugador4)
-		repoUsuarios.create(pepe)
-		repoUsuarios.create(sofia)
-		repoUsuarios.create(agustin)
-		repoUsuarios.create(juan)
+		repoUsuarios.crearUsuario(sebaCapo)
+		repoUsuarios.crearUsuario(nikoBostero)
+		repoUsuarios.crearUsuario(andy)
+		repoUsuarios.crearUsuario(jugador1)
+		repoUsuarios.crearUsuario(jugador2)
+		repoUsuarios.crearUsuario(jugador3)
+		repoUsuarios.crearUsuario(jugador4)
+		repoUsuarios.crearUsuario(pepe)
+		repoUsuarios.crearUsuario(sofia)
+		repoUsuarios.crearUsuario(agustin)
+		repoUsuarios.crearUsuario(juan)
 
 		repoEquipo.create(equipazo)
 		repoEquipo.create(equipoMalo)

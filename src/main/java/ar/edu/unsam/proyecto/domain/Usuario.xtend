@@ -27,7 +27,7 @@ import org.uqbar.geodds.Point
 class Usuario {
 
 	@JsonView(ViewsUsuario.IdView, ViewsPartido.DefaultView, ViewsEquipo.ListView, ViewsNotificacion.NotificacionView)
-	@Id @GeneratedValue
+	@Id
 	Long idUsuario
 
 	@JsonView(ViewsUsuario.DefaultView, ViewsNotificacion.NotificacionView)
