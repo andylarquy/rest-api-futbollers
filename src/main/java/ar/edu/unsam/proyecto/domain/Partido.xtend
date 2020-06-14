@@ -52,7 +52,7 @@ class Partido {
 	@ManyToOne
 	Empresa empresa
 
-	@JsonView(ViewsPartido.DetallesView, ViewsNotificacion.NotificacionView)
+	@JsonView(ViewsPartido.DetallesView, ViewsPartido.ListView, ViewsNotificacion.NotificacionView)
 	@ManyToOne
 	Cancha canchaReservada
 
@@ -71,6 +71,15 @@ class Partido {
 
 	@Column
 	Boolean estado = true
+	
+	@JsonView(ViewsPartido.ListView)
+	@Column
+	int cantidadDeConfirmaciones
+	
+	@JsonSerialize(using=LocalDateTimeSerializer)
+	@JsonView(ViewsPartido.ListView)
+	@Column
+	LocalDateTime fechaDeCreacion = LocalDateTime.now()
 
 	@Transient
 	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
@@ -314,7 +323,7 @@ class Partido {
 		repoNotificacion.enviarMultipleNotificacion(invitacion, destinatarios)
 	}
 	
-	def agregarIntegrante(Usuario usuario) {
+	def agregarPuesto(Usuario usuario) {
 		
 		if(equipo1.tienePuestoLibrePara(usuario)){
 			equipo1.agregarIntegranteAPuesto(usuario)
@@ -325,6 +334,20 @@ class Partido {
 		}
 	}
 	
+	/* 
+	def agregarIntegrante(Usuario usuario) {
+		
+		if(equipo1.estaIncompleto(cancha, usuario)){
+			equipo1.agregarIntegranteAPuesto(usuario)
+			cantidadDeConfirmaciones++
+		}else if (equipo2.tienePuestoLibrePara(usuario)){
+			equipo2.agregarIntegranteAPuesto(usuario)
+			cantidadDeConfirmaciones++
+		}else{
+			throw new Exception('No hay hueco en el partido para este jugador')
+		}
+	}
+	*/
 
 	
 }

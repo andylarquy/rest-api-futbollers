@@ -12,6 +12,7 @@ import javax.persistence.Id
 import javax.persistence.OneToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
+import ar.edu.unsam.proyecto.repos.RepositorioNotificacion
 
 @Accessors
 @JsonInclude(Include.NON_NULL)//En teoria si un campo es null no lo parsea 
@@ -43,6 +44,9 @@ class Notificacion{
 	@JsonView(ViewsNotificacion.NotificacionView)
 	Usuario usuarioReceptor
 	
+	
+	transient RepositorioNotificacion  repoNotificacion = RepositorioNotificacion.instance
+	
 	@Column
 	Boolean aceptado = false
 	
@@ -65,7 +69,17 @@ class Notificacion{
 	}
 	
 	def agregarIntegranteAlPartido() {
-		partido.agregarIntegrante(usuarioReceptor)
+		
+		if(usuarioReceptor.esAmigoDe(partido.equipo1.owner)){
+			
+			//DEBUG: Aceptado
+			aceptarInvitacionAmigo(usuarioReceptor)
+		}else{
+			aceptarInvitacionDesconocido(usuarioReceptor)
+		}
+		
+		aceptado = true
+		repoNotificacion.update(this)
 		repoPartido.update(partido)
 	}
 	
@@ -75,6 +89,19 @@ class Notificacion{
 	
 	def esOwnerDelPartido(Usuario usuario) {
 		partido.equipo1.esOwner(usuario)
+	}
+	
+	def receptorEs(Usuario usuario){
+		usuarioReceptor.idUsuario == usuario.idUsuario
+	}
+	
+	def aceptarInvitacionAmigo(Usuario usuario){
+		partido.cantidadDeConfirmaciones = partido.cantidadDeConfirmaciones + 1
+	}
+	
+	def aceptarInvitacionDesconocido(Usuario usuario){
+		partido.agregarPuesto(usuarioReceptor)
+		partido.cantidadDeConfirmaciones = partido.cantidadDeConfirmaciones + 1
 	}
 	
 }

@@ -3,6 +3,7 @@ package ar.edu.unsam.proyecto.domain
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsCancha
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEmpresa
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.annotation.JsonView
@@ -22,7 +23,7 @@ class Cancha {
 	Long idCancha
 	
 	@Column()
-	@JsonView(ViewsCancha.DefaultView)
+	@JsonView(ViewsCancha.DefaultView, ViewsPartido.ListView)
 	int cantidadJugadores
 	
 	@Column()

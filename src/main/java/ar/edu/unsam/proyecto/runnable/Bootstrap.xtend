@@ -12,6 +12,7 @@ import ar.edu.unsam.proyecto.repos.RepositorioEquipo
 import ar.edu.unsam.proyecto.repos.RepositorioPartido
 import ar.edu.unsam.proyecto.repos.RepositorioPromocion
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
+import ar.edu.unsam.proyecto.webApi.RestHost
 import io.github.cdimascio.dotenv.Dotenv
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -41,6 +42,7 @@ class Bootstrap {
 	RepositorioEmpresa repoEmpresa = RepositorioEmpresa.instance
 	RepositorioCancha repoCancha = RepositorioCancha.instance
 	RepositorioPromocion repoPromocion = RepositorioPromocion.instance
+	RestHost restHost = new RestHost
 
 	Usuario sebaCapo = new Usuario() => [
 		nombre = "sebaCapo"
@@ -186,9 +188,9 @@ class Bootstrap {
 
 	Equipo equipoIncompleto = new Equipo() => [
 		nombre = "Equipo incompleto"
-		owner = nikoBostero
+		owner = andy
 		foto = "https://i.imgur.com/1gg90fn.jpg"
-		integrantes = new HashSet(Arrays.asList(sebaCapo, nikoBostero, andy))
+		integrantes = new HashSet(Arrays.asList(sebaCapo, nikoBostero))
 	]
 
 	Cancha urquiza1 = new Cancha() => [
@@ -350,19 +352,13 @@ class Bootstrap {
 		repoPromocion.create(promo2)
 		repoPromocion.create(promo3)
 
-		repoPartido.crearPartido(partido1)
-		repoPartido.crearPartido(partido2)
-		repoPartido.crearPartido(partido3)
-
 		// TODO: Pensar si podes evitar mandar un update
-		//andy.crearAmistad(sebaCapo)
-		andy.crearAmistad(nikoBostero)
+		
+		andy.crearAmistad(sebaCapo)
 		andy.crearAmistad(jugador1)
 		andy.crearAmistad(jugador2)
+		andy.crearAmistad(jugador3)
 		andy.crearAmistad(jugador4)
-		andy.crearAmistad(pepe)
-		andy.crearAmistad(sofia)
-
 
 		nikoBostero.crearAmistad(sebaCapo)
 		nikoBostero.crearAmistad(jugador1)
@@ -388,6 +384,8 @@ class Bootstrap {
 		repoUsuarios.update(sofia)
 		repoUsuarios.update(agustin)
 		repoUsuarios.update(juan)
+		
+		restHost.crearNuevoPartido(partido1)
 
 	}
 

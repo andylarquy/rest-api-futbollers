@@ -33,7 +33,7 @@ import org.uqbar.xtrest.json.JSONUtils
 class RestHostAPI {
 	extension JSONUtils = new JSONUtils
 	RestHost restHost
-	
+
 	AuxiliarDynamicJson auxiliar = new AuxiliarDynamicJson()
 
 	new(RestHost restHost) {
@@ -54,7 +54,7 @@ class RestHostAPI {
 	def loguearUsuario(@Body String body) {
 
 		try {
-			
+
 			val Usuario usuario = body.fromJson(Usuario)
 			val usuarioParseado = auxiliar.parsearObjeto(restHost.loguearUsuario(usuario),
 				ViewsUsuario.CredencialesView)
@@ -81,43 +81,47 @@ class RestHostAPI {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
-	
+
 	@Get("/usuario/:idUsuario/amigos")
-	def amigosDelUsuarioById(){
-		
-		try{
-			val amigosDelUsuarioParseados = auxiliar.parsearObjeto(restHost.getAmigosDelUsuario(Long.valueOf(idUsuario)), ViewsUsuario.PerfilView)
-			
+	def amigosDelUsuarioById() {
+
+		try {
+			val amigosDelUsuarioParseados = auxiliar.parsearObjeto(
+				restHost.getAmigosDelUsuario(Long.valueOf(idUsuario)), ViewsUsuario.PerfilView)
+
 			ok(amigosDelUsuarioParseados)
-		}catch (Exception e) {
+		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
-		
+
 	}
-	
+
 	@Post("/usuario/:idUsuario/amigo/:idAmigo")
-	def agregarAmigoAUsuario(){
-		
-		try{
+	def agregarAmigoAUsuario() {
+
+		try {
 			restHost.agregarAmigoAUsuario(Long.valueOf(idUsuario), Long.valueOf(idAmigo))
-			
+
 			ok('{"status": 200}')
-		}catch(Exception e){
+		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
-		
+
 	}
 
 	@Get("/partidos/:idUsuario")
 	def getPartidosByIdDelUsuario() {
 
 		try {
-			var partidoParseado = auxiliar.parsearObjeto(restHost.getPartidosDelUsuario(Long.valueOf(idUsuario)), ViewsPartido.ListView)
+			var partidoParseado = auxiliar.parsearObjeto(restHost.getPartidosDelUsuario(Long.valueOf(idUsuario)),
+				ViewsPartido.ListView)
 			ok(partidoParseado)
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
+			throw e
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
 		}
 	}
 
@@ -125,17 +129,14 @@ class RestHostAPI {
 	def postPartidos(@Body String body) {
 		try {
 			// Seteo los adapter de ID a javaObject
-			
-			val gson = new GsonBuilder()
-			.registerTypeAdapter(LocalDateTime, new LocalDateAdapter())
-			.create()
-			
+			val gson = new GsonBuilder().registerTypeAdapter(LocalDateTime, new LocalDateAdapter()).create()
+
 			val partido = gson.fromJson(body.toString, Partido)
-			
+
 			restHost.crearNuevoPartido(partido)
-			
+
 			ok('{"status":200, "message":"ok"}')
-		} catch (InsufficientCandidates e){
+		} catch (InsufficientCandidates e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
@@ -146,7 +147,8 @@ class RestHostAPI {
 	def getEquiposDelUsuarioById() {
 
 		try {
-			var partidoParseado = auxiliar.parsearObjeto(restHost.getEquiposDelUsuario(Long.valueOf(idUsuario)), ViewsEquipo.ListView)
+			var partidoParseado = auxiliar.parsearObjeto(restHost.getEquiposDelUsuario(Long.valueOf(idUsuario)),
+				ViewsEquipo.ListView)
 			ok(partidoParseado)
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
@@ -155,28 +157,27 @@ class RestHostAPI {
 		}
 
 	}
-	
+
 	@Get("/equipos-owner/:idUsuario")
-	def getEquiposAdministradosPorElUsuarioById(){
+	def getEquiposAdministradosPorElUsuarioById() {
 		try {
-			var partidoParseado = auxiliar.parsearObjeto(restHost.getEquiposAdministradosPorElUsuario(Long.valueOf(idUsuario)), ViewsEquipo.ListView)
+			var partidoParseado = auxiliar.parsearObjeto(
+				restHost.getEquiposAdministradosPorElUsuario(Long.valueOf(idUsuario)), ViewsEquipo.ListView)
 			ok(partidoParseado)
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
-		
+
 	}
 
 	@Post("/equipos")
 	def postEquipos(@Body String body) {
 
 		try {
-			val gson = new GsonBuilder()
-			.registerTypeAdapter(Usuario, new UsuarioAdapter)
-			.registerTypeAdapter(List, new UsuarioListAdapter())
-			.create()
+			val gson = new GsonBuilder().registerTypeAdapter(Usuario, new UsuarioAdapter).registerTypeAdapter(List,
+				new UsuarioListAdapter()).create()
 
 			val equipo = gson.fromJson(body, Equipo)
 
@@ -214,7 +215,8 @@ class RestHostAPI {
 	@Get("/empresas/:idEmpresa")
 	def getEmpresaById() {
 		try {
-			var empresaParseada = auxiliar.parsearObjeto(restHost.getEmpresaById(Long.valueOf(idEmpresa)), ViewsEmpresa.SetupView)
+			var empresaParseada = auxiliar.parsearObjeto(restHost.getEmpresaById(Long.valueOf(idEmpresa)),
+				ViewsEmpresa.SetupView)
 			ok(empresaParseada)
 
 		} catch (ObjectDoesntExists e) {
@@ -259,161 +261,164 @@ class RestHostAPI {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
-	
+
 	@Post("/validar-fecha")
-	def validarFechaCancha(@Body String body){
-		try{
+	def validarFechaCancha(@Body String body) {
+		try {
 			val jsonBody = new JSONObject(body)
 			val fecha = jsonBody.getString("fecha")
 			val fechaPosta = LocalDateTime.parse(fecha)
-			
+
 			restHost.validarFechaCancha(fechaPosta)
 			ok('{"status":200, "message":"ok"}')
-		
+
 		} catch (ObjectAlreadyExists e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			
+
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
-	
+
 	@Post("/confirmar-partido/:idPartido")
-	def confirmarPartido(){
-		try{
+	def confirmarPartido() {
+		try {
 			restHost.confirmarPartidoDeId(Long.valueOf(idPartido))
 			ok('{"status":200, "message":"ok"}')
-			
-	
+
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
-	
+
 	}
-	
+
 	@Get("/notificaciones/:idUsuario")
-	def getNotificacionesDelUsuarioById(){
-		try{
-			//Si precisas mostrar mas cosas agregales ViewsNotificacion.NotificacionView
-			var notificacionesParseadas = auxiliar.parsearObjeto(restHost.getNotificacionesDelUsuario(Long.valueOf(idUsuario)), ViewsNotificacion.NotificacionView)
+	def getNotificacionesDelUsuarioById() {
+		try {
+			// Si precisas mostrar mas cosas agregales ViewsNotificacion.NotificacionView
+			var notificacionesParseadas = auxiliar.parsearObjeto(
+				restHost.getNotificacionesDelUsuario(Long.valueOf(idUsuario)), ViewsNotificacion.NotificacionView)
 			ok(notificacionesParseadas)
-		
+
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
 
-	@Get("/notificaciones-candidatos/:idUsuario")
-	def getNotificacionesCandidatosDelUsuarioById(){
-		try{
-			//Si precisas mostrar mas cosas agregales ViewsNotificacion.NotificacionView
-			var notificacionesParseadas = auxiliar.parsearObjeto(restHost.getNotificacionesCandidatosDelUsuario(Long.valueOf(idUsuario)), ViewsNotificacion.NotificacionView)
-			ok(notificacionesParseadas)
-		
-		} catch (Exception e) {
-			badRequest('{"status":400, "message":"' + e.message + '"}')
-		}
-	}
-	
+	/* 
+	 * 	@Get("/notificaciones-candidatos/:idUsuario")
+	 * 	def getNotificacionesCandidatosDelUsuarioById(){
+	 * 		try{
+	 * 			//Si precisas mostrar mas cosas agregales ViewsNotificacion.NotificacionView
+	 * 			var notificacionesParseadas = auxiliar.parsearObjeto(restHost.getNotificacionesCandidatosDelUsuario(Long.valueOf(idUsuario)), ViewsNotificacion.NotificacionView)
+	 * 			ok(notificacionesParseadas)
+	 * 		
+	 * 		} catch (Exception e) {
+	 * 			badRequest('{"status":400, "message":"' + e.message + '"}')
+	 * 		}
+	 * 	}
+	 */
+	 
 	@Get("/notificaciones-invitaciones/:idUsuario")
-	def getInvitacionesDelUsuarioById(){
-		try{
-			
-			var notificacionesParseadas = auxiliar.parsearObjeto(restHost.getInvitacionesDelUsuario(Long.valueOf(idUsuario)), ViewsNotificacion.NotificacionView)
+	def getInvitacionesDelUsuarioById() {
+		try {
+
+			var notificacionesParseadas = auxiliar.parsearObjeto(
+				restHost.getInvitacionesDelUsuario(Long.valueOf(idUsuario)), ViewsNotificacion.NotificacionView)
 			ok(notificacionesParseadas)
-		
+
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-		}
-	}
-	
-	@Post("/invitaciones-aceptar/:idNotificacion")
-	def aceptarInvitacionById(){
-		try{
-			
-			restHost.aceptarInvitacion(Long.valueOf(idNotificacion))
-			
-			ok('{"status":200, "message":"ok"}')
-	
-		} catch (Exception e) {
-			badRequest('{"status":400, "message":"' + e.message + '"}')
-		}
-			
-	}
-	
-	@Post("/candidato-aceptar/:idNotificacion")
-	def aceptarCandidatoById(){
-		try{
-			
-			restHost.aceptarCandidato(Long.valueOf(idNotificacion))
-			
-			ok('{"status":200, "message":"ok"}')
-		}catch(Exception e){
-			badRequest('{"status":400, "message":"'+e.message+'"}')
 		}
 	}
 
-	
+	@Post("/invitaciones-aceptar/:idNotificacion")
+	def aceptarInvitacionById() {
+		try {
+
+			restHost.aceptarInvitacion(Long.valueOf(idNotificacion))
+
+			ok('{"status":200, "message":"ok"}')
+
+		} catch (Exception e) {
+		
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
+		}
+
+	}
+
+	/* 
+	 * @Post("/candidato-aceptar/:idNotificacion")
+	 * def aceptarCandidatoById(){
+	 * 	try{
+	 * 		
+	 * 		restHost.aceptarCandidato(Long.valueOf(idNotificacion))
+	 * 		
+	 * 		ok('{"status":200, "message":"ok"}')
+	 * 	}catch(Exception e){
+	 * 		badRequest('{"status":400, "message":"'+e.message+'"}')
+	 * 	}
+	 * }
+	 */
+	 
 	@Post("/ubicacion")
-	def updateUbicacionUsuarioById(@Body String body){
-		try{
-			
+	def updateUbicacionUsuarioById(@Body String body) {
+		try {
+
 			val usuarioParseado = new Gson().fromJson(body, Usuario)
-			
-			println("ping ubicacion del usuario: "+usuarioParseado.idUsuario)
-			
+
+			println("ping ubicacion del usuario: " + usuarioParseado.idUsuario)
+
 			restHost.updateUbicacion(usuarioParseado)
 			ok('{"status":200, "message":"ok"}')
-			
-		}catch(Exception e){
+
+		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
-	
+
 	@Get("/candidatos/:idUsuario")
-	def getCandidatosByIdUsuario(){
-		
-		try{
-			val candidatosParseados= auxiliar.parsearObjeto(restHost.getCandidatosDelUsuario(Long.valueOf(idUsuario)), ViewsUsuario.PerfilView)
+	def getCandidatosByIdUsuario() {
+
+		try {
+			val candidatosParseados = auxiliar.parsearObjeto(restHost.getCandidatosDelUsuario(Long.valueOf(idUsuario)),
+				ViewsUsuario.PerfilView)
 			ok(candidatosParseados)
-		} catch(Exception e){
+		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
-	
+
 	@Post("/debug/notificacion/:id1")
-	def postDebugNotificacion(@Body String body){
-		try{
-			
-		
-			//val idUsuario2 = bodyJSON.getString("id1")
-			
+	def postDebugNotificacion(@Body String body) {
+		try {
+
+			// val idUsuario2 = bodyJSON.getString("id1")
 			restHost.debugNotificacion(Long.valueOf(id1))
-			
-		
+
 			ok('{"status":200, "message":"ok"}')
-			
-		}catch(Exception e){
+
+		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
-	
+
 	@Post("/debug/notificacion-multiple")
-	def postDebugNotificacion(@Body String body){
-		try{
-			
-		
-			val bodyJSON = new JSONObject(body) 
+	def postDebugNotificacion(@Body String body) {
+		try {
+
+			val bodyJSON = new JSONObject(body)
 			val ids = bodyJSON.getJSONArray("ids")
-			
-			val List<Long> idsPosta = new Gson().fromJson(ids.toString, new TypeToken<List<Long>>(){}.getType())
-			
+
+			val List<Long> idsPosta = new Gson().fromJson(ids.toString, new TypeToken<List<Long>>() {
+			}.getType())
+
 			restHost.debugNotificacionMultiple(idsPosta)
-			
-		
+
 			ok('{"status":200, "message":"ok"}')
-			
-		}catch(Exception e){
+
+		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}

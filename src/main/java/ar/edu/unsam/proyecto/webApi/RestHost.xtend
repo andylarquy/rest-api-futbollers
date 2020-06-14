@@ -241,9 +241,11 @@ class RestHost {
 		repoUsuario.getCandidatosDelUsuario(repoUsuario.searchByIdConAmigos(idUsuario))
 	}
 	
+	/* 
 	def getNotificacionesCandidatosDelUsuario(Long idUsuario) {
 		repoNotificacion.getNotificacionesCandidatosByIdUsuario(idUsuario)
 	}
+	*/
 	
 	def getInvitacionesDelUsuario(Long idUsuario) {
 		repoNotificacion.getInvitacionesDelUsuario(idUsuario)
@@ -256,19 +258,24 @@ class RestHost {
 		notificacionPosta.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(notificacionPosta.partido.equipo1.idEquipo)
 		notificacionPosta.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(notificacionPosta.partido.equipo2.idEquipo)
 		
-		repoNotificacion.aceptarInvitacion(notificacionPosta)
+		notificacionPosta.usuarioReceptor = repoUsuario.searchByIdConAmigos(notificacionPosta.usuarioReceptor.idUsuario)
+		
+		notificacionPosta.agregarIntegranteAlPartido()
+		
+		//repoNotificacion.aceptarInvitacion(notificacionPosta)
+		
 		//TODO: Enviar notificacion con firebase
 		
 		
 	}
 	
-	def aceptarCandidato(Long idNotificacion) {
-		val notificacionPosta = repoNotificacion.searchById(idNotificacion)
+	def aceptarCandidato(Notificacion notificacionPosta) {
 		
 		notificacionPosta.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(notificacionPosta.partido.equipo1.idEquipo)
 		notificacionPosta.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(notificacionPosta.partido.equipo2.idEquipo)
 		
 		notificacionPosta.agregarIntegranteAlPartido()
+		
 		//TODO: Quizas enviar notificaion con firebase
 	}
 	
@@ -283,7 +290,6 @@ class RestHost {
 		
 		val notiDeAmistad = new Notificacion
 		notiDeAmistad.titulo = "¡"+usuarioPosta.nombre+" y tu ahora son amigos!"
-		notiDeAmistad.descripcion = "Si no querias jodete!"
 		notiDeAmistad.usuario = amigoPosta
 		repoNotificacion.enviarUnaNotificacion(notiDeAmistad)
 		

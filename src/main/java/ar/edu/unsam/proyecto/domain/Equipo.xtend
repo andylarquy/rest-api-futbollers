@@ -28,20 +28,20 @@ class Equipo {
 	@Id @GeneratedValue  
 	Long idEquipo
 	
-	@Column()
+	@Column
 	@JsonView(ViewsEquipo.ListView, ViewsPartido.ListView) 
 	String nombre
 	
-	@Column()
+	@Column
 	@JsonView(ViewsEquipo.ListView) 
 	String foto
 	
 	@ManyToOne
-	@JsonView(ViewsEquipo.ListView) 
+	@JsonView(ViewsEquipo.ListView, ViewsPartido.ListView) 
 	Usuario owner
 	
 	@ManyToMany
-	@JsonView(ViewsEquipo.ListView) 
+	@JsonView(ViewsEquipo.ListView, ViewsPartido.ListView) 
 	Set<Usuario> integrantes //Capaz conviene que sea un Set para no cagarla
 	
 	@Transient
@@ -113,7 +113,7 @@ class Equipo {
 	}
 	
 	def esEquipoConocido(){
-		this.idEquipo != -1
+		idEquipo > -1
 	}
 	
 	def asignarNombreTemporal(){
@@ -171,17 +171,24 @@ class Equipo {
 	}
 	
 	def tienePuestoLibrePara(Usuario usuario){
+		
 		integrantes.exists[ jugador |
 			jugador.esJugadorReservado() && jugador.jugadorReservadoAdmite(usuario)
 		]
 	}
-	
+		
 	def agregarIntegranteAPuesto(Usuario usuario) {
 		val jugadorReservado = integrantes.findFirst[jugador | jugador.jugadorReservadoAdmite(usuario)]
+		
 		integrantes.remove(jugadorReservado)
+		repoEquipo.update(this)
+		
 		integrantes.add(usuario)
 		repoEquipo.update(this)
+		
 		repoUsuario.delete(jugadorReservado)
+		
+		
 	}
 
 	
