@@ -104,4 +104,8 @@ class Notificacion{
 		partido.cantidadDeConfirmaciones = partido.cantidadDeConfirmaciones + 1
 	}
 	
+	def invitacionFueAceptada() {
+		return aceptado
+	}
+	
 }

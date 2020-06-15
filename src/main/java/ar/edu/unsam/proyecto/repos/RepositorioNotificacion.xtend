@@ -55,7 +55,10 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 		var notificaciones = queryTemplate(
 			[criteria, query, from |
 				
-				query.where(criteria.equal(from.get("aceptado"), true))
+				val criterio1 = criteria.equal(from.get("aceptado"), true)
+				val criterio2 = criteria.equal(from.get("usuarioReceptor"), usuario.idUsuario)
+				
+				query.where(criteria.and(criterio1, criterio2))
 
 				return query
 			],
@@ -69,8 +72,7 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 		
 		println(notificaciones.map[partido.equipo1.integrantes])
 		
-		notificaciones = notificaciones.filter[noti | noti.receptorEs(usuario)].toList
-		notificaciones = notificaciones.filter[noti | noti.receptorFueAdmitido()].toList
+		notificaciones = notificaciones.filter[noti | noti.invitacionFueAceptada()].toList
 		
 		val partidosDelUsuario = new ArrayList
 		partidosDelUsuario.addAll(notificaciones.map[partido])

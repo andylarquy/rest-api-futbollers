@@ -69,7 +69,7 @@ class RestHost {
 		val usuarioPosta = repoUsuario.searchById(idUsuario)
 		repoEquipo.getEquiposDelUsuario(usuarioPosta)
 	}
-	
+
 	def getEquiposAdministradosPorElUsuario(Long idUsuario) {
 		val usuarioPosta = repoUsuario.searchById(idUsuario)
 		repoEquipo.getEquiposAdministradosPorElUsuario(usuarioPosta)
@@ -105,8 +105,8 @@ class RestHost {
 
 		partido.jugadoresDesconocidos.forEach [ jugador |
 			if (!usuarioEstaSiendoNotificado(destinatariosConocidos, jugador) &&
-				!usuarioEstaSiendoNotificado(destinatariosDesconocidos, jugador)&& 
-				!destinatariosConocidos.contains(jugador)){
+				!usuarioEstaSiendoNotificado(destinatariosDesconocidos, jugador) &&
+				!destinatariosConocidos.contains(jugador)) {
 
 				destinatariosDesconocidos.add(jugador)
 			}
@@ -115,47 +115,48 @@ class RestHost {
 		println("Usuarios conocidos a invitar: " + destinatariosConocidos.map[nombre])
 		println("Usuarios desconocidos a invitar: " + destinatariosDesconocidos.map[nombre])
 
-
 		partido.validarCreacion()
 
 		partido.enviarNotifiacionesAConocidos(destinatariosConocidos, partido.equipo1.owner)
 		partido.enviarNotifiacionesADesconocidos(destinatariosDesconocidos)
-		
+
 		partido.prepararParaPersistir()
 		partido.validarPersistir()
 
 		repoEquipo.createIfNotExists(partido.equipo1)
 		repoEquipo.createIfNotExists(partido.equipo2)
-		
+
 		repoPartido.create(partido)
-		
+
 		println("Se ha creado un partido con id: " + partido.idPartido)
-		
-		destinatariosConocidos.forEach[ destinatario |
-			val invitacion = new Notificacion()
-			invitacion.partido = partido
-			invitacion.usuario = partido.equipo1.owner
-			invitacion.titulo = "¡ "+partido.equipo1.owner.nombre+" te invito a un partido!"
-		invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
-			invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
-			invitacion.usuarioReceptor = destinatario
-			
-			repoNotificacion.agregarNotificacionAUsuario(invitacion, destinatario)
-			
+
+		destinatariosConocidos.forEach [ destinatario |
+
+			if (destinatario.idUsuario != partido.equipo1.owner.idUsuario) {
+				val invitacion = new Notificacion()
+				invitacion.partido = partido
+				invitacion.usuario = partido.equipo1.owner
+				invitacion.titulo = "¡ " + partido.equipo1.owner.nombre + " te invito a un partido!"
+				invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
+					invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
+				invitacion.usuarioReceptor = destinatario
+
+				repoNotificacion.agregarNotificacionAUsuario(invitacion, destinatario)
+			}
 		]
-		
-		destinatariosDesconocidos.forEach[ destinatario |
+
+		destinatariosDesconocidos.forEach [ destinatario |
 			val invitacion = new Notificacion()
 			invitacion.partido = partido
 			invitacion.usuario = partido.equipo1.owner
 			invitacion.titulo = "¡Has recibido una invitacion para un partido!"
-		invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
-			invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
+			invitacion.descripcion = invitacion.partido.empresa.direccion + " - " + invitacion.partido.fechaDeReserva +
+				" (TODO: Formatear bien la fecha)"
 			invitacion.usuarioReceptor = destinatario
-			
+
 			repoNotificacion.agregarNotificacionAUsuario(invitacion, destinatario)
 		]
-		
+
 	}
 
 	def getCanchas() {
@@ -236,67 +237,63 @@ class RestHost {
 		repoNotificacion.enviarMultipleNotificacion(notificacion, usuariosPosta)
 
 	}
-	
+
 	def getCandidatosDelUsuario(Long idUsuario) {
 		repoUsuario.getCandidatosDelUsuario(repoUsuario.searchByIdConAmigos(idUsuario))
 	}
-	
+
 	/* 
-	def getNotificacionesCandidatosDelUsuario(Long idUsuario) {
-		repoNotificacion.getNotificacionesCandidatosByIdUsuario(idUsuario)
-	}
-	*/
-	
+	 * def getNotificacionesCandidatosDelUsuario(Long idUsuario) {
+	 * 	repoNotificacion.getNotificacionesCandidatosByIdUsuario(idUsuario)
+	 * }
+	 */
 	def getInvitacionesDelUsuario(Long idUsuario) {
 		repoNotificacion.getInvitacionesDelUsuario(idUsuario)
 	}
-	
+
 	def aceptarInvitacion(Long idNotificacion) {
-	
+
 		val notificacionPosta = repoNotificacion.searchById(idNotificacion)
-		
-		notificacionPosta.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(notificacionPosta.partido.equipo1.idEquipo)
-		notificacionPosta.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(notificacionPosta.partido.equipo2.idEquipo)
-		
+
+		notificacionPosta.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(
+			notificacionPosta.partido.equipo1.idEquipo)
+		notificacionPosta.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(
+			notificacionPosta.partido.equipo2.idEquipo)
+
 		notificacionPosta.usuarioReceptor = repoUsuario.searchByIdConAmigos(notificacionPosta.usuarioReceptor.idUsuario)
-		
+
 		notificacionPosta.agregarIntegranteAlPartido()
-		
-		//repoNotificacion.aceptarInvitacion(notificacionPosta)
-		
-		//TODO: Enviar notificacion con firebase
-		
-		
+
+	// repoNotificacion.aceptarInvitacion(notificacionPosta)
+	// TODO: Enviar notificacion con firebase
 	}
-	
+
 	def aceptarCandidato(Notificacion notificacionPosta) {
-		
-		notificacionPosta.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(notificacionPosta.partido.equipo1.idEquipo)
-		notificacionPosta.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(notificacionPosta.partido.equipo2.idEquipo)
-		
+
+		notificacionPosta.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(
+			notificacionPosta.partido.equipo1.idEquipo)
+		notificacionPosta.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(
+			notificacionPosta.partido.equipo2.idEquipo)
+
 		notificacionPosta.agregarIntegranteAlPartido()
-		
-		//TODO: Quizas enviar notificaion con firebase
+
+	// TODO: Quizas enviar notificaion con firebase
 	}
-	
-	def agregarAmigoAUsuario(Long idUsuario, Long idAmigo){
-		
+
+	def agregarAmigoAUsuario(Long idUsuario, Long idAmigo) {
+
 		val usuarioPosta = repoUsuario.searchByIdConAmigos(idUsuario)
 		val amigoPosta = repoUsuario.searchByIdConAmigos(idAmigo)
 		usuarioPosta.crearAmistad(amigoPosta)
-		
+
 		repoUsuario.update(usuarioPosta)
 		repoUsuario.update(amigoPosta)
-		
+
 		val notiDeAmistad = new Notificacion
-		notiDeAmistad.titulo = "¡"+usuarioPosta.nombre+" y tu ahora son amigos!"
+		notiDeAmistad.titulo = "¡" + usuarioPosta.nombre + " y tu ahora son amigos!"
 		notiDeAmistad.usuario = amigoPosta
 		repoNotificacion.enviarUnaNotificacion(notiDeAmistad)
-		
-		
-		
-	}
-	
 
+	}
 
 }
