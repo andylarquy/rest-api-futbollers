@@ -105,11 +105,11 @@ class Equipo {
 			val integrantesConocidos = new HashSet()
 			integrantesConocidos.addAll(integrantes.filter[esIntegranteConocido])
 			integrantes.removeAll(integrantesConocidos)
-			integrantesConocidos.forEach[usuario | integrantes.add(repoUsuario.searchById(usuario.idUsuario))]
+			integrantesConocidos.forEach[usuario | integrantes.add(repoUsuario.searchByIdConAmigos(usuario.idUsuario))]
 		
 		}
 		
-		owner = repoUsuario.searchById(owner.idUsuario)
+		owner = repoUsuario.searchByIdConAmigos(owner.idUsuario)
 	}
 	
 	def esEquipoConocido(){

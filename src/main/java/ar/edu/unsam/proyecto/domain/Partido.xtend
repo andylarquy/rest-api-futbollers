@@ -74,7 +74,7 @@ class Partido {
 	
 	@JsonView(ViewsPartido.ListView)
 	@Column
-	int cantidadDeConfirmaciones
+	int cantidadDeConfirmaciones = 0
 	
 	@JsonSerialize(using=LocalDateTimeSerializer)
 	@JsonView(ViewsPartido.ListView)
@@ -145,7 +145,6 @@ class Partido {
 	
 	//TODO: Pensar bien estas validaciones
 	def validarCreacion() {
-
 		empresa.validar
 		canchaReservada.validar
 		repoPartido.validarFechaCancha(fechaDeReserva)

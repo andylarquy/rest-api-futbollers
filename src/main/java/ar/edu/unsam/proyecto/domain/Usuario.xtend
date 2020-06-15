@@ -67,9 +67,6 @@ class Usuario {
 	@ManyToMany(cascade=CascadeType.REMOVE)
 	Set<Usuario> amigos = new HashSet
 
-	@ManyToMany(cascade=CascadeType.REMOVE)
-	Set<Notificacion> invitaciones = new HashSet
-
 	@Transient
 	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
 
@@ -151,10 +148,6 @@ class Usuario {
 
 	def getIdDeSusAmigos() {
 		amigos.map[idUsuario]
-	}
-
-	def agregarNotificacion(Notificacion notificacion) {
-		invitaciones.add(notificacion)
 	}
 
 	def esJugadorReservado() {

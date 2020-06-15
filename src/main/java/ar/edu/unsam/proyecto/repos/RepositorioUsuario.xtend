@@ -54,7 +54,6 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 		queryTemplate(
 			
 			[criteria, query, from |
-				from.fetch("invitaciones", JoinType.LEFT)
 				return query
 			], 
 			[query | query.resultList]) as List<Usuario>
@@ -67,7 +66,6 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 	def searchById(Long idUsuario) {
 		queryTemplate(
 			[criteria, query, from |
-				from.fetch("invitaciones", JoinType.LEFT)
 				query.where(criteria.equal(from.get("idUsuario"), idUsuario))
 				return query
 			], 
@@ -119,9 +117,10 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 
 	}
 	
+	/*
+	 TODO: REVISAR 
 	def notificacionesDelUsuario(Long idUsuario) {
 		val usuario = queryTemplate([criteria, query, from |
-				from.fetch("invitaciones", JoinType.LEFT)
 				query.where(criteria.equal(from.get("idUsuario"), idUsuario))
 				return query
 			], 
@@ -130,6 +129,8 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 			
 			return usuario.invitaciones
 	}
+	*/
+	
 
 
 	//TODO: Hacer en formato de query	
@@ -140,10 +141,13 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 			usuario.estaDentroDelRango(usuarioBuscado.getUbicacion, rangoDeBusqueda)
 		]
 		
+		
+		
 		if(!sexoBuscado.equals("Mixto")){
 			val a = filtroPorRango.filter[usuario | usuario.tieneSexo(sexoBuscado)]
 			return a
 		}
+		
 		
 		
 		

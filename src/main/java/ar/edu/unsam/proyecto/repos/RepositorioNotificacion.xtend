@@ -5,6 +5,7 @@ import ar.edu.unsam.proyecto.domain.Usuario
 import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson
 import io.github.cdimascio.dotenv.Dotenv
 import java.util.ArrayList
+import java.util.HashSet
 import java.util.List
 import java.util.Set
 import org.apache.http.client.methods.HttpPost
@@ -14,7 +15,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.json.JSONObject
 
 @Accessors
-class RepositorioNotificacion extends Repositorio<Notificacion> {
+class RepositorioNotificacion{
 
 	public static RepositorioNotificacion repoNotificacion
 
@@ -28,6 +29,9 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 	def reset() {
 		repoNotificacion = null
 	}
+	
+	int idAutoIncremental = 0
+	
 
 	transient Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load()
 	transient AuxiliarDynamicJson auxiliar = new AuxiliarDynamicJson
@@ -37,33 +41,18 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 	transient RepositorioPartido repoPartido = RepositorioPartido.instance
 	transient RepositorioEquipo repoEquipo = RepositorioEquipo.instance
 
-	override entityId(Notificacion notificacion){
-		notificacion.idNotificacion
-	}
+	Set<Notificacion> coleccion = new HashSet()
 
 	def searchById(Long idNotificacion) {
-		queryTemplate([ criteria, query, from |
-			
-			query.where(criteria.equal(from.get("idNotificacion"), idNotificacion))
-			
-		],
-		[query|query.singleResult]) as Notificacion
+		coleccion.findFirst[it.idNotificacion == idNotificacion]
 	}
 
-		// TODO: Revisar si esta query hace las cosas bien
+	// TODO: Revisar si esta query hace las cosas bien
 	def getPartidosDelUsuario(Usuario usuario){	
-		var notificaciones = queryTemplate(
-			[criteria, query, from |
-				
-				val criterio1 = criteria.equal(from.get("aceptado"), true)
-				val criterio2 = criteria.equal(from.get("usuarioReceptor"), usuario.idUsuario)
-				
-				query.where(criteria.and(criterio1, criterio2))
-
-				return query
-			],
 		
-		[query | query.resultList]) as List<Notificacion>
+		var notificaciones = coleccion.filter[noti |
+			noti.fueAceptada() && noti.receptorEs(usuario)
+		].toList
 		
 		notificaciones.forEach[noti | 
 			noti.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(noti.partido.equipo1.idEquipo)
@@ -72,7 +61,7 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 		
 		println(notificaciones.map[partido.equipo1.integrantes])
 		
-		notificaciones = notificaciones.filter[noti | noti.invitacionFueAceptada()].toList
+		notificaciones = notificaciones.filter[noti | noti.fueAceptada()].toList
 		
 		val partidosDelUsuario = new ArrayList
 		partidosDelUsuario.addAll(notificaciones.map[partido])
@@ -94,50 +83,22 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 	}
 
 	def getInvitacionesDelUsuario(Long idUsuario){
-		queryTemplate([ criteria, query, from |
-
-			val criterio1 = criteria.equal(from.get("usuarioReceptor"), idUsuario)
-			val criterio2 = criteria.equal(from.get("aceptado"), false)
-			
-			query.where(criteria.and(criterio1, criterio2))
-			
-			return query
-		], [query|query.resultList]) as List<Notificacion>
-	}
-
-/* 
-	def getNotificacionesCandidatosByIdUsuario(Long idUsuario) {
-		val notificaciones = queryTemplate([ criteria, query, from |
-
-			val criterio1 = criteria.equal(from.get("usuario"), idUsuario)
-			val criterio2 = criteria.equal(from.get("aceptado"), true)
-
-			query.where(criteria.and(criterio1, criterio2))
-
-			return query
-		], [query|query.resultList]) as List<Notificacion>
 		
-		notificaciones.forEach[noti | 
-			noti.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(noti.partido.equipo1.idEquipo)
-			noti.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(noti.partido.equipo2.idEquipo)
+		coleccion.forEach[noti |
+		println("//////////////////////")
+		println("ID NOTI: "+noti.idNotificacion)
+		println("ID RECEPTOR: "+noti.usuarioReceptor.idUsuario)
 		]
 		
-		notificaciones.forEach[ noti|
-			noti.usuarioReceptor = repoUsuario.searchByIdConAmigos(noti.usuarioReceptor.idUsuario)
-		]
-		
-		return notificaciones.filter[notificacion | !notificacion.usuarioReceptor.esAmigoDe(notificacion.partido.equipo1.owner) && !notificacion.receptorFueAdmitido].toList
-
+		coleccion.filter[noti |
+			!noti.fueAceptada() && noti.receptorTieneId(idUsuario)
+		].toList
 		
 	}
-*/
 
-	def agregarNotificacionAUsuario(Notificacion notificacion, Usuario usuario) {
-		if (!usuarioYaFueInvitadoAlPartido(notificacion, usuario) && !usuarioAInvitarEsOwner(notificacion, usuario)) {
-			usuario.agregarNotificacion(notificacion)
-			create(notificacion)
-			repoUsuario.update(usuario)
-		}
+	def agregarNotificacion(Notificacion notificacion) {
+		println("Se agrego el usuario con ID: "+notificacion.usuarioReceptor.idUsuario)
+		coleccion.add(notificacion)
 	}
 
 	def usuarioAInvitarEsOwner(Notificacion notificacion, Usuario usuarioAInvitar) {
@@ -145,10 +106,9 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 	}
 
 	def usuarioYaFueInvitadoAlPartido(Notificacion notificacion, Usuario usuarioAInvitar) {
-
-		val notis = repoUsuario.notificacionesDelUsuario(usuarioAInvitar.idUsuario)
-		notis.exists [ invitacion |
-			invitacion.partidoTieneId(notificacion.partido.idPartido)
+		coleccion.exists[ noti |
+			noti.receptorEs(usuarioAInvitar) && noti.partidoEs(notificacion.partido)
+			
 		]
 	}
 
@@ -195,11 +155,11 @@ class RepositorioNotificacion extends Repositorio<Notificacion> {
 
 		httpClient.execute(httpPost)
 	}
-
-	override entityType() {
-		Notificacion
+	
+	def getIdNotificacion() {
+		idAutoIncremental++
+		return Long.valueOf(idAutoIncremental)
 	}
-	
-	
+
 
 }

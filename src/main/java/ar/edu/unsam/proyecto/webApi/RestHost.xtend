@@ -106,14 +106,21 @@ class RestHost {
 		partido.jugadoresDesconocidos.forEach [ jugador |
 			if (!usuarioEstaSiendoNotificado(destinatariosConocidos, jugador) &&
 				!usuarioEstaSiendoNotificado(destinatariosDesconocidos, jugador) &&
-				!destinatariosConocidos.contains(jugador)) {
+				!destinatariosConocidos.contains(jugador) &&
+				!partido.equipo1.owner.esAmigoDe(jugador)){
 
 				destinatariosDesconocidos.add(jugador)
 			}
 		]
 
+		
+
 		println("Usuarios conocidos a invitar: " + destinatariosConocidos.map[nombre])
 		println("Usuarios desconocidos a invitar: " + destinatariosDesconocidos.map[nombre])
+
+		if(destinatariosConocidos.size + destinatariosDesconocidos.size < partido.canchaReservada.cantidadJugadores){
+			throw new Exception('No se han encontrado suficientes jugadores con esos parametros de busqueda')
+		}
 
 		partido.validarCreacion()
 
@@ -141,7 +148,8 @@ class RestHost {
 					invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
 				invitacion.usuarioReceptor = destinatario
 
-				repoNotificacion.agregarNotificacionAUsuario(invitacion, destinatario)
+				//CAMBIADO A agregarNotificacion
+				repoNotificacion.agregarNotificacion(invitacion)
 			}
 		]
 
@@ -154,7 +162,9 @@ class RestHost {
 				" (TODO: Formatear bien la fecha)"
 			invitacion.usuarioReceptor = destinatario
 
-			repoNotificacion.agregarNotificacionAUsuario(invitacion, destinatario)
+
+			//CAMBIADO A agregarNotificacion
+			repoNotificacion.agregarNotificacion(invitacion)
 		]
 
 	}
@@ -190,10 +200,12 @@ class RestHost {
 	def getAmigosDelUsuario(Long idUsuario) {
 		repoUsuario.getAmigosDelUsuario(idUsuario)
 	}
-
+/*
+ * TODO: REVISAR
 	def getNotificacionesDelUsuario(Long idUsuario) {
 		repoUsuario.notificacionesDelUsuario(idUsuario)
 	}
+*/
 
 	def confirmarPartidoDeId(Long idPartido) {
 		val partidoPosta = repoPartido.searchById(idPartido)
@@ -261,6 +273,7 @@ class RestHost {
 			notificacionPosta.partido.equipo2.idEquipo)
 
 		notificacionPosta.usuarioReceptor = repoUsuario.searchByIdConAmigos(notificacionPosta.usuarioReceptor.idUsuario)
+
 
 		notificacionPosta.agregarIntegranteAlPartido()
 		

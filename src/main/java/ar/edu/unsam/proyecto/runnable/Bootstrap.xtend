@@ -367,11 +367,11 @@ class Bootstrap {
 		nikoBostero.crearAmistad(juan)
 		nikoBostero.crearAmistad(pepe)
 
+		sebaCapo.crearAmistad(andy)
+		sebaCapo.crearAmistad(nikoBostero)
 		sebaCapo.crearAmistad(jugador1)
 		sebaCapo.crearAmistad(jugador2)
-		sebaCapo.crearAmistad(jugador4)
-		sebaCapo.crearAmistad(juan)
-		sebaCapo.crearAmistad(sofia)
+		
 
 		repoUsuarios.update(sebaCapo)
 		repoUsuarios.update(nikoBostero)
@@ -385,7 +385,7 @@ class Bootstrap {
 		repoUsuarios.update(agustin)
 		repoUsuarios.update(juan)
 		
-		restHost.crearNuevoPartido(partido1)
+//		restHost.crearNuevoPartido(partido1)
 
 	}
 

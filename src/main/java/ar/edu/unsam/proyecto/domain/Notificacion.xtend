@@ -1,56 +1,43 @@
 package ar.edu.unsam.proyecto.domain
 
+import ar.edu.unsam.proyecto.repos.RepositorioNotificacion
 import ar.edu.unsam.proyecto.repos.RepositorioPartido
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.annotation.JsonView
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.OneToOne
-import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
-import ar.edu.unsam.proyecto.repos.RepositorioNotificacion
 
 @Accessors
 @JsonInclude(Include.NON_NULL)//En teoria si un campo es null no lo parsea 
-@Entity
 class Notificacion{
 	
+	@JsonIgnore
+	transient RepositorioNotificacion  repoNotificacion = RepositorioNotificacion.instance
 	
-	@Id @GeneratedValue
 	@JsonView(ViewsNotificacion.NotificacionView)
-	Long idNotificacion
+	Long idNotificacion = repoNotificacion.getIdNotificacion
 	
-	@Column()
 	@JsonView(ViewsNotificacion.NotificacionView)
 	String titulo
 	
-	@Column()
 	@JsonView(ViewsNotificacion.NotificacionView)
 	String descripcion
 
-	@OneToOne
 	@JsonView(ViewsNotificacion.NotificacionView)
 	Partido partido
 	
-	@OneToOne
 	@JsonView(ViewsNotificacion.NotificacionView)
 	Usuario usuario
 	
-	@OneToOne
 	@JsonView(ViewsNotificacion.NotificacionView)
 	Usuario usuarioReceptor
 	
+	@JsonIgnore
+	transient Boolean aceptado = false
 	
-	transient RepositorioNotificacion  repoNotificacion = RepositorioNotificacion.instance
-	
-	@Column
-	Boolean aceptado = false
-	
-	@Transient
+	@JsonIgnore
 	transient RepositorioPartido repoPartido = RepositorioPartido.instance
 	
 	//TODO: Discutir si esto aca siquiera tiene sentido
@@ -70,15 +57,23 @@ class Notificacion{
 	
 	def agregarIntegranteAlPartido() {
 		
-		if(usuarioReceptor.esAmigoDe(partido.equipo1.owner) && partido.faltanJugadores()){
+		if(usuarioReceptor.esAmigoDe(partido.equipo1.owner)){
 			//DEBUG: Aceptado
-			aceptarInvitacionAmigo(usuarioReceptor)
+			if(partido.faltanJugadores()){		
+				aceptarInvitacionAmigo(usuarioReceptor)
+			}else{
+				throw new Exception('No hay hueco en el partido para este jugador')
+			}
+			
 		}else{
-			aceptarInvitacionDesconocido(usuarioReceptor)
+			if(partido.faltanJugadores()){
+				aceptarInvitacionDesconocido(usuarioReceptor)
+			}else{
+				throw new Exception('No hay hueco en el partido para este jugador')
+			}
 		}
 		
 		aceptado = true
-		repoNotificacion.update(this)
 		repoPartido.update(partido)
 	}
 	
@@ -103,8 +98,16 @@ class Notificacion{
 		partido.cantidadDeConfirmaciones = partido.cantidadDeConfirmaciones + 1
 	}
 	
-	def invitacionFueAceptada() {
+	def fueAceptada() {
 		return aceptado
+	}
+	
+	def receptorTieneId(Long idUsuario) {
+		usuarioReceptor.idUsuario == idUsuario
+	}
+	
+	def partidoEs(Partido partidoBuscado) {
+		partido.idPartido == partidoBuscado.idPartido
 	}
 	
 }

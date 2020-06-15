@@ -140,6 +140,7 @@ class RestHostAPI {
 			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
 		}
 	}
 
@@ -292,6 +293,11 @@ class RestHostAPI {
 
 	}
 
+/*
+ * 
+ * 
+ 
+	TODO: REVISAR
 	@Get("/notificaciones/:idUsuario")
 	def getNotificacionesDelUsuarioById() {
 		try {
@@ -304,6 +310,11 @@ class RestHostAPI {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
+*/
+
+
+
+
 
 	/* 
 	 * 	@Get("/notificaciones-candidatos/:idUsuario")
@@ -323,8 +334,15 @@ class RestHostAPI {
 	def getInvitacionesDelUsuarioById() {
 		try {
 
+
+			println("NOTIS: "+restHost.getInvitacionesDelUsuario(Long.valueOf(idUsuario)))
+			
+
 			var notificacionesParseadas = auxiliar.parsearObjeto(
 				restHost.getInvitacionesDelUsuario(Long.valueOf(idUsuario)), ViewsNotificacion.NotificacionView)
+			
+			println("NPTIS PARSEADAS: "+notificacionesParseadas)
+			
 			ok(notificacionesParseadas)
 
 		} catch (Exception e) {
