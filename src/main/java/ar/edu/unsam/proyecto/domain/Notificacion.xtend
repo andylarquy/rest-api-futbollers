@@ -70,8 +70,7 @@ class Notificacion{
 	
 	def agregarIntegranteAlPartido() {
 		
-		if(usuarioReceptor.esAmigoDe(partido.equipo1.owner)){
-			
+		if(usuarioReceptor.esAmigoDe(partido.equipo1.owner) && partido.faltanJugadores()){
 			//DEBUG: Aceptado
 			aceptarInvitacionAmigo(usuarioReceptor)
 		}else{

@@ -263,7 +263,9 @@ class RestHost {
 		notificacionPosta.usuarioReceptor = repoUsuario.searchByIdConAmigos(notificacionPosta.usuarioReceptor.idUsuario)
 
 		notificacionPosta.agregarIntegranteAlPartido()
-
+		
+		//notificacionPosta.concluirPartido()
+		
 	// repoNotificacion.aceptarInvitacion(notificacionPosta)
 	// TODO: Enviar notificacion con firebase
 	}

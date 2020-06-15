@@ -334,6 +334,10 @@ class Partido {
 		}
 	}
 	
+	def faltanJugadores() {
+		cantidadDeConfirmaciones + 1 < canchaReservada.cantidadJugadores
+	}
+	
 	/* 
 	def agregarIntegrante(Usuario usuario) {
 		
