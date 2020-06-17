@@ -144,20 +144,20 @@ class Partido {
 		equipo2.validar
 		empresa.validar
 		canchaReservada.validar
-		repoPartido.validarFechaCancha(fechaDeReserva)
+		repoPartido.validarFechaCancha(fechaDeReserva, canchaReservada)
 	}
 	
 	//TODO: Pensar bien estas validaciones
 	def validarCreacion() {
 		empresa.validar
 		canchaReservada.validar
-		repoPartido.validarFechaCancha(fechaDeReserva)
+		repoPartido.validarFechaCancha(fechaDeReserva, canchaReservada)
 	}
 	
 	def validarPersistir() {
 		empresa.validar
 		canchaReservada.validar
-		repoPartido.validarFechaCancha(fechaDeReserva)
+		repoPartido.validarFechaCancha(fechaDeReserva, canchaReservada)
 	}
 
 	// TODO: Separar en equipo y equipo completo
@@ -165,9 +165,10 @@ class Partido {
 		equipo1.participaUsuario(usuario) || equipo2.participaUsuario(usuario)
 	}
 
-	def validarFechaEstaLibre(LocalDateTime fecha) {
+	def validarFechaEstaLibre(LocalDateTime fecha, Cancha cancha) {
 		if (sonLaMismaFecha(fechaDeReserva.toLocalDate, fecha.toLocalDate) &&
-			laDiferenciaEsMenorAUnaHora(fechaDeReserva, fecha)) {
+			laDiferenciaEsMenorAUnaHora(fechaDeReserva, fecha) &&
+			canchaReservada.idCancha == cancha.idCancha) {
 			throw new ObjectAlreadyExists('Ya existe una reserva para esa fecha y hora')
 		}
 	}

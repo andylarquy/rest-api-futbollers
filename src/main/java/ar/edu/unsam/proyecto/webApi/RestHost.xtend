@@ -19,6 +19,7 @@ import java.util.List
 import java.util.Set
 import javax.persistence.NoResultException
 import org.eclipse.xtend.lib.annotations.Accessors
+import ar.edu.unsam.proyecto.domain.Cancha
 
 @Accessors
 class RestHost {
@@ -196,8 +197,9 @@ class RestHost {
 		promocion !== null ? return promocion : throw new ObjectDoesntExists('No existe ese codigo promocional')
 	}
 
-	def void validarFechaCancha(LocalDateTime fecha) {
-		repoPartido.validarFechaCancha(fecha)
+	def void validarFechaCancha(LocalDateTime fecha, Long idCancha) {
+		val canchaPosta = repoCancha.searchById(idCancha)
+		repoPartido.validarFechaCancha(fecha, canchaPosta)
 	}
 
 	def getAmigosDelUsuario(Long idUsuario) {

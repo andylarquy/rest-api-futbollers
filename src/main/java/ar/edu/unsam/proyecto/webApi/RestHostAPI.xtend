@@ -267,8 +267,10 @@ class RestHostAPI {
 			val jsonBody = new JSONObject(body)
 			val fecha = jsonBody.getString("fecha")
 			val fechaPosta = LocalDateTime.parse(fecha)
-
-			restHost.validarFechaCancha(fechaPosta)
+			
+			val idCanchaReservada = jsonBody.getLong("idCanchaReservada")
+			restHost.validarFechaCancha(fechaPosta, idCanchaReservada)
+			
 			ok('{"status":200, "message":"ok"}')
 
 		} catch (ObjectAlreadyExists e) {

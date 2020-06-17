@@ -1,12 +1,13 @@
 package ar.edu.unsam.proyecto.repos
 
+import ar.edu.unsam.proyecto.domain.Cancha
 import ar.edu.unsam.proyecto.domain.Partido
+import ar.edu.unsam.proyecto.domain.Usuario
 import java.time.LocalDateTime
 import java.util.List
 import javax.persistence.criteria.JoinType
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.commons.model.annotations.Observable
-import ar.edu.unsam.proyecto.domain.Usuario
 
 @Observable
 @Accessors
@@ -55,8 +56,8 @@ class RepositorioPartido extends Repositorio<Partido> {
 	}
 
 	
-	def void validarFechaCancha(LocalDateTime fecha){
-		coleccion.forEach[it.validarFechaEstaLibre(fecha)]
+	def void validarFechaCancha(LocalDateTime fecha, Cancha cancha){
+		coleccion.forEach[it.validarFechaEstaLibre(fecha, cancha)]
 	}
 	
 	override entityType() {
