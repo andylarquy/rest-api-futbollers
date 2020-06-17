@@ -20,6 +20,11 @@ import java.io.IOException
 import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.util.List
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
+import java.time.ZoneId
+import java.time.Instant
 
 /*
  * La biblioteca de Jackson tiene un sistema para elegir cuales propiedades mostrar y cuales no 
@@ -92,6 +97,15 @@ class AuxiliarDynamicJson {
 			val idCancha = json.getAsJsonPrimitive().getAsLong()
 			return repoCancha.searchById(idCancha)
 		}
+	}
+	
+	// [ PARSEO DE LOCALDATETIME ]
+	val OUTPUT_DATE_FORMAT = "dd/MM/yyyy - HH:mm"
+	val outputFormat = new SimpleDateFormat(OUTPUT_DATE_FORMAT, Locale.getDefault())
+	
+	def String dateTransformer(LocalDateTime fecha){
+		val fechaAsDate = Date.from(fecha.atZone(ZoneId.systemDefault()).toInstant());
+		return outputFormat.format(fechaAsDate)
 	}
 
 }

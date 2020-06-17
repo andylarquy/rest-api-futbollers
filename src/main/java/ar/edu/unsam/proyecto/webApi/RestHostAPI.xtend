@@ -138,6 +138,7 @@ class RestHostAPI {
 			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
 		}
 	}
 

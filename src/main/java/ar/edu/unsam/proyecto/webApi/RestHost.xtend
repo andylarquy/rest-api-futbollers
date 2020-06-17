@@ -124,6 +124,9 @@ class RestHost {
 
 		partido.validarCreacion()
 
+		//Antes de enviar las notificaciones removemos al owner para que no se notifique a si mismo
+		destinatariosConocidos.removeIf[jugador | jugador.idUsuario == partido.equipo1.owner.idUsuario]
+
 		partido.enviarNotifiacionesAConocidos(destinatariosConocidos, partido.equipo1.owner)
 		partido.enviarNotifiacionesADesconocidos(destinatariosDesconocidos)
 

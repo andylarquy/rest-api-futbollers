@@ -30,6 +30,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
 import ar.edu.unsam.proyecto.exceptions.InsufficientCandidates
+import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson
 
 @Accessors
 @Entity
@@ -99,6 +100,9 @@ class Partido {
 	// transient static val ID_EQUIPO_TEMPORAL = -2
 	transient static val DIAS_PARA_CONFIRMAR = 2
 	transient static val DEBUG_SEGUNDOS_PARA_CONFIRMAR = 30
+	
+	@Transient
+	transient AuxiliarDynamicJson auxiliar = new AuxiliarDynamicJson
 
 	new() {
 		// ======= [DEBUG] =======
@@ -308,7 +312,7 @@ class Partido {
 		invitacion.partido = this
 		invitacion.titulo = "¡ "+owner.nombre+" te invito a un partido!"
 		invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
-			invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
+			auxiliar.dateTransformer(invitacion.partido.fechaDeReserva)
 
 		repoNotificacion.enviarMultipleNotificacion(invitacion, destinatarios)
 	}
@@ -318,7 +322,7 @@ class Partido {
 		invitacion.partido = this
 		invitacion.titulo = "¡Has recibido una invitacion para un partido!"
 		invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
-			invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
+			auxiliar.dateTransformer(invitacion.partido.fechaDeReserva)
 		repoNotificacion.enviarMultipleNotificacion(invitacion, destinatarios)
 	}
 	
