@@ -186,5 +186,9 @@ class Usuario {
 			throw new Exception('El usuario debe tener un ID')
 		}
 	}
+	
+	def tienePosicion(String posicionBuscada) {
+		posicion.equals(posicionBuscada)
+	}
 
 }
