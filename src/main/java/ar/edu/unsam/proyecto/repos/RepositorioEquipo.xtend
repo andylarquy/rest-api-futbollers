@@ -71,8 +71,12 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 				
 				val criterio1 = criteria.equal(tablaIntegrantes.get("idUsuario"),usuario.idUsuario)
 				val criterio2 = criteria.equal(from.get("owner"), usuario.idUsuario)
-		
-				query.where(criteria.or(criterio1, criterio2))
+				
+				val criterio3 = criteria.or(criterio1, criterio2)
+				
+				val criterio4 = criteria.notLike(from.get("nombre"), "%equipo temporal%")
+				
+				query.where(criteria.and(criterio3, criterio4))
 				return query
 			],
 		
