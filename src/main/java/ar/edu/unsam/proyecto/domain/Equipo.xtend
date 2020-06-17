@@ -190,6 +190,26 @@ class Equipo {
 		
 		
 	}
+	
+	def validarCreacion() {
+		if (nombre === null){
+			throw new Exception('El equipo debe tener un nombre')
+		}
+		
+		if (foto === null){
+			throw new Exception('El equipo debe tener una foto')
+		}
+		
+		if (owner  === null){
+			throw new Exception('El equipo debe tener un dueño')
+		}
+		
+		owner.validarCreacion
+		
+		if (integrantes === null){
+			throw new Exception('El equipo debe tener una lista de integrantes')
+		}
+	}
 
 	
 }

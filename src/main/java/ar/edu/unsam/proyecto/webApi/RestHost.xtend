@@ -76,7 +76,7 @@ class RestHost {
 	}
 
 	def crearNuevoEquipo(Equipo equipo) {
-		equipo.validar()
+		equipo.validarCreacion()
 		repoEquipo.create(equipo)
 	}
 

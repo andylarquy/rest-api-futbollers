@@ -118,10 +118,8 @@ class RestHostAPI {
 			ok(partidoParseado)
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
-			throw e
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 	}
 
@@ -140,7 +138,6 @@ class RestHostAPI {
 			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 	}
 
@@ -180,7 +177,7 @@ class RestHostAPI {
 			val gson = new GsonBuilder().registerTypeAdapter(Usuario, new UsuarioAdapter).registerTypeAdapter(List,
 				new UsuarioListAdapter()).create()
 
-			val equipo = gson.fromJson(body, Equipo)
+			val equipo = body.fromJson(Equipo)
 
 			restHost.crearNuevoEquipo(equipo)
 			ok('{"status":200, "message":"ok"}')
@@ -361,7 +358,6 @@ class RestHostAPI {
 		} catch (Exception e) {
 		
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 
 	}

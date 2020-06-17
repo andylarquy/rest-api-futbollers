@@ -26,7 +26,6 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 		
 		queryTemplate(
 			[criteria, query, from |
-				//from.fetch("owner", JoinType.LEFT)
 				from.fetch("integrantes", JoinType.LEFT)
 				return query
 			], 

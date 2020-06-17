@@ -44,9 +44,6 @@ class RepositorioPartido extends Repositorio<Partido> {
 			[criteria, query, from |
 				from.fetch("equipo1", JoinType.LEFT)
 				from.fetch("equipo2", JoinType.LEFT)
-				//from.fetch("empresa", JoinType.LEFT)
-				//from.fetch("canchaReservada", JoinType.LEFT)
-				//from.fetch("promocion", JoinType.LEFT)
 				query.where(criteria.equal(from.get("estado"), true))
 				return query
 			], 

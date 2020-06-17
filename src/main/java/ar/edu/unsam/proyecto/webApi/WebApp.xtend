@@ -19,18 +19,9 @@ class WebApp {
 			throw e
 		}
 		
-		// CHEATSHEET
-		// Para no usar helper method delego en una nueva clase
-		// las instanciacion y uso los objetos acá
 		val Bootstrap bootstrap = Bootstrap.getInstance()
 		bootstrap.runBootstrap()
-		val restHost = new RestHost => [
-			/*repoIndividuo = instancias.repoSuperInd
-			 * repoEquipo = instancias.repoEquipo
-			 * repoAmenaza = instancias.repoAmenaza
-			 repoItem = instancias.repoItem*/
-			// parametros y cosas locas
-		]
+		val restHost = new RestHost
 
 		XTRest.startInstance(port, new RestHostAPI(restHost))
 	}

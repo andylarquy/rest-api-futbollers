@@ -133,7 +133,7 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 	
 
 
-	//TODO: Hacer en formato de query	
+	//TODO: Mejorar el formato de esta query	
 	def getUsuariosEnElRangoDe(Usuario usuarioBuscado, int rangoDeBusqueda, String sexoBuscado, String posicionBuscada) {
 		
 		val filtroPorRango = coleccion.filter[usuario | 
@@ -141,15 +141,10 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 			usuario.estaDentroDelRango(usuarioBuscado.getUbicacion, rangoDeBusqueda)
 		]
 		
-		
-		
 		if(!sexoBuscado.equals("Mixto")){
 			val a = filtroPorRango.filter[usuario | usuario.tieneSexo(sexoBuscado)]
 			return a
 		}
-		
-		
-		
 		
 		return filtroPorRango
 		

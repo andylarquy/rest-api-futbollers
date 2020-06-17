@@ -337,22 +337,6 @@ class Partido {
 		cantidadDeConfirmaciones + 1 < canchaReservada.cantidadJugadores
 	}
 	
-	/* 
-	def agregarIntegrante(Usuario usuario) {
-		
-		if(equipo1.estaIncompleto(cancha, usuario)){
-			equipo1.agregarIntegranteAPuesto(usuario)
-			cantidadDeConfirmaciones++
-		}else if (equipo2.tienePuestoLibrePara(usuario)){
-			equipo2.agregarIntegranteAPuesto(usuario)
-			cantidadDeConfirmaciones++
-		}else{
-			throw new Exception('No hay hueco en el partido para este jugador')
-		}
-	}
-	*/
-
-	
 }
 
 //TimerTask Auxiliar

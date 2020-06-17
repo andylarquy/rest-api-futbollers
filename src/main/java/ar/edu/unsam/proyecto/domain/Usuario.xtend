@@ -180,5 +180,11 @@ class Usuario {
 	def esAmigoDe(Usuario usuarioBuscado) {
 		amigos.exists[usuarioBuscado.idUsuario == idUsuario]
 	}
+	
+	def validarCreacion() {
+		if(idUsuario === null){
+			throw new Exception('El usuario debe tener un ID')
+		}
+	}
 
 }
