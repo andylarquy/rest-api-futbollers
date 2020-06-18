@@ -63,7 +63,7 @@ class Partido {
 
 	@JsonView(ViewsPartido.ListView, ViewsNotificacion.NotificacionView)
 	@Column
-	Boolean confirmado = false
+	Boolean confirmado
 
 	@Column
 	Boolean estado = true
@@ -219,6 +219,7 @@ class Partido {
 
 	def prepararParaPersistir() {
 		
+		confirmado = false
 		eliminarJugadoresConocidos()
 		mapearJugadoresTemporales()
 		asignarNombreEquipos()

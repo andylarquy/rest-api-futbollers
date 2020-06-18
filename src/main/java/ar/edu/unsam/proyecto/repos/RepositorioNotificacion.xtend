@@ -60,11 +60,10 @@ class RepositorioNotificacion {
 		].toList
 
 		notificaciones.forEach [ noti |
+			noti.partido = repoPartido.searchById(noti.partido.idPartido)
 			noti.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(noti.partido.equipo1.idEquipo)
 			noti.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(noti.partido.equipo2.idEquipo)
 		]
-
-		println(notificaciones.map[partido.equipo1.integrantes])
 
 		notificaciones = notificaciones.filter[noti|noti.fueAceptada()].toList
 
@@ -72,6 +71,8 @@ class RepositorioNotificacion {
 		partidosDelUsuario.addAll(notificaciones.map[partido])
 
 		repoPartido.coleccion.forEach [ partido |
+
+			println(partido.confirmado)
 
 			if (partido.equipo1.esOwner(usuario) && !partidosDelUsuario.exists[it.idPartido == partido.idPartido]) {
 

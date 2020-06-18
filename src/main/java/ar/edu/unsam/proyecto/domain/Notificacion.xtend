@@ -66,6 +66,11 @@ class Notificacion {
 				// TODO: Quedarse con un solo usuario
 				notificacionTemporal.usuario = partido.equipo1.owner
 				notificacionTemporal.titulo = "¡" + usuarioReceptor.nombre + " acepto tu invitacion a un partido!"
+				
+				if(!partido.faltanJugadores){
+					notificacionTemporal.descripcion = "¡El partido ya esta listo para la confirmacion!"
+				}
+				
 				repoNotificacion.enviarUnaNotificacion(notificacionTemporal)
 			
 			} else {
@@ -81,6 +86,10 @@ class Notificacion {
 			// TODO: Quedarse con un solo usuario
 			notificacionTemporal.usuario = partido.equipo1.owner
 			notificacionTemporal.titulo = "¡" + usuarioReceptor.nombre + " acepto tu invitacion a un partido!"
+			if(!partido.faltanJugadores){
+					notificacionTemporal.descripcion = "¡El partido ya esta listo para la confirmacion!"
+				}
+			repoNotificacion.enviarUnaNotificacion(notificacionTemporal)
 		} else {
 			throw new Exception('No hay hueco en el partido para este jugador')
 		}
