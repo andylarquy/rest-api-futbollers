@@ -115,6 +115,8 @@ class RestHostAPI {
 		try {
 			var partidoParseado = auxiliar.parsearObjeto(restHost.getPartidosDelUsuario(Long.valueOf(idUsuario)),
 				ViewsPartido.ListView)
+				
+				println(partidoParseado)
 			ok(partidoParseado)
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
@@ -138,7 +140,6 @@ class RestHostAPI {
 			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 	}
 
@@ -359,8 +360,8 @@ class RestHostAPI {
 			ok('{"status":200, "message":"ok"}')
 
 		} catch (Exception e) {
-		
 			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
 		}
 
 	}

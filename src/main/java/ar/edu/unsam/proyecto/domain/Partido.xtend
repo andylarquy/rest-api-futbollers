@@ -57,11 +57,6 @@ class Partido {
 	@ManyToOne
 	Cancha canchaReservada
 
-	@JsonSerialize(using=LocalDateTimeSerializer)
-	@Column()
-	@JsonView(ViewsPartido.DetallesView, ViewsNotificacion.NotificacionView, ViewsPartido.ListView)
-	LocalDateTime fechaDeReserva
-
 	@JsonView(ViewsPartido.DetallesView, ViewsNotificacion.NotificacionView)
 	@ManyToOne
 	Promocion promocion
@@ -80,7 +75,12 @@ class Partido {
 	@JsonSerialize(using=LocalDateTimeSerializer)
 	@JsonView(ViewsPartido.ListView)
 	@Column
-	LocalDateTime fechaDeCreacion = LocalDateTime.now()
+	LocalDateTime fechaDeCreacion = LocalDateTime.now().withNano(0).withSecond(0)
+	
+	@JsonSerialize(using=LocalDateTimeSerializer)
+	@Column
+	@JsonView(ViewsPartido.DetallesView, ViewsNotificacion.NotificacionView, ViewsPartido.ListView)
+	LocalDateTime fechaDeReserva
 
 	@Transient
 	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
@@ -340,6 +340,16 @@ class Partido {
 	
 	def faltanJugadores() {
 		cantidadDeConfirmaciones + 1 < canchaReservada.cantidadJugadores
+	}
+	
+	//Valida que la fecha de reserva sea minimo dos dias despues que la de creacion
+	//TODO: No estoy seguro de si hace falta el valor absoluto, pero mejor prevenir
+	def validarDiasDeConfirmacionFechaDeReserva() {
+		
+		if(Math.abs(Period.between(fechaDeReserva.toLocalDate, fechaDeCreacion.toLocalDate).days) < DIAS_PARA_CONFIRMAR){
+			throw new Exception('Debes reservar con una antelacion de minimo '+DIAS_PARA_CONFIRMAR+' dias')
+		}
+		
 	}
 	
 }

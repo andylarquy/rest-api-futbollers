@@ -96,6 +96,7 @@ class RestHost {
 
 		partido.mapearEmpresa()
 		partido.mapearCancha()
+		partido.validarDiasDeConfirmacionFechaDeReserva
 
 		val Set<Usuario> destinatariosConocidos = new HashSet
 		val Set<Usuario> destinatariosDesconocidos = new HashSet

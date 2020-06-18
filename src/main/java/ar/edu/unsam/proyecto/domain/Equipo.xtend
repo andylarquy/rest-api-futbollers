@@ -18,6 +18,8 @@ import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
+import java.util.ArrayList
+import java.util.List
 
 @Accessors
 @Entity
@@ -176,8 +178,32 @@ class Equipo {
 			jugador.esJugadorReservado() && jugador.jugadorReservadoAdmite(usuario)
 		]
 	}
-		
+	
 	def agregarIntegranteAPuesto(Usuario usuario) {
+		/* 
+		 * TODO
+		// Para garantizar la maxima probabilidad de matcheo realizamos un sort colocando
+		// Al principio los puestos que no sean 'mixtos' o 'cualquiera', de modo que se
+		// Ocupen apenas sea posible
+		
+		val List<Usuario> integrantesOrdenados = new ArrayList
+		integrantesOrdenados.addAll(integrantes)
+		
+		integrantesOrdenados.forEach[integrante|
+			if(integrante.posicion === null){
+				integrante.posicion = "Cualquiera"
+			}
+			
+			if(integrante.sexo === null){
+				integrante.sexo = "Mixto"
+			}
+		]
+		
+		* println(integrantesOrdenados.map[posicion])
+		* integrantesOrdenados.sortBy[it.sexo.equals("Mixto") || it.posicion.equals("Cualquiera")]
+		* println(integrantesOrdenados.map[posicion])
+		*/
+		
 		val jugadorReservado = integrantes.findFirst[jugador | jugador.jugadorReservadoAdmite(usuario)]
 		
 		integrantes.remove(jugadorReservado)

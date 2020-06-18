@@ -385,7 +385,7 @@ class Bootstrap {
 		repoUsuarios.update(agustin)
 		repoUsuarios.update(juan)
 		
-//		restHost.crearNuevoPartido(partido1)
+		//restHost.crearNuevoPartido(partido1)
 
 	}
 
