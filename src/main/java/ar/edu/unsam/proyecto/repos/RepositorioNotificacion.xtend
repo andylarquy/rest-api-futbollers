@@ -15,7 +15,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.json.JSONObject
 
 @Accessors
-class RepositorioNotificacion{
+class RepositorioNotificacion {
 
 	public static RepositorioNotificacion repoNotificacion
 
@@ -29,9 +29,8 @@ class RepositorioNotificacion{
 	def reset() {
 		repoNotificacion = null
 	}
-	
+
 	int idAutoIncremental = 0
-	
 
 	transient Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load()
 	transient AuxiliarDynamicJson auxiliar = new AuxiliarDynamicJson
@@ -44,60 +43,65 @@ class RepositorioNotificacion{
 	Set<Notificacion> coleccion = new HashSet()
 
 	def searchById(Long idNotificacion) {
-		coleccion.findFirst[it.idNotificacion == idNotificacion]
+
+		val notificacion = coleccion.findFirst[it.idNotificacion == idNotificacion]
+
+		if (notificacion === null) {
+			throw new Exception('No se ha encontrado una notificacion con ese ID')
+		}
+		return notificacion
 	}
 
 	// TODO: Revisar si esta query hace las cosas bien
-	def getPartidosDelUsuario(Usuario usuario){	
-		
-		var notificaciones = coleccion.filter[noti |
+	def getPartidosDelUsuario(Usuario usuario) {
+
+		var notificaciones = coleccion.filter [ noti |
 			noti.fueAceptada() && noti.receptorEs(usuario)
 		].toList
-		
-		notificaciones.forEach[noti | 
+
+		notificaciones.forEach [ noti |
 			noti.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(noti.partido.equipo1.idEquipo)
 			noti.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(noti.partido.equipo2.idEquipo)
 		]
-		
+
 		println(notificaciones.map[partido.equipo1.integrantes])
-		
-		notificaciones = notificaciones.filter[noti | noti.fueAceptada()].toList
-		
+
+		notificaciones = notificaciones.filter[noti|noti.fueAceptada()].toList
+
 		val partidosDelUsuario = new ArrayList
 		partidosDelUsuario.addAll(notificaciones.map[partido])
-	
-		repoPartido.coleccion.forEach[ partido |
-			
-			if(partido.equipo1.esOwner(usuario) && !partidosDelUsuario.exists[it.idPartido == partido.idPartido]){
-				
+
+		repoPartido.coleccion.forEach [ partido |
+
+			if (partido.equipo1.esOwner(usuario) && !partidosDelUsuario.exists[it.idPartido == partido.idPartido]) {
+
 				partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
 				partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
-				
+
 				partidosDelUsuario.add(partido)
 			}
 		]
-		
-		
+
 		return partidosDelUsuario
-		
+
 	}
 
-	def getInvitacionesDelUsuario(Long idUsuario){
-		
-		coleccion.forEach[noti |
-		println("//////////////////////")
-		println("ID NOTI: "+noti.idNotificacion)
-		println("ID RECEPTOR: "+noti.usuarioReceptor.idUsuario)
+	def getInvitacionesDelUsuario(Long idUsuario) {
+
+		coleccion.forEach [ noti |
+			println("//////////////////////")
+			println("ID NOTI: " + noti.idNotificacion)
+			println("ID RECEPTOR: " + noti.usuarioReceptor.idUsuario)
 		]
-		
-		coleccion.filter[noti |
+
+		coleccion.filter [ noti |
 			!noti.fueAceptada() && noti.receptorTieneId(idUsuario)
 		].toList
-		
+
 	}
 
 	def agregarNotificacion(Notificacion notificacion) {
-		println("Se agrego el usuario con ID: "+notificacion.usuarioReceptor.idUsuario)
+		println("Se agrego el usuario con ID: " + notificacion.usuarioReceptor.idUsuario)
 		coleccion.add(notificacion)
 	}
 
@@ -106,9 +110,9 @@ class RepositorioNotificacion{
 	}
 
 	def usuarioYaFueInvitadoAlPartido(Notificacion notificacion, Usuario usuarioAInvitar) {
-		coleccion.exists[ noti |
+		coleccion.exists [ noti |
 			noti.receptorEs(usuarioAInvitar) && noti.partidoEs(notificacion.partido)
-			
+
 		]
 	}
 
@@ -155,11 +159,10 @@ class RepositorioNotificacion{
 
 		httpClient.execute(httpPost)
 	}
-	
+
 	def getIdNotificacion() {
 		idAutoIncremental++
 		return Long.valueOf(idAutoIncremental)
 	}
-
 
 }

@@ -23,145 +23,139 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 	def reset() {
 		repoUsuario = null
 	}
-	
+
 	int idAutoDecremental = -2
 	int idAutoIncremental = 1
-	
-	def crearUsuarioTemporal(Usuario usuario){
+
+	def crearUsuarioTemporal(Usuario usuario) {
 		asignarIdTemporal(usuario)
 		create(usuario)
 	}
-	
-	def asignarIdTemporal(Usuario usuario){
+
+	def asignarIdTemporal(Usuario usuario) {
 		usuario.idUsuario = Long.valueOf(idAutoDecremental)
 		idAutoDecremental--
 	}
-	
-	def crearUsuario(Usuario usuario){
+
+	def crearUsuario(Usuario usuario) {
 		usuario.idUsuario = Long.valueOf(idAutoIncremental)
 		idAutoIncremental++
 		create(usuario)
 	}
 
-	private new() {}
-	
-	override entityId(Usuario usuario){
+	private new() {
+	}
+
+	override entityId(Usuario usuario) {
 		usuario.idUsuario
 	}
-	
-	def coleccion(){
-		
+
+	def coleccion() {
+
 		queryTemplate(
 			
-			[criteria, query, from |
-				return query
-			], 
-			[query | query.resultList]) as List<Usuario>
+			[ criteria, query, from |
+			return query
+		], [query|query.resultList]) as List<Usuario>
 	}
-	
-	def existeUsuarioConMail(String email){
-		coleccion.exists[usuario | usuario.tieneEsteMail(email)]
+
+	def existeUsuarioConMail(String email) {
+		coleccion.exists[usuario|usuario.tieneEsteMail(email)]
 	}
 
 	def searchById(Long idUsuario) {
 		queryTemplate(
-			[criteria, query, from |
-				query.where(criteria.equal(from.get("idUsuario"), idUsuario))
-				return query
-			], 
-			[query | query.singleResult]) as Usuario
+			[ criteria, query, from |
+			query.where(criteria.equal(from.get("idUsuario"), idUsuario))
+			return query
+		], [query|query.singleResult]) as Usuario
 	}
-	
-	def getUsuarioConCredenciales(String email, String password){
-	
-	queryTemplate([criteria, query, from |
+
+	def getUsuarioConCredenciales(String email, String password) {
+
+		queryTemplate([ criteria, query, from |
 
 			query.where(
 				criteria.equal(from.get("email"), email),
 				criteria.equal(from.get("password"), password)
 			)
-		], [query | query.singleResult]) as Usuario
-		
+		], [query|query.singleResult]) as Usuario
+
 	}
-	
+
 	override entityType() {
 		Usuario
 	}
-	
-	def getAmigosDelUsuario(Long idUsuario){
-		val usuario = queryTemplate([criteria, query, from |
-			from.fetch("amigos", JoinType.LEFT)	
+
+	def getAmigosDelUsuario(Long idUsuario) {
+		val usuario = queryTemplate([ criteria, query, from |
+			from.fetch("amigos", JoinType.LEFT)
 			query.where(criteria.equal(from.get("idUsuario"), idUsuario))
 			return query
-		], 
-		
-		[query | query.singleResult]) as Usuario
-		
+		], [query|query.singleResult]) as Usuario
+
 		usuario.amigos
 	}
-	
+
 	def getCandidatosDelUsuario(Usuario usuario) {
-		queryTemplate([criteria, query, from |
-			
-			
+		queryTemplate([ criteria, query, from |
+
 			val criteriosWhere = new ArrayList()
-			
+
 			if (!usuario.amigos.empty) {
 				criteriosWhere.add(criteria.not(from.get("idUsuario").in(usuario.idDeSusAmigos.toSet)))
 			}
 
 			criteriosWhere.add(criteria.notEqual(from.get("idUsuario"), usuario.idUsuario))
-			
+
 			query.where(criteriosWhere)
-		], [query | query.resultList.toSet])
+		], [query|query.resultList.toSet])
 
 	}
-	
+
 	/*
-	 TODO: REVISAR 
-	def notificacionesDelUsuario(Long idUsuario) {
-		val usuario = queryTemplate([criteria, query, from |
-				query.where(criteria.equal(from.get("idUsuario"), idUsuario))
-				return query
-			], 
-			[query | query.singleResult]) as Usuario
-			
-			
-			return usuario.invitaciones
-	}
-	*/
-	
+	 *  TODO: REVISAR 
+	 * def notificacionesDelUsuario(Long idUsuario) {
+	 * 	val usuario = queryTemplate([criteria, query, from |
+	 * 			query.where(criteria.equal(from.get("idUsuario"), idUsuario))
+	 * 			return query
+	 * 		], 
+	 * 		[query | query.singleResult]) as Usuario
+	 * 		
+	 * 		
+	 * 		return usuario.invitaciones
+	 * }
+	 */
+	// TODO: Mejorar el formato de esta query	
+	def getUsuariosEnElRangoDe(Usuario usuarioBuscado, int rangoDeBusqueda, String sexoBuscado,
+		String posicionBuscada) {
 
-
-	//TODO: Mejorar el formato de esta query	
-	def getUsuariosEnElRangoDe(Usuario usuarioBuscado, int rangoDeBusqueda, String sexoBuscado, String posicionBuscada) {
-		
-		var candidatosFiltrados = coleccion.filter[usuario | 
-			!usuario.esUnJugadorReservado &&
-			usuario.estaDentroDelRango(usuarioBuscado.getUbicacion, rangoDeBusqueda)
+		var candidatosFiltrados = coleccion.filter [ usuario |
+			!usuario.esUnJugadorReservado && usuario.estaDentroDelRango(usuarioBuscado.getUbicacion, rangoDeBusqueda)
 		]
-		
-		if(!posicionBuscada.equals("Cualquiera")){
-			candidatosFiltrados = candidatosFiltrados.filter[usuario | usuario.tienePosicion(posicionBuscada)]
+
+		if (posicionBuscada !== null) {
+			if (!posicionBuscada.equals("Cualquiera")) {
+				candidatosFiltrados = candidatosFiltrados.filter[usuario|usuario.tienePosicion(posicionBuscada)]
+			}
 		}
-		
-		if(!sexoBuscado.equals("Mixto")){
-			candidatosFiltrados = candidatosFiltrados.filter[usuario | usuario.tieneSexo(sexoBuscado)]
+
+		if (!sexoBuscado.equals("Mixto")) {
+			candidatosFiltrados = candidatosFiltrados.filter[usuario|usuario.tieneSexo(sexoBuscado)]
 
 		}
-		
+
 		return candidatosFiltrados
-		
+
 	}
-	
+
 	def searchByIdConAmigos(Long idUsuario) {
 		queryTemplate(
-			[criteria, query, from |
-				from.fetch("amigos", JoinType.LEFT)
-				query.where(criteria.equal(from.get("idUsuario"), idUsuario))
-				return query
-			], 
-			[query | query.singleResult]) as Usuario
+			[ criteria, query, from |
+			from.fetch("amigos", JoinType.LEFT)
+			query.where(criteria.equal(from.get("idUsuario"), idUsuario))
+			return query
+		], [query|query.singleResult]) as Usuario
 	}
-	
+
 }

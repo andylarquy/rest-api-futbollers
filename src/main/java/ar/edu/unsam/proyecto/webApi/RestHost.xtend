@@ -107,26 +107,23 @@ class RestHost {
 		partido.jugadoresDesconocidos.forEach [ jugador |
 			if (!usuarioEstaSiendoNotificado(destinatariosConocidos, jugador) &&
 				!usuarioEstaSiendoNotificado(destinatariosDesconocidos, jugador) &&
-				!destinatariosConocidos.contains(jugador) &&
-				!partido.equipo1.owner.esAmigoDe(jugador)){
+				!destinatariosConocidos.contains(jugador) && !partido.equipo1.owner.esAmigoDe(jugador)) {
 
 				destinatariosDesconocidos.add(jugador)
 			}
 		]
 
-		
-
 		println("Usuarios conocidos a invitar: " + destinatariosConocidos.map[nombre])
 		println("Usuarios desconocidos a invitar: " + destinatariosDesconocidos.map[nombre])
 
-		if(destinatariosConocidos.size + destinatariosDesconocidos.size < partido.canchaReservada.cantidadJugadores){
+		if (destinatariosConocidos.size + destinatariosDesconocidos.size < partido.canchaReservada.cantidadJugadores) {
 			throw new Exception('No se han encontrado suficientes jugadores con esos parametros de busqueda')
 		}
 
 		partido.validarCreacion()
 
-		//Antes de enviar las notificaciones removemos al owner para que no se notifique a si mismo
-		destinatariosConocidos.removeIf[jugador | jugador.idUsuario == partido.equipo1.owner.idUsuario]
+		// Antes de enviar las notificaciones removemos al owner para que no se notifique a si mismo
+		destinatariosConocidos.removeIf[jugador|jugador.idUsuario == partido.equipo1.owner.idUsuario]
 
 		partido.enviarNotifiacionesAConocidos(destinatariosConocidos, partido.equipo1.owner)
 		partido.enviarNotifiacionesADesconocidos(destinatariosDesconocidos)
@@ -152,7 +149,7 @@ class RestHost {
 					invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
 				invitacion.usuarioReceptor = destinatario
 
-				//CAMBIADO A agregarNotificacion
+				// CAMBIADO A agregarNotificacion
 				repoNotificacion.agregarNotificacion(invitacion)
 			}
 		]
@@ -166,8 +163,7 @@ class RestHost {
 				" (TODO: Formatear bien la fecha)"
 			invitacion.usuarioReceptor = destinatario
 
-
-			//CAMBIADO A agregarNotificacion
+			// CAMBIADO A agregarNotificacion
 			repoNotificacion.agregarNotificacion(invitacion)
 		]
 
@@ -205,13 +201,13 @@ class RestHost {
 	def getAmigosDelUsuario(Long idUsuario) {
 		repoUsuario.getAmigosDelUsuario(idUsuario)
 	}
-/*
- * TODO: REVISAR
-	def getNotificacionesDelUsuario(Long idUsuario) {
-		repoUsuario.notificacionesDelUsuario(idUsuario)
-	}
-*/
 
+	/*
+	 * TODO: REVISAR
+	 * 	def getNotificacionesDelUsuario(Long idUsuario) {
+	 * 		repoUsuario.notificacionesDelUsuario(idUsuario)
+	 * 	}
+	 */
 	def confirmarPartidoDeId(Long idPartido) {
 		val partidoPosta = repoPartido.searchById(idPartido)
 		partidoPosta.confirmarPartido()
@@ -272,18 +268,21 @@ class RestHost {
 
 		val notificacionPosta = repoNotificacion.searchById(idNotificacion)
 
-		notificacionPosta.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(
-			notificacionPosta.partido.equipo1.idEquipo)
-		notificacionPosta.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(
-			notificacionPosta.partido.equipo2.idEquipo)
+		if (!notificacionPosta.aceptado) {
 
-		notificacionPosta.usuarioReceptor = repoUsuario.searchByIdConAmigos(notificacionPosta.usuarioReceptor.idUsuario)
+			notificacionPosta.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(
+				notificacionPosta.partido.equipo1.idEquipo)
+			notificacionPosta.partido.equipo2 = repoEquipo.searchByIdConIntegrantes(
+				notificacionPosta.partido.equipo2.idEquipo)
 
+			notificacionPosta.usuarioReceptor = repoUsuario.searchByIdConAmigos(
+				notificacionPosta.usuarioReceptor.idUsuario)
 
-		notificacionPosta.agregarIntegranteAlPartido()
-		
-		//notificacionPosta.concluirPartido()
-		
+			notificacionPosta.agregarIntegranteAlPartido()
+		}else{
+			throw new Exception('Esta invitacion ya ha sido aceptada')
+		}
+	// notificacionPosta.concluirPartido()
 	// repoNotificacion.aceptarInvitacion(notificacionPosta)
 	// TODO: Enviar notificacion con firebase
 	}
