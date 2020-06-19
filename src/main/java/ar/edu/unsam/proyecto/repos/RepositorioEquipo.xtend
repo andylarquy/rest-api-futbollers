@@ -90,7 +90,10 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 				
 				from.fetch("integrantes", JoinType.LEFT)
 				from.fetch("owner", JoinType.LEFT)
-				query.where(criteria.equal(from.get("owner"), usuario.idUsuario))
+				val criterio1 = criteria.equal(from.get("owner"), usuario.idUsuario)
+				val criterio2 = criteria.notLike(from.get("nombre"), "%equipo temporal%")
+				
+				query.where(criteria.and(criterio1, criterio2))
 				return query
 			],
 		

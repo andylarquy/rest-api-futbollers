@@ -102,11 +102,15 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 
 			val criteriosWhere = new ArrayList()
 
+
+
 			if (!usuario.amigos.empty) {
 				criteriosWhere.add(criteria.not(from.get("idUsuario").in(usuario.idDeSusAmigos.toSet)))
 			}
 
 			criteriosWhere.add(criteria.notEqual(from.get("idUsuario"), usuario.idUsuario))
+			
+			criteriosWhere.add(criteria.notLike(from.get("nombre"), "%reserva jugador%"))
 
 			query.where(criteriosWhere)
 		], [query|query.resultList.toSet])
