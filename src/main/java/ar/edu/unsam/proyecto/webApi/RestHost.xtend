@@ -20,6 +20,8 @@ import java.util.Set
 import javax.persistence.NoResultException
 import org.eclipse.xtend.lib.annotations.Accessors
 import ar.edu.unsam.proyecto.domain.Cancha
+import ar.edu.unsam.proyecto.exceptions.InsufficientCandidates
+import ar.edu.unsam.proyecto.exceptions.ObjectAlreadyExists
 
 @Accessors
 class RestHost {
@@ -78,6 +80,11 @@ class RestHost {
 
 	def crearNuevoEquipo(Equipo equipo) {
 		equipo.validarCreacion()
+		//TODO: Mover validacion al metodo de arriba
+		if(repoEquipo.coleccion.exists[it.tieneNombre(equipo.nombre) && it.esOwner(equipo.owner)]){
+			throw new ObjectAlreadyExists('Ya tienes un equipo con ese nombre')
+		}
+		
 		repoEquipo.create(equipo)
 	}
 
@@ -118,7 +125,7 @@ class RestHost {
 		println("Usuarios desconocidos a invitar: " + destinatariosDesconocidos.map[nombre])
 
 		if (destinatariosConocidos.size + destinatariosDesconocidos.size < partido.canchaReservada.cantidadJugadores) {
-			throw new Exception('No se han encontrado suficientes jugadores con esos parametros de busqueda')
+			throw new InsufficientCandidates('No se han encontrado suficientes jugadores con esos parametros de busqueda')
 		}
 
 		partido.validarCreacion()
@@ -313,7 +320,11 @@ class RestHost {
 		notiDeAmistad.titulo = "¡" + usuarioPosta.nombre + " y tu ahora son amigos!"
 		notiDeAmistad.usuario = amigoPosta
 		repoNotificacion.enviarUnaNotificacion(notiDeAmistad)
-
+	}
+	
+	def rechazarInvitacion(Long idNotificacion){
+		val notificacionPosta = repoNotificacion.searchById(idNotificacion)
+		repoNotificacion.eliminarNoitificacion(notificacionPosta)
 	}
 
 }

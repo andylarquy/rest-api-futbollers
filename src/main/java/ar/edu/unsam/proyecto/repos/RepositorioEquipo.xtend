@@ -66,6 +66,7 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 				from.fetch("integrantes", JoinType.LEFT)
 				from.fetch("owner", JoinType.LEFT)
 				
+				
 				val tablaIntegrantes = from.join("integrantes", JoinType.LEFT)
 				
 				

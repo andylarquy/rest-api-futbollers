@@ -122,7 +122,6 @@ class RestHostAPI {
 			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 	}
 
@@ -181,10 +180,12 @@ class RestHostAPI {
 				new UsuarioListAdapter()).create()
 
 			val equipo = body.fromJson(Equipo)
-
 			restHost.crearNuevoEquipo(equipo)
 			ok('{"status":200, "message":"ok"}')
-		} catch (Exception e) {
+		} catch (ObjectAlreadyExists e){
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		} 
+		catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 
@@ -362,9 +363,22 @@ class RestHostAPI {
 
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 
+	}
+	
+	@Post("/invitaciones-rechazar/:idNotificacion")
+	def rechazarInvitacionById(){
+		try {
+
+			restHost.rechazarInvitacion(Long.valueOf(idNotificacion))
+
+			ok('{"status":200, "message":"ok"}')
+
+		} catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+		
 	}
 
 	/* 

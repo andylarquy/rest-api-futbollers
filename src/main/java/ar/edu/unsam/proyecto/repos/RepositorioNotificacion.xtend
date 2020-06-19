@@ -165,5 +165,9 @@ class RepositorioNotificacion {
 		idAutoIncremental++
 		return Long.valueOf(idAutoIncremental)
 	}
+	
+	def eliminarNoitificacion(Notificacion notificacion) {
+		coleccion.remove(notificacion)
+	}
 
 }

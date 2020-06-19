@@ -212,8 +212,13 @@ class Equipo {
 		integrantes.add(usuario)
 		repoEquipo.update(this)
 		
-		repoUsuario.delete(jugadorReservado)
-		
+		try{
+			repoUsuario.delete(jugadorReservado)
+		}catch(RuntimeException e){	Thread.dumpStack()
+			val excepcionRara = new Exception('Hubo un error al procesar la invitacion (error code: 44574)')
+			excepcionRara.printStackTrace
+			throw excepcionRara
+		}
 		
 	}
 	
@@ -235,6 +240,11 @@ class Equipo {
 		if (integrantes === null){
 			throw new Exception('El equipo debe tener una lista de integrantes')
 		}
+		
+	}
+	
+	def tieneNombre(String nombreBuscado) {
+		nombre.toLowerCase.equals(nombreBuscado)
 	}
 
 	
