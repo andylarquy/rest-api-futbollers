@@ -1,11 +1,14 @@
 package ar.edu.unsam.proyecto.domain
 
+import ar.edu.unsam.proyecto.exceptions.InsufficientCandidates
 import ar.edu.unsam.proyecto.exceptions.ObjectAlreadyExists
 import ar.edu.unsam.proyecto.repos.RepositorioCancha
 import ar.edu.unsam.proyecto.repos.RepositorioEmpresa
+import ar.edu.unsam.proyecto.repos.RepositorioEquipo
 import ar.edu.unsam.proyecto.repos.RepositorioNotificacion
 import ar.edu.unsam.proyecto.repos.RepositorioPartido
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
+import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson
 import ar.edu.unsam.proyecto.webApi.jsonViews.LocalDateTimeSerializer
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
@@ -29,8 +32,7 @@ import javax.persistence.Id
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
-import ar.edu.unsam.proyecto.exceptions.InsufficientCandidates
-import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson
+import java.util.ArrayList
 
 @Accessors
 @Entity
@@ -114,14 +116,14 @@ class Partido {
 		val fechaDeEliminacionAsDate = Date.from(fechaDeEliminacion.atZone(ZoneId.systemDefault()).toInstant())
 
 		// Desde el momento de creacion de un partido hay X dias para confirmarlo y asi evitar su autoeliminacion
-		new Timer().schedule(autoEliminarPartido, fechaDeEliminacionAsDate);
+		new Timer().schedule(autoEliminarPartido, fechaDeEliminacionAsDate)
 
 		// Para eliminar el warning
 		fechaDeEliminacionDebugAsDate = fechaDeEliminacionDebugAsDate
 	}
 
 	@Transient
-	transient TimerDebugEliminacion debugEliminacion = new TimerDebugEliminacion()
+	transient TimerDebugEliminacion debugAutoEliminarPartido = new TimerDebugEliminacion(this)
 
 	@Transient
 	transient TimerEliminacion autoEliminarPartido = new TimerEliminacion(this)
@@ -353,12 +355,19 @@ class Partido {
 		
 	}
 	
+	def eliminarJugadoresReservados(){
+		equipo1.desvincularJugadoresReservados
+		equipo2.desvincularJugadoresReservados
+	}
+
+	
 }
 
 //TimerTask Auxiliar
 class TimerEliminacion extends TimerTask {
 
 	Partido partido
+	RepositorioEquipo repoEquipo = RepositorioEquipo.instance
 
 	new(Partido partido_) {
 		partido = partido_
@@ -366,12 +375,17 @@ class TimerEliminacion extends TimerTask {
 
 	override run() {
 
-		// Volvemos a ir al back para traer el estado de confirmacion 3 dias despues
+		// Volvemos a ir al back para traer el estado de confirmacion 2 dias despues
 		partido = RepositorioPartido.instance.searchById(partido.idPartido)
 
 		if (!partido.confirmado) {
 			println("[INFO]: Se va ha realizar la baja logica del partido sin confirmar con ID: " + partido.idPartido)
 			RepositorioPartido.instance.eliminarPartido(partido)
+			
+			partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
+			partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
+		
+			partido.eliminarJugadoresReservados()
 		}
 	}
 
@@ -379,8 +393,27 @@ class TimerEliminacion extends TimerTask {
 
 class TimerDebugEliminacion extends TimerTask {
 
+	Partido partido
+	RepositorioEquipo repoEquipo = RepositorioEquipo.instance
+
+	new(Partido partido_) {
+		partido = partido_
+	}
+
 	override run() {
-		println("TIMER: RIIING!")
+
+		// Volvemos a ir al back para traer el estado de confirmacion 2 dias despues
+		partido = RepositorioPartido.instance.searchById(partido.idPartido)
+		
+		if (!partido.confirmado) {
+			println("[INFO]: Se va ha realizar la baja logica del partido sin confirmar con ID: " + partido.idPartido)
+			RepositorioPartido.instance.eliminarPartido(partido)
+			
+			partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
+			partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
+			
+			partido.eliminarJugadoresReservados()
+		}
 	}
 
 }

@@ -151,7 +151,7 @@ class Usuario {
 	}
 
 	def esJugadorReservado() {
-		nombre.equals("RESERVA JUGADOR")
+		nombre.equals("RESERVA JUGADOR") || idUsuario < -1
 	}
 
 	def jugadorReservadoAdmite(Usuario usuario) {
@@ -189,6 +189,10 @@ class Usuario {
 	
 	def tienePosicion(String posicionBuscada) {
 		posicion.equals(posicionBuscada)
+	}
+	
+	def tieneId(Long idBuscado) {
+		idUsuario == idBuscado
 	}
 
 }

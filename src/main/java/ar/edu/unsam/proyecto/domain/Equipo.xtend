@@ -246,6 +246,31 @@ class Equipo {
 	def tieneNombre(String nombreBuscado) {
 		nombre.toLowerCase.equals(nombreBuscado)
 	}
-
+	
+	def eliminarJugadoresReservados() {
+		integrantes.forEach[ jugador |
+			if(jugador.esJugadorReservado){
+				repoUsuario.delete(jugador)
+			}
+		]
+	}
+	
+	def desvincularJugadoresReservados() {
+		
+		val integrantesReservados = new ArrayList
+		integrantesReservados.addAll(integrantes.filter[esJugadorReservado])
+		
+		//No hago removeAll xq desconfio
+		integrantesReservados.forEach[ jugador |
+			integrantes.remove(jugador)
+		]
+		
+		repoEquipo.update(this)
+		
+		integrantesReservados.forEach[ jugador |
+			repoUsuario.delete(jugador)
+		]
+		
+	}
 	
 }
