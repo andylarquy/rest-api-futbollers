@@ -45,7 +45,7 @@ class Bootstrap {
 	RestHost restHost = new RestHost
 
 	Usuario sebaCapo = new Usuario() => [
-		nombre = "sebaCapo"
+		nombre = "Seba"
 		password = dotenv.get("PASSWORD")
 		sexo = "Masculino"
 		posicion = "Delantero"
@@ -56,7 +56,7 @@ class Bootstrap {
 	]
 
 	Usuario nikoBostero = new Usuario() => [
-		nombre = "nikoBostero"
+		nombre = "Nico"
 		password = dotenv.get("PASSWORD")
 		sexo = "Masculino"
 		posicion = "Delantero"
@@ -67,7 +67,7 @@ class Bootstrap {
 	]
 
 	Usuario andy = new Usuario() => [
-		nombre = "4ndy"
+		nombre = "Andy"
 		password = dotenv.get("PASSWORD")
 		sexo = "Masculino"
 		posicion = "Defensor"
@@ -199,15 +199,15 @@ class Bootstrap {
 		lon = -58.3220183
 	]
 
-	Equipo equipazo = new Equipo() => [
-		nombre = "El equipazo"
+	Equipo borbotones = new Equipo() => [
+		nombre = "Los borbotones"
 		owner = sebaCapo
-		foto = "https://i.imgur.com/hccT1z9.jpg"
+		foto = "https://i.imgur.com/ixBuxSY.jpg"
 		integrantes = new HashSet(Arrays.asList(sebaCapo, nikoBostero, andy, federico, carla))
 	]
 
-	Equipo equipoMalo = new Equipo() => [
-		nombre = "El equipo malo"
+	Equipo dreamTeam = new Equipo() => [
+		nombre = "El Dream Team"
 		owner = andy
 		foto = "https://i.imgur.com/BoQriOI.jpg"
 		integrantes = new HashSet(Arrays.asList(federico, carla, carlos, florencia, andy))
@@ -220,11 +220,11 @@ class Bootstrap {
 		integrantes = new HashSet(Arrays.asList(pepe, juan, sofia, nikoBostero, andy))
 	]
 
-	Equipo equipoIncompleto = new Equipo() => [
-		nombre = "Equipo incompleto"
+	Equipo indecisos = new Equipo() => [
+		nombre = "Los indecisos"
 		owner = andy
-		foto = "https://i.imgur.com/1gg90fn.jpg"
-		integrantes = new HashSet(Arrays.asList(sebaCapo, nikoBostero))
+		foto = "https://i.imgur.com/2KpShyB.jpg"
+		integrantes = new HashSet(Arrays.asList(lucas, sebaCapo, nikoBostero))
 	]
 
 	Cancha urquiza1 = new Cancha() => [
@@ -310,24 +310,24 @@ class Bootstrap {
 	]
 
 	Partido partido1 = new Partido() => [
-		equipo1 = equipazo
-		equipo2 = equipoMalo
+		equipo1 = borbotones
+		equipo2 = dreamTeam
 		empresa = empresaUrquiza
 		canchaReservada = urquiza1
 		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 12, 25), LocalTime.of(20, 00))
 	]
 
 	Partido partido2 = new Partido() => [
-		equipo1 = equipazo
-		equipo2 = equipoIncompleto
+		equipo1 = borbotones
+		equipo2 = indecisos
 		empresa = empresaVicenteLopez
 		canchaReservada = vicLop2
 		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 4, 24), LocalTime.of(17, 00))
 	]
 
 	Partido partido3 = new Partido() => [
-		equipo1 = equipazo
-		equipo2 = equipoIncompleto
+		equipo1 = borbotones
+		equipo2 = indecisos
 		empresa = empresaArgentinos
 		canchaReservada = argen1
 		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 12, 5), LocalTime.of(23, 00))
@@ -366,10 +366,11 @@ class Bootstrap {
 		repoUsuarios.crearUsuario(juan)
 		repoUsuarios.crearUsuario(marcela)
 		repoUsuarios.crearUsuario(julieta)
+		repoUsuarios.crearUsuario(lucas)
 
-		repoEquipo.create(equipazo)
-		repoEquipo.create(equipoMalo)
-		repoEquipo.create(equipoIncompleto)
+		repoEquipo.create(borbotones)
+		repoEquipo.create(dreamTeam)
+		repoEquipo.create(indecisos)
 		repoEquipo.create(equipoCampeon)
 
 		repoCancha.create(urquiza1)
