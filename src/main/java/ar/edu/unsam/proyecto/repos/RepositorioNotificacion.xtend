@@ -119,8 +119,8 @@ class RepositorioNotificacion {
 
 	def enviarUnaNotificacion(Notificacion notificacion) {
 
-		if (notificacion.usuario.token !== null) {
-			postNotificacion(notificacion, "to", notificacion.usuario.token)
+		if (notificacion.usuarioReceptor.token !== null) {
+			postNotificacion(notificacion, "to", notificacion.usuarioReceptor.token)
 		}
 
 	}

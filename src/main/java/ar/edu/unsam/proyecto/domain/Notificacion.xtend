@@ -29,9 +29,6 @@ class Notificacion {
 	Partido partido
 
 	@JsonView(ViewsNotificacion.NotificacionView)
-	Usuario usuario
-
-	@JsonView(ViewsNotificacion.NotificacionView)
 	Usuario usuarioReceptor
 
 	@JsonIgnore
@@ -44,7 +41,7 @@ class Notificacion {
 	// Discutido: No tiene sentido, lo dejo para borrarlo todos juntos
 	// @JsonView() @JsonIgnore Equipo equipo
 	def esDelUsuario(Long idUsuario) {
-		usuario.idUsuario == idUsuario
+		usuarioReceptor.idUsuario == idUsuario
 	}
 
 	def empresaTieneMail(String email) {
@@ -64,7 +61,7 @@ class Notificacion {
 
 				val notificacionTemporal = new Notificacion()
 				// TODO: Quedarse con un solo usuario
-				notificacionTemporal.usuario = partido.equipo1.owner
+				notificacionTemporal.usuarioReceptor = partido.equipo1.owner
 				notificacionTemporal.titulo = "¡" + usuarioReceptor.nombre + " acepto tu invitacion a un partido!"
 				
 				if(!partido.faltanJugadores){
@@ -84,7 +81,7 @@ class Notificacion {
 
 			val notificacionTemporal = new Notificacion()
 			// TODO: Quedarse con un solo usuario
-			notificacionTemporal.usuario = partido.equipo1.owner
+			notificacionTemporal.usuarioReceptor = partido.equipo1.owner
 			notificacionTemporal.titulo = "¡" + usuarioReceptor.nombre + " acepto tu invitacion a un partido!"
 			if(!partido.faltanJugadores){
 					notificacionTemporal.descripcion = "¡El partido ya esta listo para la confirmacion!"

@@ -151,7 +151,7 @@ class RestHost {
 			if (destinatario.idUsuario != partido.equipo1.owner.idUsuario) {
 				val invitacion = new Notificacion()
 				invitacion.partido = partido
-				invitacion.usuario = partido.equipo1.owner
+				invitacion.usuarioReceptor = partido.equipo1.owner
 				invitacion.titulo = "¡ " + partido.equipo1.owner.nombre + " te invito a un partido!"
 				invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
 					invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
@@ -165,7 +165,7 @@ class RestHost {
 		destinatariosDesconocidos.forEach [ destinatario |
 			val invitacion = new Notificacion()
 			invitacion.partido = partido
-			invitacion.usuario = partido.equipo1.owner
+			invitacion.usuarioReceptor = partido.equipo1.owner
 			invitacion.titulo = "¡Has recibido una invitacion para un partido!"
 			invitacion.descripcion = invitacion.partido.empresa.direccion + " - " + invitacion.partido.fechaDeReserva +
 				" (TODO: Formatear bien la fecha)"
@@ -239,7 +239,7 @@ class RestHost {
 		val notificacion = new Notificacion
 		notificacion.titulo = "[DEBUG]"
 		notificacion.descripcion = "Esta notificacion es una prueba"
-		notificacion.usuario = usuarioPosta
+		notificacion.usuarioReceptor = usuarioPosta
 
 		repoNotificacion.enviarUnaNotificacion(notificacion)
 
@@ -290,9 +290,6 @@ class RestHost {
 		}else{
 			throw new Exception('Esta invitacion ya ha sido aceptada')
 		}
-	// notificacionPosta.concluirPartido()
-	// repoNotificacion.aceptarInvitacion(notificacionPosta)
-	// TODO: Enviar notificacion con firebase
 	}
 
 	def aceptarCandidato(Notificacion notificacionPosta) {
@@ -318,7 +315,7 @@ class RestHost {
 
 		val notiDeAmistad = new Notificacion
 		notiDeAmistad.titulo = "¡" + usuarioPosta.nombre + " y tu ahora son amigos!"
-		notiDeAmistad.usuario = amigoPosta
+		notiDeAmistad.usuarioReceptor = amigoPosta
 		repoNotificacion.enviarUnaNotificacion(notiDeAmistad)
 	}
 	
