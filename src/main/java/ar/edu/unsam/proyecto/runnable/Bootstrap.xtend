@@ -214,7 +214,7 @@ class Bootstrap {
 	]
 	
 	Equipo supercampeones = new Equipo() => [
-		nombre = "Supercampeones"
+		nombre = "Super campeones"
 		owner = andy
 		foto = "https://i.imgur.com/M9N9o78.jpg"
 		integrantes = new HashSet(Arrays.asList(pepe, juan, sofia, nikoBostero, andy))

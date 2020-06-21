@@ -98,7 +98,7 @@ class RestHost {
 
 	// https://i.imgur.com/j6UGUXn.jpg
 	def crearNuevoPartido(Partido partido) {
-
+		
 		repoPartido.asignarIdPartido(partido)
 
 		partido.mapearEmpresa()
@@ -141,6 +141,7 @@ class RestHost {
 
 		repoEquipo.createIfNotExists(partido.equipo1)
 		repoEquipo.createIfNotExists(partido.equipo2)
+		
 
 		repoPartido.create(partido)
 

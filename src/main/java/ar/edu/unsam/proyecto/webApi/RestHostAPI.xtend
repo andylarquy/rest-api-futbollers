@@ -121,7 +121,10 @@ class RestHostAPI {
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
+			e.printStackTrace
+			println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
 			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
 		}
 	}
 
@@ -140,6 +143,7 @@ class RestHostAPI {
 			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
 		}
 	}
 

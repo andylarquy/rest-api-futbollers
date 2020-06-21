@@ -99,7 +99,7 @@ class Partido {
 	@Transient
 	transient RepositorioPartido repoPartido = RepositorioPartido.instance
 
-	// transient static val ID_EQUIPO_TEMPORAL = -2
+	transient static val ID_EQUIPO_TEMPORAL = -2
 	transient static val DIAS_PARA_CONFIRMAR = 2
 	transient static val DEBUG_SEGUNDOS_PARA_CONFIRMAR = 30
 	
@@ -236,8 +236,16 @@ class Partido {
 	}
 	
 	def eliminarJugadoresConocidos(){
-		equipo1.eliminarJugadoresConocidos
-		equipo2.eliminarJugadoresConocidos
+		
+		if(equipo1.idEquipo != ID_EQUIPO_TEMPORAL ){
+			equipo1.eliminarJugadoresConocidos	
+		}
+		
+		if(equipo2.idEquipo != ID_EQUIPO_TEMPORAL){
+			equipo2.eliminarJugadoresConocidos
+		}
+		
+		
 	}
 
 	def asignarNombreEquipos() {
