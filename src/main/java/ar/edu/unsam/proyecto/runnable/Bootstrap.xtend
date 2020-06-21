@@ -213,7 +213,7 @@ class Bootstrap {
 		integrantes = new HashSet(Arrays.asList(federico, carla, carlos, florencia, andy))
 	]
 	
-	Equipo equipoCampeon = new Equipo() => [
+	Equipo supercampeones = new Equipo() => [
 		nombre = "Supercampeones"
 		owner = andy
 		foto = "https://i.imgur.com/M9N9o78.jpg"
@@ -222,9 +222,23 @@ class Bootstrap {
 
 	Equipo indecisos = new Equipo() => [
 		nombre = "Los indecisos"
-		owner = andy
+		owner = sebaCapo
 		foto = "https://i.imgur.com/2KpShyB.jpg"
-		integrantes = new HashSet(Arrays.asList(lucas, sebaCapo, nikoBostero))
+		integrantes = new HashSet(Arrays.asList(lucas, sebaCapo, nikoBostero, carlos))
+	]
+	
+	Equipo looneyTeam = new Equipo() =>[
+		nombre = "Looney Team"
+		owner = andy
+		foto = "https://i.pinimg.com/originals/6b/5d/98/6b5d98fc87a2874e6cb8526eb05ea03a.jpg"
+		integrantes = new HashSet(Arrays.asList(federico, florencia, lucas, marcela, julieta))
+	]
+	
+	Equipo hayEquipo = new Equipo() =>[
+		nombre = "Hay Equipo"
+		owner = sebaCapo
+		foto = "https://i.imgur.com/KBA4jOL.jpg"
+		integrantes = new HashSet(Arrays.asList(sofia, julieta, marcela, florencia))
 	]
 
 	Cancha urquiza1 = new Cancha() => [
@@ -371,7 +385,9 @@ class Bootstrap {
 		repoEquipo.create(borbotones)
 		repoEquipo.create(dreamTeam)
 		repoEquipo.create(indecisos)
-		repoEquipo.create(equipoCampeon)
+		repoEquipo.create(supercampeones)
+		repoEquipo.create(looneyTeam)
+		repoEquipo.create(hayEquipo)
 
 		repoCancha.create(urquiza1)
 		repoCancha.create(urquiza2)
@@ -396,17 +412,25 @@ class Bootstrap {
 		andy.crearAmistad(carla)
 		andy.crearAmistad(carlos)
 		andy.crearAmistad(florencia)
+		andy.crearAmistad(pepe)
+		andy.crearAmistad(juan)
+		andy.crearAmistad(sofia)
+		andy.crearAmistad(nikoBostero)
+		andy.crearAmistad(lucas)
+		andy.crearAmistad(marcela)
+		andy.crearAmistad(julieta)
 
 		nikoBostero.crearAmistad(sebaCapo)
 		nikoBostero.crearAmistad(federico)
 		nikoBostero.crearAmistad(carla)
 
-
-		sebaCapo.crearAmistad(andy)
+		sebaCapo.crearAmistad(lucas)
 		sebaCapo.crearAmistad(nikoBostero)
-		sebaCapo.crearAmistad(federico)
-		sebaCapo.crearAmistad(carla)
-		
+		sebaCapo.crearAmistad(carlos)
+		sebaCapo.crearAmistad(sofia)
+		sebaCapo.crearAmistad(julieta)
+		sebaCapo.crearAmistad(marcela)
+		sebaCapo.crearAmistad(florencia)
 
 		repoUsuarios.update(sebaCapo)
 		repoUsuarios.update(nikoBostero)
