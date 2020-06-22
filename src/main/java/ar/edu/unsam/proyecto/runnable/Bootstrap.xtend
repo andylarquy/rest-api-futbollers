@@ -292,8 +292,6 @@ class Bootstrap {
 
 	Empresa empresaUrquiza = new Empresa => [
 		nombre = "Futbol Urquiza"
-		lat = -34.5748777
-		lon = -58.4903939
 		canchas = new HashSet(Arrays.asList(urquiza1, urquiza2))
 		nombreDuenio = "Tito Bara"
 		email = "futbolUrquiza@gmail.com"
@@ -303,8 +301,6 @@ class Bootstrap {
 
 	Empresa empresaVicenteLopez = new Empresa => [
 		nombre = "Futbol Mitre"
-		lat = -34.5141931
-		lon = -58.5315329
 		canchas = new HashSet(Arrays.asList(vicLop1, vicLop2, vicLop3))
 		nombreDuenio = "Jorge"
 		email = "miraSiVaATenerMail@dePedoTieneAgua.com"
@@ -314,8 +310,6 @@ class Bootstrap {
 
 	Empresa empresaArgentinos = new Empresa => [
 		nombre = "Argentinos Futboller"
-		lat = -34.6078057
-		lon = -58.4763221
 		canchas = new HashSet(Arrays.asList(argen1, argen2))
 		nombreDuenio = "Esteban"
 		email = "esteban@cancha.com"

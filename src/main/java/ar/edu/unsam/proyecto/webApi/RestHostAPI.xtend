@@ -366,6 +366,7 @@ class RestHostAPI {
 			ok('{"status":200, "message":"ok"}')
 
 		} catch (Exception e) {
+			e.printStackTrace
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 
