@@ -32,11 +32,10 @@ import javax.persistence.Id
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
-import java.util.ArrayList
 
 @Accessors
 @Entity
-@JsonInclude(Include.NON_NULL) //En teoria si un campo es null no lo parsea (<3 gracias Jackson!)
+@JsonInclude(Include.NON_NULL)
 class Partido {
 
 	@JsonView(ViewsPartido.ListView, ViewsNotificacion.NotificacionView)
@@ -149,7 +148,6 @@ class Partido {
 		repoPartido.validarFechaCancha(fechaDeReserva, canchaReservada)
 	}
 	
-	//TODO: Pensar bien estas validaciones
 	def validarCreacion() {
 		empresa.validar
 		canchaReservada.validar
@@ -354,7 +352,7 @@ class Partido {
 	}
 	
 	//Valida que la fecha de reserva sea minimo dos dias despues que la de creacion
-	//TODO: No estoy seguro de si hace falta el valor absoluto, pero mejor prevenir
+	//No estoy seguro de si hace falta el valor absoluto, pero mejor prevenir
 	def validarDiasDeConfirmacionFechaDeReserva() {
 		
 		if(Math.abs(Period.between(fechaDeReserva.toLocalDate, fechaDeCreacion.toLocalDate).days) < DIAS_PARA_CONFIRMAR){

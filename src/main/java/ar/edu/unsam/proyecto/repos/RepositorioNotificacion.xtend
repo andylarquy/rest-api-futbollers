@@ -55,8 +55,6 @@ class RepositorioNotificacion {
 	// TODO: Revisar si esta query hace las cosas bien
 	def getPartidosDelUsuario(Usuario usuario) {
 
-
-
 		var notificaciones = coleccion.filter [ noti |
 			noti.fueAceptada() && noti.receptorEs(usuario)
 		].toList

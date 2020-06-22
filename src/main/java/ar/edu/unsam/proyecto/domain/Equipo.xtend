@@ -8,6 +8,7 @@ import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.annotation.JsonView
+import java.util.ArrayList
 import java.util.HashSet
 import java.util.Set
 import javax.persistence.Column
@@ -18,12 +19,10 @@ import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
-import java.util.ArrayList
-import java.util.List
 
 @Accessors
 @Entity
-@JsonInclude(Include.NON_NULL)//En teoria si un campo es null no lo parsea 
+@JsonInclude(Include.NON_NULL)
 class Equipo {
 	
 	@JsonView(ViewsEquipo.ListView, ViewsNotificacion.NotificacionView, ViewsPartido.DefaultView)
@@ -44,7 +43,7 @@ class Equipo {
 	
 	@ManyToMany
 	@JsonView(ViewsEquipo.ListView, ViewsPartido.ListView) 
-	Set<Usuario> integrantes //Capaz conviene que sea un Set para no cagarla
+	Set<Usuario> integrantes
 	
 	@Transient
 	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
@@ -58,7 +57,6 @@ class Equipo {
 	}
 	
 	def quitarIntegrante(Usuario integrante){
-		//TODO: Ver que hacer si se intenta remover un usuario que es owner
 		integrantes.remove(integrante)
 	}
 	
@@ -180,30 +178,6 @@ class Equipo {
 	}
 	
 	def agregarIntegranteAPuesto(Usuario usuario) {
-		/* 
-		 * TODO
-		// Para garantizar la maxima probabilidad de matcheo realizamos un sort colocando
-		// Al principio los puestos que no sean 'mixtos' o 'cualquiera', de modo que se
-		// Ocupen apenas sea posible
-		
-		val List<Usuario> integrantesOrdenados = new ArrayList
-		integrantesOrdenados.addAll(integrantes)
-		
-		integrantesOrdenados.forEach[integrante|
-			if(integrante.posicion === null){
-				integrante.posicion = "Cualquiera"
-			}
-			
-			if(integrante.sexo === null){
-				integrante.sexo = "Mixto"
-			}
-		]
-		
-		* println(integrantesOrdenados.map[posicion])
-		* integrantesOrdenados.sortBy[it.sexo.equals("Mixto") || it.posicion.equals("Cualquiera")]
-		* println(integrantesOrdenados.map[posicion])
-		*/
-		
 		val jugadorReservado = integrantes.findFirst[jugador | jugador.jugadorReservadoAdmite(usuario)]
 		
 		integrantes.remove(jugadorReservado)

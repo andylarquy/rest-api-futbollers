@@ -400,7 +400,6 @@ class Bootstrap {
 		repoPromocion.create(promo3)
 
 		// TODO: Pensar si podes evitar mandar un update
-		
 		andy.crearAmistad(sebaCapo)
 		andy.crearAmistad(federico)
 		andy.crearAmistad(carla)

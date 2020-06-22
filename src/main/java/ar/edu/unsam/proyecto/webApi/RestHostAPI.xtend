@@ -299,43 +299,6 @@ class RestHostAPI {
 		}
 
 	}
-
-/*
- * 
- * 
- 
-	TODO: REVISAR
-	@Get("/notificaciones/:idUsuario")
-	def getNotificacionesDelUsuarioById() {
-		try {
-			// Si precisas mostrar mas cosas agregales ViewsNotificacion.NotificacionView
-			var notificacionesParseadas = auxiliar.parsearObjeto(
-				restHost.getNotificacionesDelUsuario(Long.valueOf(idUsuario)), ViewsNotificacion.NotificacionView)
-			ok(notificacionesParseadas)
-
-		} catch (Exception e) {
-			badRequest('{"status":400, "message":"' + e.message + '"}')
-		}
-	}
-*/
-
-
-
-
-
-	/* 
-	 * 	@Get("/notificaciones-candidatos/:idUsuario")
-	 * 	def getNotificacionesCandidatosDelUsuarioById(){
-	 * 		try{
-	 * 			//Si precisas mostrar mas cosas agregales ViewsNotificacion.NotificacionView
-	 * 			var notificacionesParseadas = auxiliar.parsearObjeto(restHost.getNotificacionesCandidatosDelUsuario(Long.valueOf(idUsuario)), ViewsNotificacion.NotificacionView)
-	 * 			ok(notificacionesParseadas)
-	 * 		
-	 * 		} catch (Exception e) {
-	 * 			badRequest('{"status":400, "message":"' + e.message + '"}')
-	 * 		}
-	 * 	}
-	 */
 	 
 	@Get("/notificaciones-invitaciones/:idUsuario")
 	def getInvitacionesDelUsuarioById() {

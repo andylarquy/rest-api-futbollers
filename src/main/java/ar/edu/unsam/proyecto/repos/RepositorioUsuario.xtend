@@ -102,8 +102,6 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 
 			val criteriosWhere = new ArrayList()
 
-
-
 			if (!usuario.amigos.empty) {
 				criteriosWhere.add(criteria.not(from.get("idUsuario").in(usuario.idDeSusAmigos.toSet)))
 			}
@@ -117,19 +115,6 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 
 	}
 
-	/*
-	 *  TODO: REVISAR 
-	 * def notificacionesDelUsuario(Long idUsuario) {
-	 * 	val usuario = queryTemplate([criteria, query, from |
-	 * 			query.where(criteria.equal(from.get("idUsuario"), idUsuario))
-	 * 			return query
-	 * 		], 
-	 * 		[query | query.singleResult]) as Usuario
-	 * 		
-	 * 		
-	 * 		return usuario.invitaciones
-	 * }
-	 */
 	// TODO: Mejorar el formato de esta query	
 	def getUsuariosEnElRangoDe(Usuario usuarioBuscado, int rangoDeBusqueda, String sexoBuscado,
 		String posicionBuscada) {

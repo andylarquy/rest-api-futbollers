@@ -22,7 +22,7 @@ import org.uqbar.geodds.Point
 
 @Accessors
 @Entity
-@JsonInclude(Include.NON_NULL) //En teoria si un campo es null no lo parsea 
+@JsonInclude(Include.NON_NULL)
 class Usuario {
 
 	@JsonView(ViewsUsuario.IdView, ViewsPartido.DefaultView, ViewsEquipo.ListView, ViewsNotificacion.NotificacionView)
@@ -93,7 +93,7 @@ class Usuario {
 			throw new Exception('El usuario debe tener un ID')
 		}
 
-		// TODO: Realizar distinto tipos de validacion
+		// TODO: Realizar distintos tipos de validacion
 		if (password === null) {
 			throw new Exception('El usuario debe tener una contraseña')
 		}

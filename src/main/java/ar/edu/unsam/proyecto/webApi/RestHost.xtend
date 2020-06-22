@@ -5,6 +5,8 @@ import ar.edu.unsam.proyecto.domain.Notificacion
 import ar.edu.unsam.proyecto.domain.Partido
 import ar.edu.unsam.proyecto.domain.Usuario
 import ar.edu.unsam.proyecto.exceptions.IncorrectCredentials
+import ar.edu.unsam.proyecto.exceptions.InsufficientCandidates
+import ar.edu.unsam.proyecto.exceptions.ObjectAlreadyExists
 import ar.edu.unsam.proyecto.exceptions.ObjectDoesntExists
 import ar.edu.unsam.proyecto.repos.RepositorioCancha
 import ar.edu.unsam.proyecto.repos.RepositorioEmpresa
@@ -19,9 +21,6 @@ import java.util.List
 import java.util.Set
 import javax.persistence.NoResultException
 import org.eclipse.xtend.lib.annotations.Accessors
-import ar.edu.unsam.proyecto.domain.Cancha
-import ar.edu.unsam.proyecto.exceptions.InsufficientCandidates
-import ar.edu.unsam.proyecto.exceptions.ObjectAlreadyExists
 
 @Accessors
 class RestHost {
@@ -211,12 +210,6 @@ class RestHost {
 		repoUsuario.getAmigosDelUsuario(idUsuario)
 	}
 
-	/*
-	 * TODO: REVISAR
-	 * 	def getNotificacionesDelUsuario(Long idUsuario) {
-	 * 		repoUsuario.notificacionesDelUsuario(idUsuario)
-	 * 	}
-	 */
 	def confirmarPartidoDeId(Long idPartido) {
 		val partidoPosta = repoPartido.searchById(idPartido)
 		partidoPosta.confirmarPartido()
@@ -264,11 +257,6 @@ class RestHost {
 		repoUsuario.getCandidatosDelUsuario(repoUsuario.searchByIdConAmigos(idUsuario))
 	}
 
-	/* 
-	 * def getNotificacionesCandidatosDelUsuario(Long idUsuario) {
-	 * 	repoNotificacion.getNotificacionesCandidatosByIdUsuario(idUsuario)
-	 * }
-	 */
 	def getInvitacionesDelUsuario(Long idUsuario) {
 		repoNotificacion.getInvitacionesDelUsuario(idUsuario)
 	}

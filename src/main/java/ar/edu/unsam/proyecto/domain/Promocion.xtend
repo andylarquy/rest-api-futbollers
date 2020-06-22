@@ -9,7 +9,7 @@ import javax.persistence.Id
 import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
-@Entity@JsonInclude(Include.NON_NULL)//En teoria si un campo es null no lo parsea 
+@Entity@JsonInclude(Include.NON_NULL)
 class Promocion {
 
 	@Id @GeneratedValue

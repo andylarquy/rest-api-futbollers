@@ -37,9 +37,6 @@ class Notificacion {
 	@JsonIgnore
 	transient RepositorioPartido repoPartido = RepositorioPartido.instance
 
-	// TODO: Discutir si esto aca siquiera tiene sentido
-	// Discutido: No tiene sentido, lo dejo para borrarlo todos juntos
-	// @JsonView() @JsonIgnore Equipo equipo
 	def esDelUsuario(Long idUsuario) {
 		usuarioReceptor.idUsuario == idUsuario
 	}
@@ -60,7 +57,6 @@ class Notificacion {
 				aceptado = true
 
 				val notificacionTemporal = new Notificacion()
-				// TODO: Quedarse con un solo usuario
 				notificacionTemporal.usuarioReceptor = partido.equipo1.owner
 				notificacionTemporal.titulo = "¡" + usuarioReceptor.nombre + " acepto tu invitacion a un partido!"
 				
@@ -80,7 +76,6 @@ class Notificacion {
 			aceptado = true
 
 			val notificacionTemporal = new Notificacion()
-			// TODO: Quedarse con un solo usuario
 			notificacionTemporal.usuarioReceptor = partido.equipo1.owner
 			notificacionTemporal.titulo = "¡" + usuarioReceptor.nombre + " acepto tu invitacion a un partido!"
 			if(!partido.faltanJugadores){

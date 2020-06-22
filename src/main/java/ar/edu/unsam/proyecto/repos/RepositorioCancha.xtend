@@ -23,7 +23,7 @@ class RepositorioCancha extends Repositorio<Cancha> {
 	}
 	private new() {}
 
-	//TODO (?: Revisar por que esta esto aca si no tiene comportamiento
+	//TODO: Chequear esta query
 	def coleccion() {
 
 		queryTemplate(
