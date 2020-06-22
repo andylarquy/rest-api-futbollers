@@ -46,10 +46,8 @@ abstract class Repositorio<T> {
 		try {
 			entityManager => [
 				transaction.begin
-				// ahora soy transient
 				persist(t)
 				transaction.commit
-			// ahora persistent
 			]
 		} catch (PersistenceException e) {
 			e.printStackTrace
@@ -57,7 +55,6 @@ abstract class Repositorio<T> {
 			throw new RuntimeException("Ocurrió un error, la operación no puede completarse", e)
 		} finally {
 			entityManager.close
-		// ahora soy detached
 		}
 	}
 

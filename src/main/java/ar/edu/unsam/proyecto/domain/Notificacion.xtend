@@ -40,9 +40,6 @@ class Notificacion {
 	@JsonIgnore
 	transient RepositorioPartido repoPartido = RepositorioPartido.instance
 
-	// TODO: Discutir si esto aca siquiera tiene sentido
-	// Discutido: No tiene sentido, lo dejo para borrarlo todos juntos
-	// @JsonView() @JsonIgnore Equipo equipo
 	def esDelUsuario(Long idUsuario) {
 		usuario.idUsuario == idUsuario
 	}

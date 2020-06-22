@@ -32,11 +32,10 @@ import javax.persistence.Id
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
-import java.util.ArrayList
 
 @Accessors
 @Entity
-@JsonInclude(Include.NON_NULL) //En teoria si un campo es null no lo parsea (<3 gracias Jackson!)
+@JsonInclude(Include.NON_NULL)
 class Partido {
 
 	@JsonView(ViewsPartido.ListView, ViewsNotificacion.NotificacionView)
@@ -99,7 +98,6 @@ class Partido {
 	@Transient
 	transient RepositorioPartido repoPartido = RepositorioPartido.instance
 
-	// transient static val ID_EQUIPO_TEMPORAL = -2
 	transient static val DIAS_PARA_CONFIRMAR = 2
 	transient static val DEBUG_SEGUNDOS_PARA_CONFIRMAR = 30
 	
