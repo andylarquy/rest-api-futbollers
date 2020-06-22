@@ -31,15 +31,6 @@ class Empresa {
 	@JsonView(ViewsEmpresa.DefaultView, ViewsEquipo.ListView, ViewsPartido.ListView) 
 	String nombre
 
-	//Revisar si tienen q estar
-	@Column
-	@JsonView(ViewsEmpresa.DetallesView) 
-	Double lat
-	
-	@Column
-	@JsonView(ViewsEmpresa.DetallesView) 
-	Double lon
-	
 	@Column
 	@JsonView(ViewsEmpresa.DetallesView)
 	String nombreDuenio
