@@ -110,11 +110,16 @@ class RestHost {
 		partido.mapearJugadoresConocidos
 
 		destinatariosConocidos.addAll(partido.jugadoresConocidos)
+		
+		println(partido.jugadoresDesconocidos.map[nombre])
 
 		partido.jugadoresDesconocidos.forEach [ jugador |
+			
+			
 			if (!usuarioEstaSiendoNotificado(destinatariosConocidos, jugador) &&
 				!usuarioEstaSiendoNotificado(destinatariosDesconocidos, jugador) &&
-				!destinatariosConocidos.contains(jugador) && !partido.equipo1.owner.esAmigoDe(jugador)) {
+				!destinatariosConocidos.exists[it.idUsuario ==jugador.idUsuario] &&
+					 !partido.equipo1.owner.esAmigoDe(jugador)) {
 
 				destinatariosDesconocidos.add(jugador)
 			}

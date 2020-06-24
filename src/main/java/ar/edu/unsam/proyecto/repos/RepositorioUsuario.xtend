@@ -122,16 +122,18 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 		var candidatosFiltrados = coleccion.filter [ usuario |
 			!usuario.esUnJugadorReservado && usuario.estaDentroDelRango(usuarioBuscado.getUbicacion, rangoDeBusqueda)
 		]
-
+		
 		if (posicionBuscada !== null) {
 			if (!posicionBuscada.equals("Cualquiera")) {
 				candidatosFiltrados = candidatosFiltrados.filter[usuario|usuario.tienePosicion(posicionBuscada)]
 			}
 		}
+		
+		if (sexoBuscado !== null) {
+			if (!sexoBuscado.equals("Mixto")) {
+				candidatosFiltrados = candidatosFiltrados.filter[usuario|usuario.tieneSexo(sexoBuscado)]
 
-		if (!sexoBuscado.equals("Mixto")) {
-			candidatosFiltrados = candidatosFiltrados.filter[usuario|usuario.tieneSexo(sexoBuscado)]
-
+			}
 		}
 
 		return candidatosFiltrados

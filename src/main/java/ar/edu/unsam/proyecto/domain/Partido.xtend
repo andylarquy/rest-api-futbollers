@@ -287,7 +287,7 @@ class Partido {
 	}
 	
 	def jugadoresDesconocidos() {
-		val jugadoresDesconocidos = new HashSet()
+		val Set<Usuario> jugadoresDesconocidos = new HashSet()
 		if (this.tieneEquipoTemporal) {
 			jugadoresTemporalesDelPartido.forEach[jugador|
 				buscarCandidatoPorGPS(jugador, equipo1.owner).forEach[this.agregarUsuarioSiNoEsta(jugadoresDesconocidos, it)]
@@ -302,6 +302,9 @@ class Partido {
 	}
 	
 	def buscarCandidatoPorGPS(Usuario usuarioABuscar, Usuario usuarioOwner) {
+		
+		
+		
 		val int rangoDeBusqueda = Integer.parseInt(usuarioABuscar.email)
 		val sexoBuscado = usuarioABuscar.sexo
 		val posicionBuscada = usuarioABuscar.posicion
