@@ -97,7 +97,7 @@ class Partido {
 
 	@Transient
 	transient RepositorioPartido repoPartido = RepositorioPartido.instance
-
+	
 	transient static val ID_EQUIPO_TEMPORAL = -2
 	transient static val DIAS_PARA_CONFIRMAR = 2
 	transient static val DEBUG_SEGUNDOS_PARA_CONFIRMAR = 30
@@ -377,6 +377,7 @@ class TimerEliminacion extends TimerTask {
 
 	Partido partido
 	RepositorioEquipo repoEquipo = RepositorioEquipo.instance
+	RepositorioNotificacion repoNotificaciones = RepositorioNotificacion.instance
 
 	new(Partido partido_) {
 		partido = partido_
@@ -389,12 +390,17 @@ class TimerEliminacion extends TimerTask {
 
 		if (!partido.confirmado) {
 			println("[INFO]: Se va ha realizar la baja logica del partido sin confirmar con ID: " + partido.idPartido)
+			
+			repoNotificaciones.eliminarNotificacioneDePartidoById(partido.idPartido)
+			
 			RepositorioPartido.instance.eliminarPartido(partido)
 			
 			partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
 			partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
 		
 			partido.eliminarJugadoresReservados()
+			
+			
 		}
 	}
 
@@ -404,6 +410,7 @@ class TimerDebugEliminacion extends TimerTask {
 
 	Partido partido
 	RepositorioEquipo repoEquipo = RepositorioEquipo.instance
+	RepositorioNotificacion repoNotificaciones = RepositorioNotificacion.instance
 
 	new(Partido partido_) {
 		partido = partido_
@@ -416,6 +423,9 @@ class TimerDebugEliminacion extends TimerTask {
 		
 		if (!partido.confirmado) {
 			println("[INFO]: Se va ha realizar la baja logica del partido sin confirmar con ID: " + partido.idPartido)
+			
+			repoNotificaciones.eliminarNotificacioneDePartidoById(partido.idPartido)
+			
 			RepositorioPartido.instance.eliminarPartido(partido)
 			
 			partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)

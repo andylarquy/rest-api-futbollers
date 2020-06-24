@@ -93,12 +93,6 @@ class RepositorioNotificacion {
 
 	def getInvitacionesDelUsuario(Long idUsuario) {
 
-		coleccion.forEach [ noti |
-			println("//////////////////////")
-			println("ID NOTI: " + noti.idNotificacion)
-			println("ID RECEPTOR: " + noti.usuarioReceptor.idUsuario)
-		]
-
 		coleccion.filter [ noti |
 			!noti.fueAceptada() && noti.receptorTieneId(idUsuario)
 		].toList
@@ -172,6 +166,11 @@ class RepositorioNotificacion {
 	
 	def eliminarNoitificacion(Notificacion notificacion) {
 		coleccion.remove(notificacion)
+	}
+	
+	def eliminarNotificacioneDePartidoById(Long idPartido) {
+		val partidoABorrar = repoPartido.searchById(idPartido)
+		coleccion.removeIf[noti | noti.partido.idPartido == partidoABorrar.idPartido]
 	}
 
 }

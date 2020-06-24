@@ -317,5 +317,9 @@ class RestHost {
 		val notificacionPosta = repoNotificacion.searchById(idNotificacion)
 		repoNotificacion.eliminarNoitificacion(notificacionPosta)
 	}
+	
+	def debug() {
+		repoNotificacion.coleccion
+	}
 
 }

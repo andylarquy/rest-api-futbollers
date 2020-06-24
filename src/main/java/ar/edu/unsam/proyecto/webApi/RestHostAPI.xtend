@@ -121,10 +121,7 @@ class RestHostAPI {
 		} catch (ObjectDoesntExists e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
-			e.printStackTrace
-			println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 	}
 
@@ -143,7 +140,6 @@ class RestHostAPI {
 			notFound('{"status":404, "message":"' + e.message + '"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
 		}
 	}
 
@@ -298,6 +294,21 @@ class RestHostAPI {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 
+	}
+	 
+	 @Get("/debug")
+	def getInvitacionesDebug() {
+		try {
+
+
+			var notificacionesParseadas = auxiliar.parsearObjeto(
+				restHost.debug, ViewsNotificacion.NotificacionView)
+			
+			ok(notificacionesParseadas)
+
+		} catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
 	}
 	 
 	@Get("/notificaciones-invitaciones/:idUsuario")

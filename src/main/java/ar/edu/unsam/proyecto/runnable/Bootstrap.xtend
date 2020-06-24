@@ -425,7 +425,7 @@ class Bootstrap {
 		andy.crearAmistad(lucas)
 		andy.crearAmistad(marcela)
 		andy.crearAmistad(julieta)
-
+		
 		nikoBostero.crearAmistad(sebaCapo)
 		nikoBostero.crearAmistad(federico)
 		nikoBostero.crearAmistad(carla)
@@ -448,8 +448,12 @@ class Bootstrap {
 		repoUsuarios.update(sofia)
 		repoUsuarios.update(agustin)
 		repoUsuarios.update(juan)
+		repoUsuarios.update(marcela)
+		repoUsuarios.update(julieta)
+		repoUsuarios.update(lucas)
 		repoUsuarios.update(micaela)
-		
+
+
 		//restHost.crearNuevoPartido(partido1)
 
 	}
