@@ -28,6 +28,7 @@ import org.uqbar.xtrest.api.annotation.Controller
 import org.uqbar.xtrest.api.annotation.Get
 import org.uqbar.xtrest.api.annotation.Post
 import org.uqbar.xtrest.json.JSONUtils
+import org.uqbar.xtrest.api.annotation.Put
 
 @Controller
 class RestHostAPI {
@@ -174,11 +175,7 @@ class RestHostAPI {
 
 	@Post("/equipos")
 	def postEquipos(@Body String body) {
-
 		try {
-			val gson = new GsonBuilder().registerTypeAdapter(Usuario, new UsuarioAdapter).registerTypeAdapter(List,
-				new UsuarioListAdapter()).create()
-
 			val equipo = body.fromJson(Equipo)
 			restHost.crearNuevoEquipo(equipo)
 			ok('{"status":200, "message":"ok"}')
@@ -190,7 +187,37 @@ class RestHostAPI {
 		}
 
 	}
+	
+	@Get("/equipo/:idEquipo")
+	def getEquipoById() {
 
+		try {
+			
+			val equipoParseado = auxiliar.parsearObjeto(restHost.getEquipoById(Long.valueOf(idEquipo)), ViewsEquipo.DetalleView)
+			ok(equipoParseado)
+		} catch (ObjectDoesntExists e) {
+			notFound('{"status":404, "message":"' + e.message + '"}')
+		} catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+
+	}
+
+	@Put("/equipos")
+	def updateEquipo(@Body String body) {
+		try {
+			val equipo = body.fromJson(Equipo)
+			restHost.editarEquipo(equipo)
+			ok('{"status":200, "message":"ok"}')
+		} catch (ObjectAlreadyExists e){
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		} 
+		catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+
+	}
+	
 	// TODO: Testear GET /canchas
 	@Get("/canchas")
 	def getCanchas() {

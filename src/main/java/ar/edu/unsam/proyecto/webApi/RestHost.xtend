@@ -321,5 +321,29 @@ class RestHost {
 	def debug() {
 		repoNotificacion.coleccion
 	}
+	
+	//Programo con los codos
+	def editarEquipo(Equipo equipo) {
+		try{
+			val equipoPosta = repoEquipo.searchById(equipo.idEquipo)
+			val integrantesPosta = equipo.integrantes.map[integ | repoUsuario.searchById(integ.idUsuario)].toSet
+			
+			equipoPosta.nombre = equipo.nombre
+			equipoPosta.integrantes = integrantesPosta
+			equipoPosta.idEquipo = equipo.idEquipo
+			equipoPosta.foto = equipo.foto
+			
+			repoEquipo.update(equipoPosta)
+		}catch(NoResultException e){
+			throw new ObjectDoesntExists('Se está intentando editar un equipo con un ID que no existe en la base')
+		}
+		
+	}
+	
+	def getEquipoById(Long idEquipo){
+		val equipo = repoEquipo.searchByIdConIntegrantes(idEquipo)
+		equipo.integrantes.forEach[integrante | repoUsuario.searchById(integrante.idUsuario)]
+		return equipo
+	}
 
 }

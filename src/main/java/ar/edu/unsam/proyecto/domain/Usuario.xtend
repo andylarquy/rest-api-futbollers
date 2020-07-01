@@ -29,7 +29,7 @@ class Usuario {
 	@Id
 	Long idUsuario
 
-	@JsonView(ViewsUsuario.DefaultView, ViewsNotificacion.NotificacionView)
+	@JsonView(ViewsUsuario.DefaultView, ViewsNotificacion.NotificacionView, ViewsEquipo.DetalleView)
 	@Column()
 	String nombre = ""
 
@@ -38,7 +38,7 @@ class Usuario {
 	String password = ""
 
 	@Column()
-	@JsonView(ViewsUsuario.CredencialesView, ViewsUsuario.PerfilView, ViewsNotificacion.NotificacionView)
+	@JsonView(ViewsUsuario.CredencialesView, ViewsUsuario.PerfilView, ViewsNotificacion.NotificacionView, ViewsEquipo.DetalleView)
 	String foto
 
 	@Column()
