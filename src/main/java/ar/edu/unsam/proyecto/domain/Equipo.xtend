@@ -188,8 +188,11 @@ class Equipo {
 		
 		try{
 			repoUsuario.delete(jugadorReservado)
-		}catch(RuntimeException e){	Thread.dumpStack()
-			val excepcionRara = new Exception('Hubo un error al procesar la invitacion (error code: 44574)')
+		}catch(RuntimeException e){	
+			//Existe un caso excepcional que no sabemos reproducir en el que sucede un error al realizar 
+			//este delete. Imprimimos la excepcion para que si nos lo encontramos alguna vez podamos resolverlo
+			Thread.dumpStack()
+			val excepcionRara = new Exception('Hubo un error al procesar la invitacion')
 			excepcionRara.printStackTrace
 			throw excepcionRara
 		}

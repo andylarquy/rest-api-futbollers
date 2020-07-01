@@ -226,7 +226,7 @@ class Bootstrap {
 	]
 	
 	Equipo supercampeones = new Equipo() => [
-		nombre = "Super campeones"
+		nombre = "Supercampeones"
 		owner = andy
 		foto = "https://i.imgur.com/M9N9o78.jpg"
 		integrantes = new HashSet(Arrays.asList(pepe, juan, sofia, nikoBostero, andy))
@@ -425,7 +425,7 @@ class Bootstrap {
 		andy.crearAmistad(lucas)
 		andy.crearAmistad(marcela)
 		andy.crearAmistad(julieta)
-		
+
 		nikoBostero.crearAmistad(sebaCapo)
 		nikoBostero.crearAmistad(federico)
 		nikoBostero.crearAmistad(carla)
