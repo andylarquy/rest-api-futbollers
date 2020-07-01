@@ -22,7 +22,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
 @Entity
-@JsonInclude(Include.NON_NULL)//En teoria si un campo es null no lo parsea 
+@JsonInclude(Include.NON_NULL)
 class Equipo {
 	
 	@JsonView(ViewsEquipo.ListView, ViewsNotificacion.NotificacionView, ViewsPartido.DefaultView)
@@ -43,7 +43,7 @@ class Equipo {
 	
 	@ManyToMany
 	@JsonView(ViewsEquipo.ListView, ViewsPartido.ListView) 
-	Set<Usuario> integrantes //Capaz conviene que sea un Set para no cagarla
+	Set<Usuario> integrantes
 	
 	@Transient
 	transient RepositorioUsuario repoUsuario = RepositorioUsuario.instance
@@ -178,7 +178,6 @@ class Equipo {
 	}
 	
 	def agregarIntegranteAPuesto(Usuario usuario) {
-		
 		val jugadorReservado = integrantes.findFirst[jugador | jugador.jugadorReservadoAdmite(usuario)]
 		
 		integrantes.remove(jugadorReservado)

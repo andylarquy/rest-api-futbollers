@@ -15,7 +15,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
 @Entity
-@JsonInclude(Include.NON_NULL)//En teoria si un campo es null no lo parsea 
+@JsonInclude(Include.NON_NULL)
 class Cancha {
 	
 	@Id @GeneratedValue

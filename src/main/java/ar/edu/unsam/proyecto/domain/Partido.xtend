@@ -97,7 +97,8 @@ class Partido {
 
 	@Transient
 	transient RepositorioPartido repoPartido = RepositorioPartido.instance
-
+	
+	transient static val ID_EQUIPO_TEMPORAL = -2
 	transient static val DIAS_PARA_CONFIRMAR = 2
 	transient static val DEBUG_SEGUNDOS_PARA_CONFIRMAR = 30
 	
@@ -147,7 +148,6 @@ class Partido {
 		repoPartido.validarFechaCancha(fechaDeReserva, canchaReservada)
 	}
 	
-	//TODO: Pensar bien estas validaciones
 	def validarCreacion() {
 		empresa.validar
 		canchaReservada.validar
@@ -234,8 +234,16 @@ class Partido {
 	}
 	
 	def eliminarJugadoresConocidos(){
-		equipo1.eliminarJugadoresConocidos
-		equipo2.eliminarJugadoresConocidos
+		
+		if(equipo1.idEquipo != ID_EQUIPO_TEMPORAL ){
+			equipo1.eliminarJugadoresConocidos	
+		}
+		
+		if(equipo2.idEquipo != ID_EQUIPO_TEMPORAL){
+			equipo2.eliminarJugadoresConocidos
+		}
+		
+		
 	}
 
 	def asignarNombreEquipos() {
@@ -279,7 +287,7 @@ class Partido {
 	}
 	
 	def jugadoresDesconocidos() {
-		val jugadoresDesconocidos = new HashSet()
+		val Set<Usuario> jugadoresDesconocidos = new HashSet()
 		if (this.tieneEquipoTemporal) {
 			jugadoresTemporalesDelPartido.forEach[jugador|
 				buscarCandidatoPorGPS(jugador, equipo1.owner).forEach[this.agregarUsuarioSiNoEsta(jugadoresDesconocidos, it)]
@@ -294,6 +302,9 @@ class Partido {
 	}
 	
 	def buscarCandidatoPorGPS(Usuario usuarioABuscar, Usuario usuarioOwner) {
+		
+		
+		
 		val int rangoDeBusqueda = Integer.parseInt(usuarioABuscar.email)
 		val sexoBuscado = usuarioABuscar.sexo
 		val posicionBuscada = usuarioABuscar.posicion
@@ -344,7 +355,7 @@ class Partido {
 	}
 	
 	//Valida que la fecha de reserva sea minimo dos dias despues que la de creacion
-	//TODO: No estoy seguro de si hace falta el valor absoluto, pero mejor prevenir
+	//No estoy seguro de si hace falta el valor absoluto, pero mejor prevenir
 	def validarDiasDeConfirmacionFechaDeReserva() {
 		
 		if(Math.abs(Period.between(fechaDeReserva.toLocalDate, fechaDeCreacion.toLocalDate).days) < DIAS_PARA_CONFIRMAR){
@@ -366,6 +377,7 @@ class TimerEliminacion extends TimerTask {
 
 	Partido partido
 	RepositorioEquipo repoEquipo = RepositorioEquipo.instance
+	RepositorioNotificacion repoNotificaciones = RepositorioNotificacion.instance
 
 	new(Partido partido_) {
 		partido = partido_
@@ -378,12 +390,17 @@ class TimerEliminacion extends TimerTask {
 
 		if (!partido.confirmado) {
 			println("[INFO]: Se va ha realizar la baja logica del partido sin confirmar con ID: " + partido.idPartido)
+			
+			repoNotificaciones.eliminarNotificacioneDePartidoById(partido.idPartido)
+			
 			RepositorioPartido.instance.eliminarPartido(partido)
 			
 			partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
 			partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
 		
 			partido.eliminarJugadoresReservados()
+			
+			
 		}
 	}
 
@@ -393,6 +410,7 @@ class TimerDebugEliminacion extends TimerTask {
 
 	Partido partido
 	RepositorioEquipo repoEquipo = RepositorioEquipo.instance
+	RepositorioNotificacion repoNotificaciones = RepositorioNotificacion.instance
 
 	new(Partido partido_) {
 		partido = partido_
@@ -405,6 +423,9 @@ class TimerDebugEliminacion extends TimerTask {
 		
 		if (!partido.confirmado) {
 			println("[INFO]: Se va ha realizar la baja logica del partido sin confirmar con ID: " + partido.idPartido)
+			
+			repoNotificaciones.eliminarNotificacioneDePartidoById(partido.idPartido)
+			
 			RepositorioPartido.instance.eliminarPartido(partido)
 			
 			partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)

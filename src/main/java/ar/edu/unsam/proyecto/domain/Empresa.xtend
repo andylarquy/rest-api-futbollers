@@ -19,7 +19,7 @@ import org.uqbar.geodds.Point
 
 @Accessors
 @Entity
-@JsonInclude(Include.NON_NULL)//En teoria si un campo es null no lo parsea 
+@JsonInclude(Include.NON_NULL)
 class Empresa {
 	
 	
@@ -63,7 +63,7 @@ class Empresa {
 		canchas.remove(cancha)
 	}
 	
-	//TODO: Esto
+	//TODO: Delegar esta validacion
 	def validar(){
 		true
 	}

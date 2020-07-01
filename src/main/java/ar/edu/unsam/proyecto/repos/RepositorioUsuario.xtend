@@ -102,8 +102,6 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 
 			val criteriosWhere = new ArrayList()
 
-
-
 			if (!usuario.amigos.empty) {
 				criteriosWhere.add(criteria.not(from.get("idUsuario").in(usuario.idDeSusAmigos.toSet)))
 			}
@@ -117,19 +115,6 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 
 	}
 
-	/*
-	 *  TODO: REVISAR 
-	 * def notificacionesDelUsuario(Long idUsuario) {
-	 * 	val usuario = queryTemplate([criteria, query, from |
-	 * 			query.where(criteria.equal(from.get("idUsuario"), idUsuario))
-	 * 			return query
-	 * 		], 
-	 * 		[query | query.singleResult]) as Usuario
-	 * 		
-	 * 		
-	 * 		return usuario.invitaciones
-	 * }
-	 */
 	// TODO: Mejorar el formato de esta query	
 	def getUsuariosEnElRangoDe(Usuario usuarioBuscado, int rangoDeBusqueda, String sexoBuscado,
 		String posicionBuscada) {
@@ -137,16 +122,18 @@ class RepositorioUsuario extends Repositorio<Usuario> {
 		var candidatosFiltrados = coleccion.filter [ usuario |
 			!usuario.esUnJugadorReservado && usuario.estaDentroDelRango(usuarioBuscado.getUbicacion, rangoDeBusqueda)
 		]
-
+		
 		if (posicionBuscada !== null) {
 			if (!posicionBuscada.equals("Cualquiera")) {
 				candidatosFiltrados = candidatosFiltrados.filter[usuario|usuario.tienePosicion(posicionBuscada)]
 			}
 		}
+		
+		if (sexoBuscado !== null) {
+			if (!sexoBuscado.equals("Mixto")) {
+				candidatosFiltrados = candidatosFiltrados.filter[usuario|usuario.tieneSexo(sexoBuscado)]
 
-		if (!sexoBuscado.equals("Mixto")) {
-			candidatosFiltrados = candidatosFiltrados.filter[usuario|usuario.tieneSexo(sexoBuscado)]
-
+			}
 		}
 
 		return candidatosFiltrados

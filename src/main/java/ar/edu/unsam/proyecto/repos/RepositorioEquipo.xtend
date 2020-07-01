@@ -50,6 +50,7 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 			[criteria, query, from |
 				
 				from.fetch("integrantes")
+				from.fetch("owner")
 				
 				query.where(criteria.equal(from.get("idEquipo"), equipoId))
 				return query

@@ -58,7 +58,7 @@ class RepositorioNotificacion {
 		var notificaciones = coleccion.filter [ noti |
 			noti.fueAceptada() && noti.receptorEs(usuario)
 		].toList
-
+		
 		notificaciones.forEach [ noti |
 			noti.partido = repoPartido.searchById(noti.partido.idPartido)
 			noti.partido.equipo1 = repoEquipo.searchByIdConIntegrantes(noti.partido.equipo1.idEquipo)
@@ -70,14 +70,18 @@ class RepositorioNotificacion {
 		val partidosDelUsuario = new ArrayList
 		partidosDelUsuario.addAll(notificaciones.map[partido])
 
-		repoPartido.coleccion.forEach [ partido |
-
-			println(partido.confirmado)
+		val partidosDeLaBase = new ArrayList
+		partidosDeLaBase.addAll(repoPartido.coleccion)
+		
+		
+		partidosDeLaBase.forEach[partido | 
+			partido.equipo1 = repoEquipo.searchByIdConIntegrantes(Long.valueOf(partido.equipo1.idEquipo))
+			partido.equipo2 = repoEquipo.searchByIdConIntegrantes(Long.valueOf(partido.equipo2.idEquipo))
+		]
+		
+		partidosDeLaBase.forEach [ partido |
 
 			if (partido.equipo1.esOwner(usuario) && !partidosDelUsuario.exists[it.idPartido == partido.idPartido]) {
-
-				partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
-				partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
 
 				partidosDelUsuario.add(partido)
 			}
@@ -88,12 +92,6 @@ class RepositorioNotificacion {
 	}
 
 	def getInvitacionesDelUsuario(Long idUsuario) {
-
-		coleccion.forEach [ noti |
-			println("//////////////////////")
-			println("ID NOTI: " + noti.idNotificacion)
-			println("ID RECEPTOR: " + noti.usuarioReceptor.idUsuario)
-		]
 
 		coleccion.filter [ noti |
 			!noti.fueAceptada() && noti.receptorTieneId(idUsuario)
@@ -119,8 +117,8 @@ class RepositorioNotificacion {
 
 	def enviarUnaNotificacion(Notificacion notificacion) {
 
-		if (notificacion.usuario.token !== null) {
-			postNotificacion(notificacion, "to", notificacion.usuario.token)
+		if (notificacion.usuarioReceptor.token !== null) {
+			postNotificacion(notificacion, "to", notificacion.usuarioReceptor.token)
 		}
 
 	}
@@ -168,6 +166,11 @@ class RepositorioNotificacion {
 	
 	def eliminarNoitificacion(Notificacion notificacion) {
 		coleccion.remove(notificacion)
+	}
+	
+	def eliminarNotificacioneDePartidoById(Long idPartido) {
+		val partidoABorrar = repoPartido.searchById(idPartido)
+		coleccion.removeIf[noti | noti.partido.idPartido == partidoABorrar.idPartido]
 	}
 
 }

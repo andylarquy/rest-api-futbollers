@@ -106,8 +106,8 @@ class Bootstrap {
 		posicion = "Delantero"
 		foto = "https://i.imgur.com/BGDdGM1.jpg"
 		email = "marcela@gmail.com"
-		lat = -34.3668884
-		lon = -58.7404551
+		lat = -34.5653851
+		lon = -58.4986315
 	]
 	
 	Usuario julieta = new Usuario() => [
@@ -198,6 +198,18 @@ class Bootstrap {
 		lat = -34.8016244
 		lon = -58.3220183
 	]
+	
+	Usuario micaela = new Usuario() => [
+		nombre = "Micaela"
+		password = dotenv.get("PASSWORD")
+		sexo = "Femenino"
+		posicion = "Defensor"
+		foto = "https://i.imgur.com/uACXHMk.jpg"
+		email = "micaela@gmail.com"
+		lat = -34.5416244
+		lon = -58.4521183
+	]
+	
 
 	Equipo borbotones = new Equipo() => [
 		nombre = "Los borbotones"
@@ -238,7 +250,7 @@ class Bootstrap {
 		nombre = "Hay Equipo"
 		owner = sebaCapo
 		foto = "https://i.imgur.com/KBA4jOL.jpg"
-		integrantes = new HashSet(Arrays.asList(sofia, julieta, marcela, florencia))
+		integrantes = new HashSet(Arrays.asList(sofia, julieta, carla, florencia))
 	]
 
 	Cancha urquiza1 = new Cancha() => [
@@ -375,6 +387,7 @@ class Bootstrap {
 		repoUsuarios.crearUsuario(marcela)
 		repoUsuarios.crearUsuario(julieta)
 		repoUsuarios.crearUsuario(lucas)
+		repoUsuarios.crearUsuario(micaela)
 
 		repoEquipo.create(borbotones)
 		repoEquipo.create(dreamTeam)
@@ -400,7 +413,6 @@ class Bootstrap {
 		repoPromocion.create(promo3)
 
 		// TODO: Pensar si podes evitar mandar un update
-		
 		andy.crearAmistad(sebaCapo)
 		andy.crearAmistad(federico)
 		andy.crearAmistad(carla)
@@ -423,7 +435,6 @@ class Bootstrap {
 		sebaCapo.crearAmistad(carlos)
 		sebaCapo.crearAmistad(sofia)
 		sebaCapo.crearAmistad(julieta)
-		sebaCapo.crearAmistad(marcela)
 		sebaCapo.crearAmistad(florencia)
 
 		repoUsuarios.update(sebaCapo)
@@ -437,7 +448,12 @@ class Bootstrap {
 		repoUsuarios.update(sofia)
 		repoUsuarios.update(agustin)
 		repoUsuarios.update(juan)
-		
+		repoUsuarios.update(marcela)
+		repoUsuarios.update(julieta)
+		repoUsuarios.update(lucas)
+		repoUsuarios.update(micaela)
+
+
 		//restHost.crearNuevoPartido(partido1)
 
 	}

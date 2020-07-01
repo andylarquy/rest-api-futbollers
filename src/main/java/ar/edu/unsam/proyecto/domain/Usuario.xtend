@@ -158,13 +158,14 @@ class Usuario {
 
 		var admite = true
 
-		if (!sexo.equals("Mixto") && !sexo.equals(usuario.sexo)) {
-			admite = false
+		if (sexo !== null) {
+			if (!sexo.equals("Mixto") && !sexo.equals(usuario.sexo)) {
+				admite = false
+			}
 		}
-
+		
 		if (posicion !== null) {
-
-			if (!posicion.equals(usuario.posicion)) {
+			if (!sexo.equals("Cualquiera") && !posicion.equals(usuario.posicion)) {
 				admite = false
 			}
 		}
@@ -180,17 +181,17 @@ class Usuario {
 	def esAmigoDe(Usuario usuarioBuscado) {
 		amigos.exists[usuarioBuscado.idUsuario == idUsuario]
 	}
-	
+
 	def validarCreacion() {
-		if(idUsuario === null){
+		if (idUsuario === null) {
 			throw new Exception('El usuario debe tener un ID')
 		}
 	}
-	
+
 	def tienePosicion(String posicionBuscada) {
 		posicion.equals(posicionBuscada)
 	}
-	
+
 	def tieneId(Long idBuscado) {
 		idUsuario == idBuscado
 	}
