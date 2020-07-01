@@ -29,6 +29,7 @@ import org.uqbar.xtrest.api.annotation.Get
 import org.uqbar.xtrest.api.annotation.Post
 import org.uqbar.xtrest.json.JSONUtils
 import org.uqbar.xtrest.api.annotation.Put
+import org.uqbar.xtrest.api.annotation.Delete
 
 @Controller
 class RestHostAPI {
@@ -210,6 +211,19 @@ class RestHostAPI {
 			restHost.editarEquipo(equipo)
 			ok('{"status":200, "message":"ok"}')
 		} catch (ObjectAlreadyExists e){
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		} 
+		catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+	}
+	
+	@Delete("/equipos/:idEquipo")
+	def bajaLogicaEquipo() {
+		try {
+			restHost.bajaLogicaEquipo(Long.valueOf(idEquipo))
+			ok('{"status":200, "message":"ok"}')
+		} catch (ObjectDoesntExists e){
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		} 
 		catch (Exception e) {

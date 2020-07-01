@@ -345,5 +345,11 @@ class RestHost {
 		equipo.integrantes.forEach[integrante | repoUsuario.searchById(integrante.idUsuario)]
 		return equipo
 	}
+	
+	def bajaLogicaEquipo(Long idEquipo){
+		val equipoPosta = repoEquipo.searchById(idEquipo)
+		equipoPosta.estado = false
+		repoEquipo.update(equipoPosta)
+	}
 
 }

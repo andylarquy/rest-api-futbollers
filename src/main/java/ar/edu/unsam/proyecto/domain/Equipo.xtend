@@ -37,6 +37,10 @@ class Equipo {
 	@JsonView(ViewsEquipo.ListView) 
 	String foto
 	
+	@Column
+	@JsonView(ViewsEquipo.DefaultView, ViewsNotificacion.NotificacionView, ViewsPartido.DefaultView)
+	Boolean estado = true
+	
 	@ManyToOne
 	@JsonView(ViewsEquipo.ListView, ViewsPartido.ListView) 
 	Usuario owner
