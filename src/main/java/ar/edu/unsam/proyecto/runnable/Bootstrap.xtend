@@ -336,7 +336,7 @@ class Bootstrap {
 		canchaReservada = urquiza1
 		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 12, 25), LocalTime.of(20, 00))
 	]
- 
+/*  
 	Partido partido2 = new Partido() => [
 		equipo1 = borbotones
 		equipo2 = indecisos
@@ -344,7 +344,7 @@ class Bootstrap {
 		canchaReservada = vicLop2
 		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 4, 24), LocalTime.of(17, 00))
 	]
-/* 
+
 	Partido partido3 = new Partido() => [
 		equipo1 = borbotones
 		equipo2 = indecisos

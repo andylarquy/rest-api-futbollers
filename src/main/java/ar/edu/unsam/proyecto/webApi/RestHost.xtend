@@ -22,6 +22,7 @@ import java.util.Set
 import javax.persistence.NoResultException
 import org.eclipse.xtend.lib.annotations.Accessors
 import ar.edu.unsam.proyecto.repos.RepositorioEncuesta
+import ar.edu.unsam.proyecto.domain.Encuesta
 
 @Accessors
 class RestHost {
@@ -356,6 +357,16 @@ class RestHost {
 	
 	def encuestasDelUsuario(Long idUsuario) {
 		repoEncuesta.getEncuestasDelUsuario(idUsuario)
+	}
+	
+	def updateEncuesta(Encuesta encuesta){
+		val encuestaPosta = repoEncuesta.searchById(encuesta.idEncuesta)
+		
+		encuestaPosta.respuesta1 = encuesta.respuesta1
+		encuestaPosta.respuesta2 = encuesta.respuesta2
+		encuestaPosta.respuesta3 = encuesta.respuesta3
+		
+		repoEncuesta.update(encuestaPosta)
 	}
 	
 }

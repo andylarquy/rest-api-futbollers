@@ -34,6 +34,9 @@ import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
 import java.util.ArrayList
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEncuesta
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.Executors
 
 @Accessors
 @Entity
@@ -104,11 +107,11 @@ class Partido {
 	transient static val DIAS_PARA_CONFIRMAR = 2
 	transient static val DEBUG_SEGUNDOS_PARA_CONFIRMAR = 30
 
-	transient static val DEBUG_SEGUNDOS_PARA_ENCUESTA = 30
+	transient static val DEBUG_SEGUNDOS_PARA_ENCUESTA = 20
 
 	@Transient
 	transient AuxiliarDynamicJson auxiliar = new AuxiliarDynamicJson
-
+	
 	new() {
 		// ======= [DEBUG] =======
 		val fechaDeEliminacionDebug = LocalDateTime.now().plusSeconds(DEBUG_SEGUNDOS_PARA_CONFIRMAR)
@@ -121,10 +124,14 @@ class Partido {
 		val fechaDeEnvioEncuestas = LocalDateTime.now().plusSeconds(DEBUG_SEGUNDOS_PARA_ENCUESTA)
 		var fechaDeEnvioEncuestasDebugAsDate = Date.from(
 			fechaDeEnvioEncuestas.atZone(ZoneId.systemDefault()).toInstant())
+			
 
-		// Desde el momento de creacion de un partido hay X dias para confirmarlo y asi evitar su autoeliminacion
+				// Desde el momento de creacion de un partido hay X dias para confirmarlo y asi evitar su autoeliminacion
 		new Timer().schedule(autoEliminarPartido, fechaDeEliminacionAsDate)
 		new Timer().schedule(enviarEncuestas, fechaDeEnvioEncuestasDebugAsDate)
+
+		//val scheduledFuture = scheduler.schedule(enviarEncuestas, 5,TimeUnit.SECONDS);
+
 
 		// Para eliminar el warning
 		fechaDeEliminacionDebugAsDate = fechaDeEliminacionDebugAsDate
@@ -481,6 +488,7 @@ class TimerEnviarEncuesta extends TimerTask {
 	}
 
 	override run() {
+		
 		if (termino) {
 			termino = false
 

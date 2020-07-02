@@ -29,6 +29,7 @@ import org.uqbar.xtrest.api.annotation.Get
 import org.uqbar.xtrest.api.annotation.Post
 import org.uqbar.xtrest.api.annotation.Put
 import org.uqbar.xtrest.json.JSONUtils
+import ar.edu.unsam.proyecto.domain.Encuesta
 
 @Controller
 class RestHostAPI {
@@ -446,6 +447,17 @@ class RestHostAPI {
 		try {
 			val encuestasParseadas = auxiliar.parsearObjeto(restHost.encuestasDelUsuario(Long.valueOf(idUsuario)), ViewsEncuesta.DefaultView)
 			ok(encuestasParseadas)
+		} catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+	}
+
+	@Put("/encuestas")
+	def updateEncuesta(@Body String body) {
+		try {
+			val encuesta = body.fromJson(Encuesta)
+			restHost.updateEncuesta(encuesta)
+			ok('{"status":200, "message":"ok"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
