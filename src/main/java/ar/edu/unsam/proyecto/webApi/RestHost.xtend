@@ -21,6 +21,7 @@ import java.util.List
 import java.util.Set
 import javax.persistence.NoResultException
 import org.eclipse.xtend.lib.annotations.Accessors
+import ar.edu.unsam.proyecto.repos.RepositorioEncuesta
 
 @Accessors
 class RestHost {
@@ -31,6 +32,7 @@ class RestHost {
 	RepositorioEmpresa repoEmpresa = RepositorioEmpresa.instance
 	RepositorioPromocion repoPromociones = RepositorioPromocion.instance
 	RepositorioNotificacion repoNotificacion = RepositorioNotificacion.instance
+	RepositorioEncuesta repoEncuesta = RepositorioEncuesta.instance
 
 	def getPeticionDePrueba() {
 		return '{ "message": "La API Rest esta funcionando!! :)" }'
@@ -351,5 +353,9 @@ class RestHost {
 		equipoPosta.estado = false
 		repoEquipo.update(equipoPosta)
 	}
-
+	
+	def encuestasDelUsuario(Long idUsuario) {
+		repoEncuesta.getEncuestasDelUsuario(idUsuario)
+	}
+	
 }

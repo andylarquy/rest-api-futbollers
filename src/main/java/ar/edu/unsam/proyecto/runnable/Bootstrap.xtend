@@ -336,7 +336,7 @@ class Bootstrap {
 		canchaReservada = urquiza1
 		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 12, 25), LocalTime.of(20, 00))
 	]
-
+ 
 	Partido partido2 = new Partido() => [
 		equipo1 = borbotones
 		equipo2 = indecisos
@@ -344,7 +344,7 @@ class Bootstrap {
 		canchaReservada = vicLop2
 		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 4, 24), LocalTime.of(17, 00))
 	]
-
+/* 
 	Partido partido3 = new Partido() => [
 		equipo1 = borbotones
 		equipo2 = indecisos
@@ -352,7 +352,7 @@ class Bootstrap {
 		canchaReservada = argen1
 		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 12, 5), LocalTime.of(23, 00))
 	]
-
+*/
 	Promocion promo1 = new Promocion() => [
 		codigo = "cocacola"
 		descripcion = "Con Coca-Cola te hacemos el aguante!"
@@ -413,7 +413,7 @@ class Bootstrap {
 		repoPromocion.create(promo3)
 
 		// TODO: Pensar si podes evitar mandar un update
-		andy.crearAmistad(sebaCapo)
+		//andy.crearAmistad(sebaCapo)
 		andy.crearAmistad(federico)
 		andy.crearAmistad(carla)
 		andy.crearAmistad(carlos)
@@ -454,7 +454,7 @@ class Bootstrap {
 		repoUsuarios.update(micaela)
 
 
-		//restHost.crearNuevoPartido(partido1)
+		restHost.crearNuevoPartido(partido1)
 
 	}
 

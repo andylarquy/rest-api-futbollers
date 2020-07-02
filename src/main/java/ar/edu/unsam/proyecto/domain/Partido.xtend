@@ -32,13 +32,15 @@ import javax.persistence.Id
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
+import java.util.ArrayList
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEncuesta
 
 @Accessors
 @Entity
 @JsonInclude(Include.NON_NULL)
 class Partido {
 
-	@JsonView(ViewsPartido.ListView, ViewsNotificacion.NotificacionView)
+	@JsonView(ViewsPartido.ListView, ViewsNotificacion.NotificacionView, ViewsEncuesta.DefaultView)
 	@Id
 	Long idPartido
 
@@ -68,16 +70,16 @@ class Partido {
 
 	@Column
 	Boolean estado = true
-	
+
 	@JsonView(ViewsPartido.ListView)
 	@Column
 	int cantidadDeConfirmaciones = 0
-	
+
 	@JsonSerialize(using=LocalDateTimeSerializer)
 	@JsonView(ViewsPartido.ListView)
 	@Column
 	LocalDateTime fechaDeCreacion = LocalDateTime.now().withNano(0).withSecond(0)
-	
+
 	@JsonSerialize(using=LocalDateTimeSerializer)
 	@Column
 	@JsonView(ViewsPartido.DetallesView, ViewsNotificacion.NotificacionView, ViewsPartido.ListView)
@@ -97,11 +99,13 @@ class Partido {
 
 	@Transient
 	transient RepositorioPartido repoPartido = RepositorioPartido.instance
-	
+
 	transient static val ID_EQUIPO_TEMPORAL = -2
 	transient static val DIAS_PARA_CONFIRMAR = 2
 	transient static val DEBUG_SEGUNDOS_PARA_CONFIRMAR = 30
-	
+
+	transient static val DEBUG_SEGUNDOS_PARA_ENCUESTA = 30
+
 	@Transient
 	transient AuxiliarDynamicJson auxiliar = new AuxiliarDynamicJson
 
@@ -114,8 +118,13 @@ class Partido {
 		val fechaDeEliminacion = LocalDateTime.now().plusDays(DIAS_PARA_CONFIRMAR)
 		val fechaDeEliminacionAsDate = Date.from(fechaDeEliminacion.atZone(ZoneId.systemDefault()).toInstant())
 
+		val fechaDeEnvioEncuestas = LocalDateTime.now().plusSeconds(DEBUG_SEGUNDOS_PARA_ENCUESTA)
+		var fechaDeEnvioEncuestasDebugAsDate = Date.from(
+			fechaDeEnvioEncuestas.atZone(ZoneId.systemDefault()).toInstant())
+
 		// Desde el momento de creacion de un partido hay X dias para confirmarlo y asi evitar su autoeliminacion
 		new Timer().schedule(autoEliminarPartido, fechaDeEliminacionAsDate)
+		new Timer().schedule(enviarEncuestas, fechaDeEnvioEncuestasDebugAsDate)
 
 		// Para eliminar el warning
 		fechaDeEliminacionDebugAsDate = fechaDeEliminacionDebugAsDate
@@ -126,6 +135,9 @@ class Partido {
 
 	@Transient
 	transient TimerEliminacion autoEliminarPartido = new TimerEliminacion(this)
+
+	@Transient
+	transient TimerEnviarEncuesta enviarEncuestas = new TimerEnviarEncuesta(this)
 
 	def precioTotal() {
 		canchaReservada.precio * (1 - porcentajeDescuento / 100)
@@ -147,13 +159,13 @@ class Partido {
 		canchaReservada.validar
 		repoPartido.validarFechaCancha(fechaDeReserva, canchaReservada)
 	}
-	
+
 	def validarCreacion() {
 		empresa.validar
 		canchaReservada.validar
 		repoPartido.validarFechaCancha(fechaDeReserva, canchaReservada)
 	}
-	
+
 	def validarPersistir() {
 		empresa.validar
 		canchaReservada.validar
@@ -167,8 +179,7 @@ class Partido {
 
 	def validarFechaEstaLibre(LocalDateTime fecha, Cancha cancha) {
 		if (sonLaMismaFecha(fechaDeReserva.toLocalDate, fecha.toLocalDate) &&
-			laDiferenciaEsMenorAUnaHora(fechaDeReserva, fecha) &&
-			canchaReservada.idCancha == cancha.idCancha) {
+			laDiferenciaEsMenorAUnaHora(fechaDeReserva, fecha) && canchaReservada.idCancha == cancha.idCancha) {
 			throw new ObjectAlreadyExists('Ya existe una reserva para esa fecha y hora')
 		}
 	}
@@ -209,7 +220,7 @@ class Partido {
 
 	def mapearJugadoresConocidos() {
 		equipo1.mapearJugadoresConocidos
-		equipo2.mapearJugadoresConocidos 
+		equipo2.mapearJugadoresConocidos
 	}
 
 	def eliminarJugadoresTemporales() {
@@ -218,7 +229,7 @@ class Partido {
 	}
 
 	def prepararParaPersistir() {
-		
+
 		confirmado = false
 		eliminarJugadoresConocidos()
 		mapearJugadoresTemporales()
@@ -227,23 +238,22 @@ class Partido {
 		mapearEquipo(equipo1)
 		mapearEquipo(equipo2)
 	}
-	
+
 	def mapearJugadoresTemporales() {
 		equipo1.mapearJugadoresTemporales
 		equipo2.mapearJugadoresTemporales
 	}
-	
-	def eliminarJugadoresConocidos(){
-		
-		if(equipo1.idEquipo != ID_EQUIPO_TEMPORAL ){
-			equipo1.eliminarJugadoresConocidos	
+
+	def eliminarJugadoresConocidos() {
+
+		if (equipo1.idEquipo != ID_EQUIPO_TEMPORAL) {
+			equipo1.eliminarJugadoresConocidos
 		}
-		
-		if(equipo2.idEquipo != ID_EQUIPO_TEMPORAL){
+
+		if (equipo2.idEquipo != ID_EQUIPO_TEMPORAL) {
 			equipo2.eliminarJugadoresConocidos
 		}
-		
-		
+
 	}
 
 	def asignarNombreEquipos() {
@@ -285,51 +295,51 @@ class Partido {
 		confirmado = true
 		repoPartido.update(this)
 	}
-	
+
 	def jugadoresDesconocidos() {
 		val Set<Usuario> jugadoresDesconocidos = new HashSet()
 		if (this.tieneEquipoTemporal) {
-			jugadoresTemporalesDelPartido.forEach[jugador|
-				buscarCandidatoPorGPS(jugador, equipo1.owner).forEach[this.agregarUsuarioSiNoEsta(jugadoresDesconocidos, it)]
+			jugadoresTemporalesDelPartido.forEach [ jugador |
+				buscarCandidatoPorGPS(jugador, equipo1.owner).forEach [
+					this.agregarUsuarioSiNoEsta(jugadoresDesconocidos, it)
+				]
 			]
 		}
-		
-		if(jugadoresDesconocidos.size < jugadoresTemporalesDelPartido.size){
-			throw new InsufficientCandidates('No se han encontrado suficentes jugadores para cubrir los puestos con esos parametros de busqueda')
+
+		if (jugadoresDesconocidos.size < jugadoresTemporalesDelPartido.size) {
+			throw new InsufficientCandidates(
+				'No se han encontrado suficentes jugadores para cubrir los puestos con esos parametros de busqueda')
 		}
-		
+
 		return jugadoresDesconocidos
 	}
-	
+
 	def buscarCandidatoPorGPS(Usuario usuarioABuscar, Usuario usuarioOwner) {
-		
-		
-		
+
 		val int rangoDeBusqueda = Integer.parseInt(usuarioABuscar.email)
 		val sexoBuscado = usuarioABuscar.sexo
 		val posicionBuscada = usuarioABuscar.posicion
 
 		repoUsuario.getUsuariosEnElRangoDe(usuarioOwner, rangoDeBusqueda, sexoBuscado, posicionBuscada).toSet
 	}
-	
-	def agregarUsuarioSiNoEsta(Set<Usuario> coleccion, Usuario usuario){
-		if(!coleccion.exists[jugador | jugador.idUsuario == usuario.idUsuario]){
+
+	def agregarUsuarioSiNoEsta(Set<Usuario> coleccion, Usuario usuario) {
+		if (!coleccion.exists[jugador|jugador.idUsuario == usuario.idUsuario]) {
 			coleccion.add(usuario)
 		}
 	}
-	
-	
+
 	def enviarNotifiacionesAConocidos(Set<Usuario> destinatarios, Usuario owner) {
-		
+
 		val invitacion = new Notificacion()
 		invitacion.partido = this
-		invitacion.titulo = "¡ "+owner.nombre+" te invito a un partido!"
+		invitacion.titulo = "¡ " + owner.nombre + " te invito a un partido!"
 		invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
 			auxiliar.dateTransformer(invitacion.partido.fechaDeReserva)
 
 		repoNotificacion.enviarMultipleNotificacion(invitacion, destinatarios)
 	}
-	
+
 	def enviarNotifiacionesADesconocidos(Set<Usuario> destinatarios) {
 		val invitacion = new Notificacion()
 		invitacion.partido = this
@@ -338,38 +348,48 @@ class Partido {
 			auxiliar.dateTransformer(invitacion.partido.fechaDeReserva)
 		repoNotificacion.enviarMultipleNotificacion(invitacion, destinatarios)
 	}
-	
+
 	def agregarPuesto(Usuario usuario) {
-		
-		if(equipo1.tienePuestoLibrePara(usuario)){
+
+		if (equipo1.tienePuestoLibrePara(usuario)) {
 			equipo1.agregarIntegranteAPuesto(usuario)
-		}else if (equipo2.tienePuestoLibrePara(usuario)){
+		} else if (equipo2.tienePuestoLibrePara(usuario)) {
 			equipo2.agregarIntegranteAPuesto(usuario)
-		}else{
+		} else {
 			throw new Exception('No hay hueco en el partido para este jugador')
 		}
 	}
-	
+
 	def faltanJugadores() {
 		cantidadDeConfirmaciones + 1 < canchaReservada.cantidadJugadores
 	}
-	
-	//Valida que la fecha de reserva sea minimo dos dias despues que la de creacion
-	//No estoy seguro de si hace falta el valor absoluto, pero mejor prevenir
+
+	// Valida que la fecha de reserva sea minimo dos dias despues que la de creacion
+	// No estoy seguro de si hace falta el valor absoluto, pero mejor prevenir
 	def validarDiasDeConfirmacionFechaDeReserva() {
-		
-		if(Math.abs(Period.between(fechaDeReserva.toLocalDate, fechaDeCreacion.toLocalDate).days) < DIAS_PARA_CONFIRMAR){
-			throw new Exception('Debes reservar con una antelacion de minimo '+DIAS_PARA_CONFIRMAR+' dias')
+
+		if (Math.abs(Period.between(fechaDeReserva.toLocalDate, fechaDeCreacion.toLocalDate).days) <
+			DIAS_PARA_CONFIRMAR) {
+			throw new Exception('Debes reservar con una antelacion de minimo ' + DIAS_PARA_CONFIRMAR + ' dias')
 		}
-		
+
 	}
-	
-	def eliminarJugadoresReservados(){
+
+	def eliminarJugadoresReservados() {
 		equipo1.desvincularJugadoresReservados
 		equipo2.desvincularJugadoresReservados
 	}
 
-	
+	def getJugadoresDeLaEncuesta() {
+		val owner = equipo1.owner
+		val jugadoresDeLaEncuesta = new ArrayList
+
+		jugadoresDeLaEncuesta.addAll(equipo1.integrantes.filter[!esAmigoDe(owner)])
+		jugadoresDeLaEncuesta.addAll(equipo2.integrantes.filter[!esAmigoDe(owner)])
+
+		return jugadoresDeLaEncuesta
+	}
+
 }
 
 //TimerTask Auxiliar
@@ -378,6 +398,7 @@ class TimerEliminacion extends TimerTask {
 	Partido partido
 	RepositorioEquipo repoEquipo = RepositorioEquipo.instance
 	RepositorioNotificacion repoNotificaciones = RepositorioNotificacion.instance
+	Boolean termino = true
 
 	new(Partido partido_) {
 		partido = partido_
@@ -385,22 +406,26 @@ class TimerEliminacion extends TimerTask {
 
 	override run() {
 
-		// Volvemos a ir al back para traer el estado de confirmacion 2 dias despues
-		partido = RepositorioPartido.instance.searchById(partido.idPartido)
+		if (termino) {
+			termino = false
 
-		if (!partido.confirmado) {
-			println("[INFO]: Se va ha realizar la baja logica del partido sin confirmar con ID: " + partido.idPartido)
-			
-			repoNotificaciones.eliminarNotificacioneDePartidoById(partido.idPartido)
-			
-			RepositorioPartido.instance.eliminarPartido(partido)
-			
-			partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
-			partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
-		
-			partido.eliminarJugadoresReservados()
-			
-			
+			// Volvemos a ir al back para traer el estado de confirmacion 2 dias despues
+			partido = RepositorioPartido.instance.searchById(partido.idPartido)
+
+			if (!partido.confirmado) {
+				println("[INFO]: Se va ha realizar la baja logica del partido sin confirmar con ID: " +
+					partido.idPartido)
+
+				repoNotificaciones.eliminarNotificacioneDePartidoById(partido.idPartido)
+
+				RepositorioPartido.instance.eliminarPartido(partido)
+
+				partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
+				partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
+
+				partido.eliminarJugadoresReservados()
+			}
+
 		}
 	}
 
@@ -411,6 +436,7 @@ class TimerDebugEliminacion extends TimerTask {
 	Partido partido
 	RepositorioEquipo repoEquipo = RepositorioEquipo.instance
 	RepositorioNotificacion repoNotificaciones = RepositorioNotificacion.instance
+	Boolean termino = true
 
 	new(Partido partido_) {
 		partido = partido_
@@ -418,20 +444,84 @@ class TimerDebugEliminacion extends TimerTask {
 
 	override run() {
 
-		// Volvemos a ir al back para traer el estado de confirmacion 2 dias despues
-		partido = RepositorioPartido.instance.searchById(partido.idPartido)
-		
-		if (!partido.confirmado) {
-			println("[INFO]: Se va ha realizar la baja logica del partido sin confirmar con ID: " + partido.idPartido)
-			
-			repoNotificaciones.eliminarNotificacioneDePartidoById(partido.idPartido)
-			
-			RepositorioPartido.instance.eliminarPartido(partido)
-			
-			partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
-			partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
-			
-			partido.eliminarJugadoresReservados()
+		if (termino) {
+			termino = false
+
+			// Volvemos a ir al back para traer el estado de confirmacion 2 dias despues
+			partido = RepositorioPartido.instance.searchById(partido.idPartido)
+
+			if (!partido.confirmado) {
+				println("[INFO]: Se va ha realizar la baja logica del partido sin confirmar con ID: " +
+					partido.idPartido)
+
+				repoNotificaciones.eliminarNotificacioneDePartidoById(partido.idPartido)
+
+				RepositorioPartido.instance.eliminarPartido(partido)
+
+				partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
+				partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
+
+				partido.eliminarJugadoresReservados()
+			}
+
+		}
+	}
+
+}
+
+class TimerEnviarEncuesta extends TimerTask {
+
+	Partido partido
+
+	// Afroamericano que piensa
+	Boolean termino = true
+
+	new(Partido partido_) {
+		partido = partido_
+	}
+
+	override run() {
+		if (termino) {
+			termino = false
+
+			partido = RepositorioPartido.instance.searchById(partido.idPartido)
+			partido.equipo1 = RepositorioEquipo.instance.searchByIdConIntegrantes(partido.equipo1.idEquipo)
+			partido.equipo2 = RepositorioEquipo.instance.searchByIdConIntegrantes(partido.equipo2.idEquipo)
+
+			var integrantesTemp = new ArrayList<Usuario>
+			integrantesTemp.addAll(partido.equipo1.integrantes)
+
+			partido.equipo1.integrantes = new HashSet
+
+			integrantesTemp.forEach [
+				val usuarioPosta = RepositorioUsuario.instance.searchByIdConAmigos(it.idUsuario)
+				partido.equipo1.integrantes.add(usuarioPosta)
+			]
+
+			integrantesTemp = new ArrayList<Usuario>
+			integrantesTemp.addAll(partido.equipo2.integrantes)
+
+			partido.equipo2.integrantes = new HashSet
+
+			integrantesTemp.forEach [
+				val usuarioPosta = RepositorioUsuario.instance.searchByIdConAmigos(it.idUsuario)
+				partido.equipo2.integrantes.add(usuarioPosta)
+			]
+
+			val owner = partido.equipo1.owner
+			val jugadoresInvitados = partido.jugadoresDeLaEncuesta
+
+			jugadoresInvitados.forEach [ jugador |
+				val encuesta = new Encuesta()
+
+				encuesta.partido = partido
+				encuesta.usuarioEncuestado = owner
+				encuesta.usuarioReferenciado = jugador
+
+				if (partido.estado) {
+					encuesta.enviar()
+				}
+			]
 		}
 	}
 

@@ -34,7 +34,6 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 	}
 
 	def searchById(Long equipoId) {
-		try {
 			queryTemplate(
 			[ criteria, query, from |
 				query.where(
@@ -43,9 +42,6 @@ class RepositorioEquipo extends Repositorio<Equipo> {
 				)
 				return query
 			], [query|query.singleResult]) as Equipo
-		} catch (NoResultException e) {
-			throw new ObjectDoesntExists("Se ha intentado obtener un equipo con un ID que no existe o que no esta activo")
-		}
 	}
 
 	def searchByIdConIntegrantes(Long equipoId) {

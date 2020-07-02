@@ -9,10 +9,9 @@ import ar.edu.unsam.proyecto.exceptions.ObjectAlreadyExists
 import ar.edu.unsam.proyecto.exceptions.ObjectDoesntExists
 import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson
 import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson.LocalDateAdapter
-import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson.UsuarioAdapter
-import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson.UsuarioListAdapter
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsCancha
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEmpresa
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEncuesta
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
@@ -25,11 +24,11 @@ import java.util.List
 import org.json.JSONObject
 import org.uqbar.xtrest.api.annotation.Body
 import org.uqbar.xtrest.api.annotation.Controller
+import org.uqbar.xtrest.api.annotation.Delete
 import org.uqbar.xtrest.api.annotation.Get
 import org.uqbar.xtrest.api.annotation.Post
-import org.uqbar.xtrest.json.JSONUtils
 import org.uqbar.xtrest.api.annotation.Put
-import org.uqbar.xtrest.api.annotation.Delete
+import org.uqbar.xtrest.json.JSONUtils
 
 @Controller
 class RestHostAPI {
@@ -433,11 +432,20 @@ class RestHostAPI {
 
 	@Get("/candidatos/:idUsuario")
 	def getCandidatosByIdUsuario() {
-
 		try {
 			val candidatosParseados = auxiliar.parsearObjeto(restHost.getCandidatosDelUsuario(Long.valueOf(idUsuario)),
 				ViewsUsuario.PerfilView)
 			ok(candidatosParseados)
+		} catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+	}
+
+	@Get("/encuestas-usuario/:idUsuario")
+	def getEncuestasDelUsuarioByIdUsuario() {
+		try {
+			val encuestasParseadas = auxiliar.parsearObjeto(restHost.encuestasDelUsuario(Long.valueOf(idUsuario)), ViewsEncuesta.DefaultView)
+			ok(encuestasParseadas)
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}

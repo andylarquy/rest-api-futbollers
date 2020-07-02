@@ -19,17 +19,18 @@ import javax.persistence.ManyToMany
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.geodds.Point
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEncuesta
 
 @Accessors
 @Entity
 @JsonInclude(Include.NON_NULL)
 class Usuario {
 
-	@JsonView(ViewsUsuario.IdView, ViewsPartido.DefaultView, ViewsEquipo.ListView, ViewsNotificacion.NotificacionView)
+	@JsonView(ViewsUsuario.IdView, ViewsPartido.DefaultView, ViewsEquipo.ListView, ViewsNotificacion.NotificacionView, ViewsEncuesta.DefaultView)
 	@Id
 	Long idUsuario
 
-	@JsonView(ViewsUsuario.DefaultView, ViewsNotificacion.NotificacionView, ViewsEquipo.DetalleView)
+	@JsonView(ViewsUsuario.DefaultView, ViewsNotificacion.NotificacionView, ViewsEquipo.DetalleView, ViewsEncuesta.DefaultView)
 	@Column()
 	String nombre = ""
 
@@ -38,7 +39,7 @@ class Usuario {
 	String password = ""
 
 	@Column()
-	@JsonView(ViewsUsuario.CredencialesView, ViewsUsuario.PerfilView, ViewsNotificacion.NotificacionView, ViewsEquipo.DetalleView)
+	@JsonView(ViewsUsuario.CredencialesView, ViewsUsuario.PerfilView, ViewsNotificacion.NotificacionView, ViewsEquipo.DetalleView, ViewsEncuesta.DefaultView)
 	String foto
 
 	@Column()
