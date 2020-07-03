@@ -455,11 +455,13 @@ class RestHostAPI {
 	@Put("/encuestas")
 	def updateEncuesta(@Body String body) {
 		try {
+			println(body)
 			val encuesta = body.fromJson(Encuesta)
 			restHost.updateEncuesta(encuesta)
 			ok('{"status":200, "message":"ok"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
+			throw e
 		}
 	}
 

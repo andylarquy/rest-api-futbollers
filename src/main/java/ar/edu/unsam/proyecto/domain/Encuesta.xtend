@@ -55,4 +55,10 @@ class Encuesta {
 		repoEncuesta.agregarEncuesta(this)
 	}
 	
+	def fueRespondida() {
+		respuesta1 !== null && 
+		respuesta2 !== null && 
+		respuesta3 !== null
+	}
+	
 }

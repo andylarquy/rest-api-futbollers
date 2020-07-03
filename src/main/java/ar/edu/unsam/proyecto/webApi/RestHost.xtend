@@ -23,6 +23,7 @@ import javax.persistence.NoResultException
 import org.eclipse.xtend.lib.annotations.Accessors
 import ar.edu.unsam.proyecto.repos.RepositorioEncuesta
 import ar.edu.unsam.proyecto.domain.Encuesta
+import java.util.ArrayList
 
 @Accessors
 class RestHost {
@@ -356,8 +357,11 @@ class RestHost {
 	}
 	
 	def encuestasDelUsuario(Long idUsuario) {
-		repoEncuesta.getEncuestasDelUsuario(idUsuario)
+		val encuestas = new ArrayList
+		encuestas.addAll(repoEncuesta.getEncuestasDelUsuario(idUsuario))
+		encuestas.filter[!it.fueRespondida].toList
 	}
+
 	
 	def updateEncuesta(Encuesta encuesta){
 		val encuestaPosta = repoEncuesta.searchById(encuesta.idEncuesta)
