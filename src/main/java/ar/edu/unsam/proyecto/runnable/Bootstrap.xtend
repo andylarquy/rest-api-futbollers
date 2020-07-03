@@ -329,6 +329,15 @@ class Bootstrap {
 		foto = "https://i.imgur.com/RUOAmuX.png"
 	]
 
+ Partido partidoBienFormado = new Partido() => [
+		equipo1 = supercampeones
+		equipo2 = looneyTeam
+		empresa = empresaUrquiza
+		canchaReservada = urquiza1
+		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 12, 25), LocalTime.of(20, 00))
+	]
+
+/*
 	Partido partido1 = new Partido() => [
 		equipo1 = borbotones
 		equipo2 = dreamTeam
@@ -336,7 +345,8 @@ class Bootstrap {
 		canchaReservada = urquiza1
 		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 12, 25), LocalTime.of(20, 00))
 	]
-/*  
+	
+  
 	Partido partido2 = new Partido() => [
 		equipo1 = borbotones
 		equipo2 = indecisos
@@ -413,14 +423,14 @@ class Bootstrap {
 		repoPromocion.create(promo3)
 
 		// TODO: Pensar si podes evitar mandar un update
-		//andy.crearAmistad(sebaCapo)
+		andy.crearAmistad(sebaCapo)
 		andy.crearAmistad(federico)
 		andy.crearAmistad(carla)
 		andy.crearAmistad(carlos)
 		andy.crearAmistad(florencia)
 		andy.crearAmistad(pepe)
 		andy.crearAmistad(juan)
-		andy.crearAmistad(sofia)
+		//andy.crearAmistad(sofia)
 		andy.crearAmistad(nikoBostero)
 		andy.crearAmistad(lucas)
 		andy.crearAmistad(marcela)
@@ -454,7 +464,8 @@ class Bootstrap {
 		repoUsuarios.update(micaela)
 
 
-		restHost.crearNuevoPartido(partido1)
+		restHost.crearNuevoPartido(partidoBienFormado)
+		//restHost.crearNuevoPartido(partido1)
 
 	}
 

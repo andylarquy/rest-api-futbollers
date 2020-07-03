@@ -60,5 +60,10 @@ class Encuesta {
 		respuesta2 !== null && 
 		respuesta3 !== null
 	}
+
+	//TODO: Esto es no bueno	
+	def noFueEnviada(){
+		repoEncuesta.searchByExample(partido.idPartido, usuarioEncuestado.idUsuario, usuarioReferenciado.idUsuario).isEmpty
+	}
 	
 }

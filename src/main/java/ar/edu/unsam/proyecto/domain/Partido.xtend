@@ -111,40 +111,26 @@ class Partido {
 
 	@Transient
 	transient AuxiliarDynamicJson auxiliar = new AuxiliarDynamicJson
-	
+
 	new() {
-		// ======= [DEBUG] =======
-		val fechaDeEliminacionDebug = LocalDateTime.now().plusSeconds(DEBUG_SEGUNDOS_PARA_CONFIRMAR)
-		var fechaDeEliminacionDebugAsDate = Date.from(
-			fechaDeEliminacionDebug.atZone(ZoneId.systemDefault()).toInstant())
 
-		val fechaDeEliminacion = LocalDateTime.now().plusDays(DIAS_PARA_CONFIRMAR)
-		val fechaDeEliminacionAsDate = Date.from(fechaDeEliminacion.atZone(ZoneId.systemDefault()).toInstant())
+		val ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor()
 
-		val fechaDeEnvioEncuestas = LocalDateTime.now().plusSeconds(DEBUG_SEGUNDOS_PARA_ENCUESTA)
-		var fechaDeEnvioEncuestasDebugAsDate = Date.from(
-			fechaDeEnvioEncuestas.atZone(ZoneId.systemDefault()).toInstant())
-			
+		// Desde el momento de creacion de un partido hay X dias para confirmarlo y asi evitar su autoeliminacion
+		scheduler.schedule(eliminarPartido, DIAS_PARA_CONFIRMAR, TimeUnit.DAYS)
 
-				// Desde el momento de creacion de un partido hay X dias para confirmarlo y asi evitar su autoeliminacion
-		new Timer().schedule(autoEliminarPartido, fechaDeEliminacionAsDate)
-		new Timer().schedule(enviarEncuestas, fechaDeEnvioEncuestasDebugAsDate)
+		// TODO: Pensar q poner en el timer
+		scheduler.schedule(enviarEncuestas, DEBUG_SEGUNDOS_PARA_ENCUESTA, TimeUnit.SECONDS)
+		
+		scheduler.shutdown()
 
-		//val scheduledFuture = scheduler.schedule(enviarEncuestas, 5,TimeUnit.SECONDS);
-
-
-		// Para eliminar el warning
-		fechaDeEliminacionDebugAsDate = fechaDeEliminacionDebugAsDate
 	}
 
 	@Transient
-	transient TimerDebugEliminacion debugAutoEliminarPartido = new TimerDebugEliminacion(this)
+	transient EnviarEncuesta enviarEncuestas = new EnviarEncuesta(this)
 
 	@Transient
-	transient TimerEliminacion autoEliminarPartido = new TimerEliminacion(this)
-
-	@Transient
-	transient TimerEnviarEncuesta enviarEncuestas = new TimerEnviarEncuesta(this)
+	transient EliminarPartido eliminarPartido = new EliminarPartido(this)
 
 	def precioTotal() {
 		canchaReservada.precio * (1 - porcentajeDescuento / 100)
@@ -152,6 +138,10 @@ class Partido {
 
 	def porcentajeDescuento() {
 		promocion !== null ? promocion.porcentajeDescuento : return 0
+	}
+
+	def owner() {
+		equipo1.owner
 	}
 
 	def validar() {
@@ -399,13 +389,12 @@ class Partido {
 
 }
 
-//TimerTask Auxiliar
-class TimerEliminacion extends TimerTask {
+// Lambda para la eliminacion de partidos
+class EliminarPartido implements Runnable {
 
 	Partido partido
 	RepositorioEquipo repoEquipo = RepositorioEquipo.instance
 	RepositorioNotificacion repoNotificaciones = RepositorioNotificacion.instance
-	Boolean termino = true
 
 	new(Partido partido_) {
 		partido = partido_
@@ -413,37 +402,31 @@ class TimerEliminacion extends TimerTask {
 
 	override run() {
 
-		if (termino) {
-			termino = false
+		// Volvemos a ir al back para traer el estado de confirmacion 2 dias despues
+		partido = RepositorioPartido.instance.searchById(partido.idPartido)
 
-			// Volvemos a ir al back para traer el estado de confirmacion 2 dias despues
-			partido = RepositorioPartido.instance.searchById(partido.idPartido)
+		if (!partido.confirmado) {
+			println("[INFO]: Se va ha realizar la baja logica del partido sin confirmar con ID: " + partido.idPartido)
 
-			if (!partido.confirmado) {
-				println("[INFO]: Se va ha realizar la baja logica del partido sin confirmar con ID: " +
-					partido.idPartido)
+			repoNotificaciones.eliminarNotificacioneDePartidoById(partido.idPartido)
 
-				repoNotificaciones.eliminarNotificacioneDePartidoById(partido.idPartido)
+			RepositorioPartido.instance.eliminarPartido(partido)
 
-				RepositorioPartido.instance.eliminarPartido(partido)
+			partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
+			partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
 
-				partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
-				partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
-
-				partido.eliminarJugadoresReservados()
-			}
-
+			partido.eliminarJugadoresReservados()
 		}
-	}
 
+	}
 }
 
-class TimerDebugEliminacion extends TimerTask {
+// Lambda para la emicion de encuestas
+class EnviarEncuesta implements Runnable {
 
 	Partido partido
 	RepositorioEquipo repoEquipo = RepositorioEquipo.instance
 	RepositorioNotificacion repoNotificaciones = RepositorioNotificacion.instance
-	Boolean termino = true
 
 	new(Partido partido_) {
 		partido = partido_
@@ -451,86 +434,51 @@ class TimerDebugEliminacion extends TimerTask {
 
 	override run() {
 
-		if (termino) {
-			termino = false
+		partido = RepositorioPartido.instance.searchById(partido.idPartido)
+		partido.equipo1 = RepositorioEquipo.instance.searchByIdConIntegrantes(partido.equipo1.idEquipo)
+		partido.equipo2 = RepositorioEquipo.instance.searchByIdConIntegrantes(partido.equipo2.idEquipo)
 
-			// Volvemos a ir al back para traer el estado de confirmacion 2 dias despues
-			partido = RepositorioPartido.instance.searchById(partido.idPartido)
+		var integrantesTemp = new ArrayList<Usuario>
+		integrantesTemp.addAll(partido.equipo1.integrantes)
 
-			if (!partido.confirmado) {
-				println("[INFO]: Se va ha realizar la baja logica del partido sin confirmar con ID: " +
-					partido.idPartido)
+		partido.equipo1.integrantes = new HashSet
 
-				repoNotificaciones.eliminarNotificacioneDePartidoById(partido.idPartido)
+		integrantesTemp.forEach [
+			val usuarioPosta = RepositorioUsuario.instance.searchByIdConAmigos(it.idUsuario)
 
-				RepositorioPartido.instance.eliminarPartido(partido)
-
-				partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
-				partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
-
-				partido.eliminarJugadoresReservados()
-			}
-
-		}
-	}
-
-}
-
-class TimerEnviarEncuesta extends TimerTask {
-
-	Partido partido
-
-	// Afroamericano que piensa
-	Boolean termino = true
-
-	new(Partido partido_) {
-		partido = partido_
-	}
-
-	override run() {
-		
-		if (termino) {
-			termino = false
-
-			partido = RepositorioPartido.instance.searchById(partido.idPartido)
-			partido.equipo1 = RepositorioEquipo.instance.searchByIdConIntegrantes(partido.equipo1.idEquipo)
-			partido.equipo2 = RepositorioEquipo.instance.searchByIdConIntegrantes(partido.equipo2.idEquipo)
-
-			var integrantesTemp = new ArrayList<Usuario>
-			integrantesTemp.addAll(partido.equipo1.integrantes)
-
-			partido.equipo1.integrantes = new HashSet
-
-			integrantesTemp.forEach [
-				val usuarioPosta = RepositorioUsuario.instance.searchByIdConAmigos(it.idUsuario)
+			if (usuarioPosta.idUsuario !== partido.owner.idUsuario) {
 				partido.equipo1.integrantes.add(usuarioPosta)
-			]
+			}
 
-			integrantesTemp = new ArrayList<Usuario>
-			integrantesTemp.addAll(partido.equipo2.integrantes)
+		]
 
-			partido.equipo2.integrantes = new HashSet
+		integrantesTemp = new ArrayList<Usuario>
+		integrantesTemp.addAll(partido.equipo2.integrantes)
 
-			integrantesTemp.forEach [
-				val usuarioPosta = RepositorioUsuario.instance.searchByIdConAmigos(it.idUsuario)
+		partido.equipo2.integrantes = new HashSet
+
+		integrantesTemp.forEach [
+			val usuarioPosta = RepositorioUsuario.instance.searchByIdConAmigos(it.idUsuario)
+			if (usuarioPosta.idUsuario !== partido.owner.idUsuario) {
 				partido.equipo2.integrantes.add(usuarioPosta)
-			]
+			}
+		]
 
-			val owner = partido.equipo1.owner
-			val jugadoresInvitados = partido.jugadoresDeLaEncuesta
+		val owner = partido.equipo1.owner
+		val jugadoresInvitados = partido.jugadoresDeLaEncuesta
 
-			jugadoresInvitados.forEach [ jugador |
-				val encuesta = new Encuesta()
+		jugadoresInvitados.forEach [ jugador |
+			val encuesta = new Encuesta()
 
-				encuesta.partido = partido
-				encuesta.usuarioEncuestado = owner
-				encuesta.usuarioReferenciado = jugador
+			encuesta.partido = partido
+			encuesta.usuarioEncuestado = owner
+			encuesta.usuarioReferenciado = jugador
 
-				if (partido.estado) {
-					encuesta.enviar()
-				}
-			]
-		}
+			println(encuesta.noFueEnviada)
+			if (partido.estado && encuesta.noFueEnviada) {
+				encuesta.enviar()
+			}
+		]
+
 	}
-
 }

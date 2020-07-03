@@ -58,5 +58,14 @@ class RepositorioEncuesta extends Repositorio<Encuesta> {
 	def getEncuestasDelUsuario(Long idUsuario) {
 		coleccion.filter[encuesta | encuesta.usuarioEncuestado.idUsuario == idUsuario].toList
 	}
+	
+	//TODO: Lee la 57
+	def searchByExample(Long idPartido, Long idEncuestado, Long idReferenciado){
+		coleccion.filter[
+			it.partido.idPartido == idPartido &&
+			it.usuarioEncuestado.idUsuario == idEncuestado &&
+			it.usuarioReferenciado.idUsuario == idReferenciado
+		]
+	}
 
 }
