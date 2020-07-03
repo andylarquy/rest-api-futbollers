@@ -136,7 +136,7 @@ class RestHostAPI {
 			val partido = gson.fromJson(body.toString, Partido)
 
 			restHost.crearNuevoPartido(partido)
-
+			
 			ok('{"status":200, "message":"ok"}')
 		} catch (InsufficientCandidates e) {
 			notFound('{"status":404, "message":"' + e.message + '"}')

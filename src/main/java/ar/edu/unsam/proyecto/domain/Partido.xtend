@@ -20,12 +20,8 @@ import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
-import java.time.ZoneId
-import java.util.Date
 import java.util.HashSet
 import java.util.Set
-import java.util.Timer
-import java.util.TimerTask
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -106,25 +102,13 @@ class Partido {
 	transient static val ID_EQUIPO_TEMPORAL = -2
 	transient static val DIAS_PARA_CONFIRMAR = 2
 	transient static val DEBUG_SEGUNDOS_PARA_CONFIRMAR = 30
-
-	transient static val DEBUG_SEGUNDOS_PARA_ENCUESTA = 20
-
+	transient static val HORAS_DE_ESPERA_PARA_LA_ENCUESTA = 2
+	
 	@Transient
 	transient AuxiliarDynamicJson auxiliar = new AuxiliarDynamicJson
-
-	new() {
-
-		val ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor()
-
-		// Desde el momento de creacion de un partido hay X dias para confirmarlo y asi evitar su autoeliminacion
-		scheduler.schedule(eliminarPartido, DIAS_PARA_CONFIRMAR, TimeUnit.DAYS)
-
-		// TODO: Pensar q poner en el timer
-		scheduler.schedule(enviarEncuestas, DEBUG_SEGUNDOS_PARA_ENCUESTA, TimeUnit.SECONDS)
-		
-		scheduler.shutdown()
-
-	}
+	
+	@Transient
+	transient LocalDateTime fechaDeEnvioEncuestas = LocalDateTime.now
 
 	@Transient
 	transient EnviarEncuesta enviarEncuestas = new EnviarEncuesta(this)
@@ -386,6 +370,21 @@ class Partido {
 
 		return jugadoresDeLaEncuesta
 	}
+	
+	def startTimer(){
+		val ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor()
+
+		// Desde el momento de creacion de un partido hay X dias para confirmarlo y asi evitar su autoeliminacion
+		scheduler.schedule(eliminarPartido, DIAS_PARA_CONFIRMAR, TimeUnit.DAYS)
+
+		val horasParaEnviarEncuesta = Duration.between(LocalDateTime.now, fechaDeReserva).plusHours(HORAS_DE_ESPERA_PARA_LA_ENCUESTA).toHours
+		
+		scheduler.schedule(enviarEncuestas, 20, TimeUnit.SECONDS)
+		//DEBUG
+		//scheduler.schedule(enviarEncuestas, horasParaEnviarEncuesta, TimeUnit.HOURS)
+		
+		scheduler.shutdown()
+	}
 
 }
 
@@ -433,7 +432,7 @@ class EnviarEncuesta implements Runnable {
 	}
 
 	override run() {
-
+		
 		partido = RepositorioPartido.instance.searchById(partido.idPartido)
 		partido.equipo1 = RepositorioEquipo.instance.searchByIdConIntegrantes(partido.equipo1.idEquipo)
 		partido.equipo2 = RepositorioEquipo.instance.searchByIdConIntegrantes(partido.equipo2.idEquipo)
@@ -474,8 +473,8 @@ class EnviarEncuesta implements Runnable {
 			encuesta.usuarioEncuestado = owner
 			encuesta.usuarioReferenciado = jugador
 
-			println(encuesta.noFueEnviada)
 			if (partido.estado && encuesta.noFueEnviada) {
+				println("Se van a enviar las encuestas de un partido")
 				encuesta.enviar()
 			}
 		]

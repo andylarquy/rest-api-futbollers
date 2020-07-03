@@ -183,7 +183,10 @@ class RestHost {
 			// CAMBIADO A agregarNotificacion
 			repoNotificacion.agregarNotificacion(invitacion)
 		]
-
+		
+		//Se setean los tiempos de espera para la confirmacion del partido y el envio de encuestas
+		partido.startTimer
+		
 	}
 
 	def getCanchas() {
