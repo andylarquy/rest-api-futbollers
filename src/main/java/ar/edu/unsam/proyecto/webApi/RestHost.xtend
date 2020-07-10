@@ -398,5 +398,41 @@ class RestHost {
 		}
 
 	}
+	
+	def eliminarAmistad(Long idUsuario, Long idAmigo){
+		
+		if(idUsuario == idAmigo){
+			throw new Exception('El usuario tiene el mismo ID que el amigo')
+		}
+		
+		var Usuario usuarioPosta
+		
+		try{
+			usuarioPosta = repoUsuario.searchByIdConAmigos(idUsuario)
+		}catch(NoResultException e){
+			throw new ObjectDoesntExists('El usuario tiene un ID inexistente')
+		}
+
+		var Usuario amigoPosta 
+		
+		try{
+			amigoPosta = repoUsuario.searchByIdConAmigos(idAmigo)
+		}catch(NoResultException e){
+			throw new ObjectDoesntExists('El amigo tiene un ID inexistente')
+		}
+		
+		
+		if(usuarioPosta.esAmigoDeById(amigoPosta.idUsuario)){
+			usuarioPosta.eliminarAmistadById(amigoPosta.idUsuario)
+			amigoPosta.eliminarAmistadById(usuarioPosta.idUsuario)
+			
+			repoUsuario.update(usuarioPosta)
+			repoUsuario.update(amigoPosta)
+		}else{
+			throw new Exception('No eres amigo de este usuario')
+		}
+		
+		
+	}
 
 }

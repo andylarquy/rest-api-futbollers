@@ -125,6 +125,10 @@ class Usuario {
 		usuario.agregarAmigo(this)
 		this.agregarAmigo(usuario)
 	}
+	
+	def eliminarAmistadById(Long idAmigo){
+		amigos.removeIf[it.idUsuario == idAmigo]
+	}
 
 	def esIntegranteDesconocido() {
 		idUsuario == ID_INTEGRANTE_DESCONOCIDO
@@ -195,6 +199,10 @@ class Usuario {
 
 	def tieneId(Long idBuscado) {
 		idUsuario == idBuscado
+	}
+	
+	def esAmigoDeById(Long idBuscado) {
+		amigos.exists[it.idUsuario == idBuscado]
 	}
 
 }

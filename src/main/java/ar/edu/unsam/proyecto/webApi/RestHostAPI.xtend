@@ -260,6 +260,20 @@ class RestHostAPI {
 
 	}
 	
+	@Delete("/usuario/:idUsuario/amigo/:idAmigo")
+	def eliminarAmistad() {
+		try {
+			restHost.eliminarAmistad(Long.valueOf(idUsuario), Long.valueOf(idAmigo))
+			ok('{"status":200, "message":"ok"}')
+		} catch (ObjectDoesntExists e){
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		} 
+		catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+
+	}
+	
 	// TODO: Testear GET /canchas
 	@Get("/canchas")
 	def getCanchas() {
