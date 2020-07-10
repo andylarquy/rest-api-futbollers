@@ -1,6 +1,7 @@
 package ar.edu.unsam.proyecto.domain
 
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
+
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
@@ -20,6 +21,7 @@ import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.geodds.Point
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEncuesta
+import org.apache.commons.lang.StringUtils
 
 @Accessors
 @Entity
@@ -204,5 +206,32 @@ class Usuario {
 	def esAmigoDeById(Long idBuscado) {
 		amigos.exists[it.idUsuario == idBuscado]
 	}
+	
+	def validarSignUp() {
+		
+		if (StringUtils.isBlank(password)){
+			throw new Exception('Debe ingresar una contraseña')
+		}
+		
+		if (StringUtils.isBlank(nombre)){
+			throw new Exception('Debe ingresar un nombre')
+		}
+		
+		if (StringUtils.isBlank(email)){
+			throw new Exception('Debe ingresar un email')
+		}
+		
+		if (StringUtils.isBlank(sexo)){
+			throw new Exception('Debe indicar su sexo')
+		}
+		
+		if (StringUtils.isBlank(posicion)){
+			throw new Exception('Debe ingresar una posicion deseada')
+		}
+		
+		if (password.length < 8){
+			throw new Exception('La contraseña debe tener un minimo de 8 caracteres')
+		}
 
+	}
 }

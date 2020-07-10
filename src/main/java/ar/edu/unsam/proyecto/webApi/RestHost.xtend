@@ -60,7 +60,8 @@ class RestHost {
 	def signUpUsuario(Usuario usuario) {
 
 		if (!repoUsuario.existeUsuarioConMail(usuario.email)) {
-			repoUsuario.create(usuario)
+			usuario.validarSignUp
+			repoUsuario.crearUsuario(usuario)
 		} else {
 			throw new IncorrectCredentials("Este mail ya pertenece a un usuario")
 		}
