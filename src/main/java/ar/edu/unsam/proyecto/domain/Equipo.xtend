@@ -61,8 +61,22 @@ class Equipo {
 	}
 	
 	def quitarIntegrante(Usuario integrante){
-		integrantes.remove(integrante)
+		if(this.esOwner(integrante)){
+			throw new Exception('El administrador no puede abandonar el equipo')
+		}else{		
+			integrantes.remove(integrante)
+		}
 	}
+	
+		
+	def quitarIntegranteById(Long idBuscado) {
+		if(this.esOwner(idBuscado)){
+			throw new Exception('El administrador no puede abandonar el equipo')
+		}else{			
+			integrantes.removeIf[it.idUsuario == idBuscado]
+		}
+	}
+	
 	
 	def validar(){
 		
@@ -90,12 +104,20 @@ class Equipo {
 		esOwner(usuario) || integrantes.exists[integrante | integrante.idUsuario.equals(usuario.idUsuario)]
 	}
 	
+	def participaUsuarioById(Long idBuscado){
+		idDeIntegrantes.contains(idBuscado)
+	}
+	
 	def esOwner(Usuario usuario){
 		usuario.idUsuario == owner.idUsuario
 	}
 	
+	def esOwner(Long idBuscado){
+		idBuscado == owner.idUsuario
+	}
+	
 	def idDeIntegrantes() {
-		integrantes.map[idEquipo].toList
+		integrantes.map[idUsuario].toList
 	}
 	
 	def getUsuariosTemporales() {
@@ -253,5 +275,5 @@ class Equipo {
 		]
 		
 	}
-	
+
 }

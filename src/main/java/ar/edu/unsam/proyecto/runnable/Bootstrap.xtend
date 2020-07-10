@@ -335,7 +335,7 @@ class Bootstrap {
 		empresa = empresaUrquiza
 		canchaReservada = urquiza1
 		//fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 12, 25), LocalTime.of(20, 00))
-		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 7, 6), LocalTime.of(20, 00))
+		fechaDeReserva = LocalDateTime.of(LocalDate.of(2020, 7, 15), LocalTime.of(20, 00))
 	]
 
 /*
@@ -431,7 +431,7 @@ class Bootstrap {
 		andy.crearAmistad(florencia)
 		andy.crearAmistad(pepe)
 		andy.crearAmistad(juan)
-		//andy.crearAmistad(sofia)
+		andy.crearAmistad(sofia)
 		andy.crearAmistad(nikoBostero)
 		andy.crearAmistad(lucas)
 		andy.crearAmistad(marcela)

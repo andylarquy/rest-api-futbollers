@@ -97,6 +97,20 @@ class RestHostAPI {
 		}
 
 	}
+	
+	@Get("/usuario/:idUsuario")
+	def getUsuarioById() {
+
+		try {
+			val usuarioParseado = auxiliar.parsearObjeto(
+				restHost.getUsuarioById(Long.valueOf(idUsuario)), ViewsUsuario.PerfilView)
+
+			ok(usuarioParseado)
+		} catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+
+	}
 
 	@Post("/usuario/:idUsuario/amigo/:idAmigo")
 	def agregarAmigoAUsuario() {
@@ -222,6 +236,20 @@ class RestHostAPI {
 	def bajaLogicaEquipo() {
 		try {
 			restHost.bajaLogicaEquipo(Long.valueOf(idEquipo))
+			ok('{"status":200, "message":"ok"}')
+		} catch (ObjectDoesntExists e){
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		} 
+		catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		}
+
+	}
+	
+	@Delete("/equipo/:idEquipo/usuario/:idUsuario")
+	def abandonarEquipo() {
+		try {
+			restHost.usuarioAbandonaEquipo(Long.valueOf(idEquipo), Long.valueOf(idUsuario))
 			ok('{"status":200, "message":"ok"}')
 		} catch (ObjectDoesntExists e){
 			badRequest('{"status":400, "message":"' + e.message + '"}')

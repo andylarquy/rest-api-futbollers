@@ -83,11 +83,11 @@ class RestHost {
 
 	def crearNuevoEquipo(Equipo equipo) {
 		equipo.validarCreacion()
-		//TODO: Mover validacion al metodo de arriba
-		if(repoEquipo.coleccion.exists[it.tieneNombre(equipo.nombre) && it.esOwner(equipo.owner)]){
+		// TODO: Mover validacion al metodo de arriba
+		if (repoEquipo.coleccion.exists[it.tieneNombre(equipo.nombre) && it.esOwner(equipo.owner)]) {
 			throw new ObjectAlreadyExists('Ya tienes un equipo con ese nombre')
 		}
-		
+
 		repoEquipo.create(equipo)
 	}
 
@@ -101,7 +101,7 @@ class RestHost {
 
 	// https://i.imgur.com/j6UGUXn.jpg
 	def crearNuevoPartido(Partido partido) {
-		
+
 		repoPartido.asignarIdPartido(partido)
 
 		partido.mapearEmpresa()
@@ -114,16 +114,15 @@ class RestHost {
 		partido.mapearJugadoresConocidos
 
 		destinatariosConocidos.addAll(partido.jugadoresConocidos)
-		
+
 		println(partido.jugadoresDesconocidos.map[nombre])
 
 		partido.jugadoresDesconocidos.forEach [ jugador |
-			
-			
+
 			if (!usuarioEstaSiendoNotificado(destinatariosConocidos, jugador) &&
-				!usuarioEstaSiendoNotificado(destinatariosDesconocidos, jugador) &&
-				!destinatariosConocidos.exists[it.idUsuario ==jugador.idUsuario] &&
-					 !partido.equipo1.owner.esAmigoDe(jugador)) {
+				!usuarioEstaSiendoNotificado(destinatariosDesconocidos, jugador) && !destinatariosConocidos.exists [
+					it.idUsuario == jugador.idUsuario
+				] && !partido.equipo1.owner.esAmigoDe(jugador)) {
 
 				destinatariosDesconocidos.add(jugador)
 			}
@@ -133,7 +132,8 @@ class RestHost {
 		println("Usuarios desconocidos a invitar: " + destinatariosDesconocidos.map[nombre])
 
 		if (destinatariosConocidos.size + destinatariosDesconocidos.size < partido.canchaReservada.cantidadJugadores) {
-			throw new InsufficientCandidates('No se han encontrado suficientes jugadores con esos parametros de busqueda')
+			throw new InsufficientCandidates(
+				'No se han encontrado suficientes jugadores con esos parametros de busqueda')
 		}
 
 		partido.validarCreacion()
@@ -149,7 +149,6 @@ class RestHost {
 
 		repoEquipo.createIfNotExists(partido.equipo1)
 		repoEquipo.createIfNotExists(partido.equipo2)
-		
 
 		repoPartido.create(partido)
 
@@ -183,10 +182,10 @@ class RestHost {
 			// CAMBIADO A agregarNotificacion
 			repoNotificacion.agregarNotificacion(invitacion)
 		]
-		
-		//Se setean los tiempos de espera para la confirmacion del partido y el envio de encuestas
+
+		// Se setean los tiempos de espera para la confirmacion del partido y el envio de encuestas
 		partido.startTimer
-		
+
 	}
 
 	def getCanchas() {
@@ -288,7 +287,7 @@ class RestHost {
 				notificacionPosta.usuarioReceptor.idUsuario)
 
 			notificacionPosta.agregarIntegranteAlPartido()
-		}else{
+		} else {
 			throw new Exception('Esta invitacion ya ha sido aceptada')
 		}
 	}
@@ -319,61 +318,85 @@ class RestHost {
 		notiDeAmistad.usuarioReceptor = amigoPosta
 		repoNotificacion.enviarUnaNotificacion(notiDeAmistad)
 	}
-	
-	def rechazarInvitacion(Long idNotificacion){
+
+	def rechazarInvitacion(Long idNotificacion) {
 		val notificacionPosta = repoNotificacion.searchById(idNotificacion)
 		repoNotificacion.eliminarNoitificacion(notificacionPosta)
 	}
-	
+
 	def debug() {
 		repoNotificacion.coleccion
 	}
-	
-	//Programo con los codos
+
+	// Programo con los codos
 	def editarEquipo(Equipo equipo) {
-		try{
+		try {
 			val equipoPosta = repoEquipo.searchById(equipo.idEquipo)
-			val integrantesPosta = equipo.integrantes.map[integ | repoUsuario.searchById(integ.idUsuario)].toSet
-			
+			val integrantesPosta = equipo.integrantes.map[integ|repoUsuario.searchById(integ.idUsuario)].toSet
+
 			equipoPosta.nombre = equipo.nombre
 			equipoPosta.integrantes = integrantesPosta
 			equipoPosta.idEquipo = equipo.idEquipo
 			equipoPosta.foto = equipo.foto
-			
+
 			repoEquipo.update(equipoPosta)
-		}catch(NoResultException e){
+		} catch (NoResultException e) {
 			throw new ObjectDoesntExists('Se está intentando editar un equipo con un ID que no existe en la base')
 		}
-		
+
 	}
-	
-	def getEquipoById(Long idEquipo){
+
+	def getEquipoById(Long idEquipo) {
 		val equipo = repoEquipo.searchByIdConIntegrantes(idEquipo)
-		equipo.integrantes.forEach[integrante | repoUsuario.searchById(integrante.idUsuario)]
+		equipo.integrantes.forEach[integrante|repoUsuario.searchById(integrante.idUsuario)]
 		return equipo
 	}
-	
-	def bajaLogicaEquipo(Long idEquipo){
+
+	def bajaLogicaEquipo(Long idEquipo) {
 		val equipoPosta = repoEquipo.searchById(idEquipo)
 		equipoPosta.estado = false
 		repoEquipo.update(equipoPosta)
 	}
-	
+
 	def encuestasDelUsuario(Long idUsuario) {
 		val encuestas = new ArrayList
 		encuestas.addAll(repoEncuesta.getEncuestasDelUsuario(idUsuario))
 		encuestas.filter[!it.fueRespondida].toList
 	}
 
-	
-	def updateEncuesta(Encuesta encuesta){
+	def updateEncuesta(Encuesta encuesta) {
 		val encuestaPosta = repoEncuesta.searchById(encuesta.idEncuesta)
-		
+
 		encuestaPosta.respuesta1 = encuesta.respuesta1
 		encuestaPosta.respuesta2 = encuesta.respuesta2
 		encuestaPosta.respuesta3 = encuesta.respuesta3
-		
+
 		repoEncuesta.update(encuestaPosta)
 	}
-	
+
+	def getUsuarioById(Long idUsuario) {
+		repoUsuario.searchById(idUsuario)
+	}
+
+	def usuarioAbandonaEquipo(Long idEquipo, Long idUsuario) {
+		//Esto esta todo mal programado, la interfaz de los repos funcionan diferente
+		val equipoPosta = repoEquipo.searchByIdConIntegrantes(idEquipo)
+
+		var Usuario usuarioPosta
+		
+		try{
+			usuarioPosta = repoUsuario.searchById(idUsuario)
+		}catch(NoResultException e){
+			throw new ObjectDoesntExists('No existe un usuario con ese ID')
+		}
+
+		if (equipoPosta.participaUsuarioById(usuarioPosta.idUsuario)) {
+			equipoPosta.quitarIntegranteById(usuarioPosta.idUsuario)
+			repoEquipo.update(equipoPosta)
+		} else {
+			throw new ObjectDoesntExists('El usuario no forma parte de este equipo')
+		}
+
+	}
+
 }
