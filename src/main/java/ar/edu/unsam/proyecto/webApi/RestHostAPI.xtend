@@ -111,6 +111,23 @@ class RestHostAPI {
 		}
 
 	}
+	
+	@Put("/usuario")
+	def updateUsuario(@Body String body) {
+		try {
+			println(body)
+			val Usuario usuario = body.fromJson(Usuario)
+			restHost.updateUsuario(usuario)
+			
+			ok('{"status":200, "message":"ok"}')
+			
+		} catch ( IncorrectCredentials e){
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		} catch (Exception e) {
+			badRequest('{"status":400, "message":"' + e.message + '"}')
+		} 
+
+	}
 
 	@Post("/usuario/:idUsuario/amigo/:idAmigo")
 	def agregarAmigoAUsuario() {

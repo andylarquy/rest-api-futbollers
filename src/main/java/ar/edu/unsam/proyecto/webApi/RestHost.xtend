@@ -66,6 +66,28 @@ class RestHost {
 			throw new IncorrectCredentials("Este mail ya pertenece a un usuario")
 		}
 	}
+	
+	def updateUsuario(Usuario usuario){
+		try{
+			usuario.validarPerfil()
+		
+			val usuarioPosta = repoUsuario.searchById(usuario.idUsuario)
+			usuarioPosta.nombre = usuario.nombre
+
+			if(!usuario.password.isNullOrEmpty){
+				usuarioPosta.password = usuario.password
+			}
+
+			if(!usuario.foto.isNullOrEmpty){
+				usuarioPosta.foto = usuario.foto
+			}
+		
+		repoUsuario.update(usuarioPosta)
+		
+		}catch(NoResultException e){
+			throw new ObjectDoesntExists('No existe un usuario con ese ID')
+		}
+	}
 
 	def getPartidosDelUsuario(Long idUsuario) {
 		val usuarioPosta = repoUsuario.searchById(idUsuario)

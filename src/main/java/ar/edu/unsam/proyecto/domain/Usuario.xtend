@@ -22,6 +22,7 @@ import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.geodds.Point
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEncuesta
 import org.apache.commons.lang.StringUtils
+import ar.edu.unsam.proyecto.exceptions.IncorrectCredentials
 
 @Accessors
 @Entity
@@ -234,4 +235,30 @@ class Usuario {
 		}
 
 	}
+	
+	def validarPerfil() {
+		
+		if(StringUtils.isBlank(nombre)){
+			throw new IncorrectCredentials('Debe ingresar un nombre')
+		}
+		
+		/* DEBUG
+		 
+		if (StringUtils.isBlank(password)){
+			throw new IncorrectCredentials('Debe ingresar una contraseña')
+		}
+		
+		if (StringUtils.isBlank(foto)){
+			throw new IncorrectCredentials('Debe ingresar una foto')
+		}
+		
+		if (password.length < 8){
+			throw new IncorrectCredentials('La contraseña debe tener un minimo de 8 caracteres')
+		}
+		 
+		
+		*/
+		
+	}
+	
 }
