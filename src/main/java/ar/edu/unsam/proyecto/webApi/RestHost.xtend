@@ -395,6 +395,7 @@ class RestHost {
 		encuestaPosta.respuesta3 = encuesta.respuesta3
 
 		repoEncuesta.update(encuestaPosta)
+		
 	}
 
 	def getUsuarioById(Long idUsuario) {
@@ -451,11 +452,23 @@ class RestHost {
 			
 			repoUsuario.update(usuarioPosta)
 			repoUsuario.update(amigoPosta)
+			
+			// Se notifica al otro ñato que la amistad se termino
+			// luego de que se updateo la base sin problemas
+			val notificacion = new Notificacion
+			notificacion.titulo = usuarioPosta.nombre+" y tu ya no son amigos!"
+			notificacion.descripcion = ":("
+			notificacion.usuarioReceptor = amigoPosta
+			repoNotificacion.enviarUnaNotificacion(notificacion)
 		}else{
 			throw new Exception('No eres amigo de este usuario')
 		}
 		
-		
+	}
+	
+	def enviarNotificacion(Notificacion notificacion){
+		notificacion.usuarioReceptor = repoUsuario.searchById(notificacion.usuarioReceptor.idUsuario)
+		repoNotificacion.enviarUnaNotificacionInmediata(notificacion)
 	}
 
 }

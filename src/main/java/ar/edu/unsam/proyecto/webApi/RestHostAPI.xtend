@@ -30,6 +30,7 @@ import org.uqbar.xtrest.api.annotation.Post
 import org.uqbar.xtrest.api.annotation.Put
 import org.uqbar.xtrest.json.JSONUtils
 import ar.edu.unsam.proyecto.domain.Encuesta
+import ar.edu.unsam.proyecto.domain.Notificacion
 
 @Controller
 class RestHostAPI {
@@ -279,6 +280,7 @@ class RestHostAPI {
 	
 	@Delete("/usuario/:idUsuario/amigo/:idAmigo")
 	def eliminarAmistad() {
+		println("Pedido")
 		try {
 			restHost.eliminarAmistad(Long.valueOf(idUsuario), Long.valueOf(idAmigo))
 			ok('{"status":200, "message":"ok"}')
@@ -520,7 +522,18 @@ class RestHostAPI {
 			ok('{"status":200, "message":"ok"}')
 		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-			throw e
+		}
+	}
+
+
+	@Post ("/enviar-notificacion")
+	def enviarNotificacion(@Body String body){
+		try{
+			val notificacion = body.fromJson(Notificacion)
+			restHost.enviarNotificacion(notificacion)
+			ok('{"status":200, "message":"ok"}')
+		}catch(Exception e){
+			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 	}
 

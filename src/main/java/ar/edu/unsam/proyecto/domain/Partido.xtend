@@ -379,9 +379,10 @@ class Partido {
 
 		val horasParaEnviarEncuesta = Duration.between(LocalDateTime.now, fechaDeReserva).plusHours(HORAS_DE_ESPERA_PARA_LA_ENCUESTA).toHours
 		
-		scheduler.schedule(enviarEncuestas, 20, TimeUnit.SECONDS)
 		//DEBUG
-		//scheduler.schedule(enviarEncuestas, horasParaEnviarEncuesta, TimeUnit.HOURS)
+		//scheduler.schedule(enviarEncuestas, 20, TimeUnit.SECONDS)
+		
+		scheduler.schedule(enviarEncuestas, horasParaEnviarEncuesta, TimeUnit.HOURS)
 		
 		scheduler.shutdown()
 	}
@@ -476,6 +477,15 @@ class EnviarEncuesta implements Runnable {
 			if (partido.estado && encuesta.noFueEnviada) {
 				println("Se van a enviar las encuestas de un partido")
 				encuesta.enviar()
+				
+				//TODO: Delegar en un metodo enviarNotificacionEncuesta
+				val notificacion = new Notificacion => [
+				titulo = 'Has recibido una encuesta!'
+				descripcion = 'Para el partido del dia (TODO Dia)'
+				usuarioReceptor = encuesta.usuarioEncuestado
+		]
+		
+			RepositorioNotificacion.instance.enviarUnaNotificacion(notificacion)
 			}
 		]
 

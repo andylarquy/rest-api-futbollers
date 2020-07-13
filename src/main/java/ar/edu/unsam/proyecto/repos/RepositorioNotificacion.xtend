@@ -13,6 +13,7 @@ import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClients
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.json.JSONObject
+import org.apache.commons.lang.StringUtils
 
 @Accessors
 class RepositorioNotificacion {
@@ -118,7 +119,7 @@ class RepositorioNotificacion {
 	def enviarUnaNotificacion(Notificacion notificacion) {
 
 		if (notificacion.usuarioReceptor.token !== null) {
-			postNotificacion(notificacion, "to", notificacion.usuarioReceptor.token)
+			postNotificacion(notificacion, "to", "normal", notificacion.usuarioReceptor.token)
 		}
 
 	}
@@ -129,24 +130,34 @@ class RepositorioNotificacion {
 		val List<String> listOfTokens = new ArrayList<String>()
 		deviceTokens.forEach[listOfTokens.add(it)]
 
-		postNotificacion(notificacion, "registration_ids", deviceTokens)
+		postNotificacion(notificacion, "registration_ids","normal", deviceTokens)
 
+	}
+	
+	def enviarUnaNotificacionInmediata(Notificacion notificacion) {
+		if (notificacion.usuarioReceptor.token !== null) {
+			postNotificacion(notificacion, "to", "high", notificacion.usuarioReceptor.token)
+		}
 	}
 
 	// Object destinatario es un String o un JSONArray, IMPORTANTE!!
-	def postNotificacion(Notificacion notificacion, String tipoDestinatario, Object destinatario) {
+	def postNotificacion(Notificacion notificacion, String tipoDestinatario, String priority, Object destinatario) {
 
 		val httpClient = HttpClients.createDefault()
 		val httpPost = new HttpPost("https://fcm.googleapis.com/fcm/send")
 
 		val jsonNotificacion = new JSONObject()
 		jsonNotificacion.put("title", notificacion.titulo)
-		jsonNotificacion.put("text", notificacion.descripcion);
+		jsonNotificacion.put("text", notificacion.descripcion)
+		
+		val jsonAndroid = new JSONObject()
+		jsonAndroid.put("priority", priority)
 
 		val jsonPetition = new JSONObject()
 
 		jsonPetition.put("notification", jsonNotificacion)
 		jsonPetition.put("project_id", PROJECT_ID)
+		jsonPetition.put("android", jsonAndroid)
 
 		jsonPetition.put(tipoDestinatario, destinatario)
 
@@ -155,6 +166,11 @@ class RepositorioNotificacion {
 		httpPost.setEntity(entity)
 		httpPost.setHeader("Content-type", "application/json")
 		httpPost.setHeader("Authorization", "key=" + SERVER_KEY)
+
+		if(StringUtils.isBlank(SERVER_KEY)){
+			throw new Exception('SERVER_KEY es null, probablemente falta el SERVER_KEY en el archivo .env')
+		}
+		
 
 		httpClient.execute(httpPost)
 	}
@@ -172,5 +188,7 @@ class RepositorioNotificacion {
 		val partidoABorrar = repoPartido.searchById(idPartido)
 		coleccion.removeIf[noti | noti.partido.idPartido == partidoABorrar.idPartido]
 	}
+	
+	
 
 }
