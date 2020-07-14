@@ -371,6 +371,14 @@ class Partido {
 		return jugadoresDeLaEncuesta
 	}
 	
+	def participaEquipo(Equipo equipo) {
+		equipo1.tieneId(equipo.idEquipo) || equipo2.tieneId(equipo.idEquipo)
+	}
+	
+	def participaEquipo(Long idEquipo) {
+		equipo1.tieneId(idEquipo) || equipo2.tieneId(idEquipo)
+	}
+	
 	def startTimer(){
 		val ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor()
 
@@ -386,6 +394,8 @@ class Partido {
 		
 		scheduler.shutdown()
 	}
+	
+	
 
 }
 

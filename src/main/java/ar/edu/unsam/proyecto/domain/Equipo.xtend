@@ -19,6 +19,7 @@ import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
+import ar.edu.unsam.proyecto.repos.RepositorioPartido
 
 @Accessors
 @Entity
@@ -54,6 +55,9 @@ class Equipo {
 	
 	@Transient
 	transient RepositorioEquipo repoEquipo = RepositorioEquipo.instance
+	
+	@Transient
+	transient RepositorioPartido repoPartido = RepositorioPartido.instance
 	
 	
 	def agregarIntegrante(Usuario integrante){
@@ -274,6 +278,14 @@ class Equipo {
 			repoUsuario.delete(jugador)
 		]
 		
+	}
+	
+	def tienePartidosPendientes() {
+		repoPartido.coleccion.exists[it.participaEquipo(this)]
+	}
+	
+	def tieneId(Long idBuscado) {
+		this.idEquipo == idBuscado
 	}
 
 }

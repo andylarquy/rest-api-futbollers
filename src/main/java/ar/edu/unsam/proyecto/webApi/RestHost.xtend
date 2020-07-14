@@ -66,25 +66,25 @@ class RestHost {
 			throw new IncorrectCredentials("Este mail ya pertenece a un usuario")
 		}
 	}
-	
-	def updateUsuario(Usuario usuario){
-		try{
+
+	def updateUsuario(Usuario usuario) {
+		try {
 			usuario.validarPerfil()
-		
+
 			val usuarioPosta = repoUsuario.searchById(usuario.idUsuario)
 			usuarioPosta.nombre = usuario.nombre
 
-			if(!usuario.password.isNullOrEmpty){
+			if (!usuario.password.isNullOrEmpty) {
 				usuarioPosta.password = usuario.password
 			}
 
-			if(!usuario.foto.isNullOrEmpty){
+			if (!usuario.foto.isNullOrEmpty) {
 				usuarioPosta.foto = usuario.foto
 			}
-		
-		repoUsuario.update(usuarioPosta)
-		
-		}catch(NoResultException e){
+
+			repoUsuario.update(usuarioPosta)
+
+		} catch (NoResultException e) {
 			throw new ObjectDoesntExists('No existe un usuario con ese ID')
 		}
 	}
@@ -377,8 +377,14 @@ class RestHost {
 
 	def bajaLogicaEquipo(Long idEquipo) {
 		val equipoPosta = repoEquipo.searchById(idEquipo)
-		equipoPosta.estado = false
-		repoEquipo.update(equipoPosta)
+
+		//TODO: Testear esto manualmente
+		if (equipoPosta.tienePartidosPendientes) {
+			throw new Exception("No se puede eliminar este equipo, tiene partidos pendientes")
+		} else {
+			equipoPosta.estado = false
+			repoEquipo.update(equipoPosta)
+		}
 	}
 
 	def encuestasDelUsuario(Long idUsuario) {
@@ -395,7 +401,7 @@ class RestHost {
 		encuestaPosta.respuesta3 = encuesta.respuesta3
 
 		repoEncuesta.update(encuestaPosta)
-		
+
 	}
 
 	def getUsuarioById(Long idUsuario) {
@@ -403,14 +409,14 @@ class RestHost {
 	}
 
 	def usuarioAbandonaEquipo(Long idEquipo, Long idUsuario) {
-		//Esto esta todo mal programado, la interfaz de los repos funcionan diferente
+		// Esto esta todo mal programado, la interfaz de los repos funcionan diferente
 		val equipoPosta = repoEquipo.searchByIdConIntegrantes(idEquipo)
 
 		var Usuario usuarioPosta
-		
-		try{
+
+		try {
 			usuarioPosta = repoUsuario.searchById(idUsuario)
-		}catch(NoResultException e){
+		} catch (NoResultException e) {
 			throw new ObjectDoesntExists('No existe un usuario con ese ID')
 		}
 
@@ -422,51 +428,50 @@ class RestHost {
 		}
 
 	}
-	
-	def eliminarAmistad(Long idUsuario, Long idAmigo){
-		
-		if(idUsuario == idAmigo){
+
+	def eliminarAmistad(Long idUsuario, Long idAmigo) {
+
+		if (idUsuario == idAmigo) {
 			throw new Exception('El usuario tiene el mismo ID que el amigo')
 		}
-		
+
 		var Usuario usuarioPosta
-		
-		try{
+
+		try {
 			usuarioPosta = repoUsuario.searchByIdConAmigos(idUsuario)
-		}catch(NoResultException e){
+		} catch (NoResultException e) {
 			throw new ObjectDoesntExists('El usuario tiene un ID inexistente')
 		}
 
-		var Usuario amigoPosta 
-		
-		try{
+		var Usuario amigoPosta
+
+		try {
 			amigoPosta = repoUsuario.searchByIdConAmigos(idAmigo)
-		}catch(NoResultException e){
+		} catch (NoResultException e) {
 			throw new ObjectDoesntExists('El amigo tiene un ID inexistente')
 		}
-		
-		
-		if(usuarioPosta.esAmigoDeById(amigoPosta.idUsuario)){
+
+		if (usuarioPosta.esAmigoDeById(amigoPosta.idUsuario)) {
 			usuarioPosta.eliminarAmistadById(amigoPosta.idUsuario)
 			amigoPosta.eliminarAmistadById(usuarioPosta.idUsuario)
-			
+
 			repoUsuario.update(usuarioPosta)
 			repoUsuario.update(amigoPosta)
-			
+
 			// Se notifica al otro ñato que la amistad se termino
 			// luego de que se updateo la base sin problemas
 			val notificacion = new Notificacion
-			notificacion.titulo = usuarioPosta.nombre+" y tu ya no son amigos!"
+			notificacion.titulo = usuarioPosta.nombre + " y tu ya no son amigos!"
 			notificacion.descripcion = ":("
 			notificacion.usuarioReceptor = amigoPosta
 			repoNotificacion.enviarUnaNotificacion(notificacion)
-		}else{
+		} else {
 			throw new Exception('No eres amigo de este usuario')
 		}
-		
+
 	}
-	
-	def enviarNotificacion(Notificacion notificacion){
+
+	def enviarNotificacion(Notificacion notificacion) {
 		notificacion.usuarioReceptor = repoUsuario.searchById(notificacion.usuarioReceptor.idUsuario)
 		repoNotificacion.enviarUnaNotificacionInmediata(notificacion)
 	}
