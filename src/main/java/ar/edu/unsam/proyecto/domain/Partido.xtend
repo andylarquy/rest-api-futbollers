@@ -10,6 +10,7 @@ import ar.edu.unsam.proyecto.repos.RepositorioPartido
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import ar.edu.unsam.proyecto.webApi.jsonViews.AuxiliarDynamicJson
 import ar.edu.unsam.proyecto.webApi.jsonViews.LocalDateTimeSerializer
+import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEncuesta
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsPartido
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -20,19 +21,18 @@ import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
+import java.util.ArrayList
 import java.util.HashSet
 import java.util.Set
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
-import java.util.ArrayList
-import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEncuesta
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.Executors
 
 @Accessors
 @Entity
@@ -395,7 +395,10 @@ class Partido {
 		scheduler.shutdown()
 	}
 	
-	
+	def todaviaNoSeJugo() {
+		println(LocalDateTime.now.isBefore(fechaDeReserva))
+		LocalDateTime.now.isBefore(fechaDeReserva)
+	}
 
 }
 

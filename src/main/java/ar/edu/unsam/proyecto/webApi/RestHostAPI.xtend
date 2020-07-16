@@ -31,6 +31,7 @@ import org.uqbar.xtrest.api.annotation.Put
 import org.uqbar.xtrest.json.JSONUtils
 import ar.edu.unsam.proyecto.domain.Encuesta
 import ar.edu.unsam.proyecto.domain.Notificacion
+import ar.edu.unsam.proyecto.exceptions.InvalidOperation
 
 @Controller
 class RestHostAPI {
@@ -244,7 +245,9 @@ class RestHostAPI {
 			ok('{"status":200, "message":"ok"}')
 		} catch (ObjectAlreadyExists e){
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-		} 
+		} catch(InvalidOperation e){
+			notFound('{"status":404, "message":"' + e.message + '"}')
+		}
 		catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
@@ -257,11 +260,11 @@ class RestHostAPI {
 			ok('{"status":200, "message":"ok"}')
 		} catch (ObjectDoesntExists e){
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-		} 
-		catch (Exception e) {
+		} catch (InvalidOperation e) {
+			notFound('{"status":404, "message":"' + e.message + '"}')
+		} catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
-
 	}
 	
 	@Delete("/equipo/:idEquipo/usuario/:idUsuario")
@@ -271,8 +274,9 @@ class RestHostAPI {
 			ok('{"status":200, "message":"ok"}')
 		} catch (ObjectDoesntExists e){
 			badRequest('{"status":400, "message":"' + e.message + '"}')
-		} 
-		catch (Exception e) {
+		} catch(InvalidOperation e){
+			notFound('{"status":404, "message":"' + e.message + '"}')
+		}catch (Exception e) {
 			badRequest('{"status":400, "message":"' + e.message + '"}')
 		}
 

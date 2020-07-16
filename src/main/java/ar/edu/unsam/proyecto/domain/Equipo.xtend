@@ -1,6 +1,7 @@
 package ar.edu.unsam.proyecto.domain
 
 import ar.edu.unsam.proyecto.repos.RepositorioEquipo
+import ar.edu.unsam.proyecto.repos.RepositorioPartido
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsEquipo
 import ar.edu.unsam.proyecto.webApi.jsonViews.ViewsNotificacion
@@ -19,7 +20,7 @@ import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
 import javax.persistence.Transient
 import org.eclipse.xtend.lib.annotations.Accessors
-import ar.edu.unsam.proyecto.repos.RepositorioPartido
+import ar.edu.unsam.proyecto.repos.RepositorioNotificacion
 
 @Accessors
 @Entity
@@ -59,6 +60,8 @@ class Equipo {
 	@Transient
 	transient RepositorioPartido repoPartido = RepositorioPartido.instance
 	
+	@Transient
+	transient RepositorioNotificacion repoNotificaciones = RepositorioNotificacion.instance
 	
 	def agregarIntegrante(Usuario integrante){
 		integrantes.add(integrante)
@@ -280,12 +283,32 @@ class Equipo {
 		
 	}
 	
+	//	Estos dos metodos se pueden juntar, pero hicimos tantas acrobacias
+	// con el codigo que me da miedo tocarlo
 	def tienePartidosPendientes() {
 		repoPartido.coleccion.exists[it.participaEquipo(this)]
+	}
+	
+	def partidosPendientes(){
+		repoPartido.coleccionConIntegrantes.filter[it.participaEquipo(this)]
 	}
 	
 	def tieneId(Long idBuscado) {
 		this.idEquipo == idBuscado
 	}
+	
+	//Aclaracion: Cuando rechazas una invitacion la notificacion se elimina del sistema
+	// Y cuando aceptas una invitacion se guarda en el sistema
+	// Por lo tanto si el usuario tiene invitaciones para partidos que todavia no se han jugado
+	// Es que no se decidio a jugarlo o que lo acepto, en cuyo caso no puede abandonar el equipo
+	def tienePartidosPendientesConUsuario(Usuario usuario) {
+		
+		repoNotificaciones.getTodasLasNotificacionesDelUsuario(usuario.idUsuario).exists[ noti |
+			noti.partido.participaEquipo(this) &&
+			noti.partido.todaviaNoSeJugo()
+		]
+	}
+	
+	
 
 }

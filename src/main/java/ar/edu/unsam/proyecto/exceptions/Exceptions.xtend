@@ -25,3 +25,9 @@ class InsufficientCandidates extends Exception{
 		super(errorMessage)
 	}
 }
+
+class InvalidOperation extends Exception{
+	new(String errorMessage){
+		super(errorMessage)
+	}
+}

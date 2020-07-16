@@ -1,5 +1,6 @@
 package ar.edu.unsam.proyecto.webApi
 
+import ar.edu.unsam.proyecto.domain.Encuesta
 import ar.edu.unsam.proyecto.domain.Equipo
 import ar.edu.unsam.proyecto.domain.Notificacion
 import ar.edu.unsam.proyecto.domain.Partido
@@ -10,20 +11,20 @@ import ar.edu.unsam.proyecto.exceptions.ObjectAlreadyExists
 import ar.edu.unsam.proyecto.exceptions.ObjectDoesntExists
 import ar.edu.unsam.proyecto.repos.RepositorioCancha
 import ar.edu.unsam.proyecto.repos.RepositorioEmpresa
+import ar.edu.unsam.proyecto.repos.RepositorioEncuesta
 import ar.edu.unsam.proyecto.repos.RepositorioEquipo
 import ar.edu.unsam.proyecto.repos.RepositorioNotificacion
 import ar.edu.unsam.proyecto.repos.RepositorioPartido
 import ar.edu.unsam.proyecto.repos.RepositorioPromocion
 import ar.edu.unsam.proyecto.repos.RepositorioUsuario
 import java.time.LocalDateTime
+import java.util.ArrayList
 import java.util.HashSet
 import java.util.List
 import java.util.Set
 import javax.persistence.NoResultException
 import org.eclipse.xtend.lib.annotations.Accessors
-import ar.edu.unsam.proyecto.repos.RepositorioEncuesta
-import ar.edu.unsam.proyecto.domain.Encuesta
-import java.util.ArrayList
+import ar.edu.unsam.proyecto.exceptions.InvalidOperation
 
 @Accessors
 class RestHost {
@@ -354,14 +355,18 @@ class RestHost {
 	// Programo con los codos
 	def editarEquipo(Equipo equipo) {
 		try {
-			val equipoPosta = repoEquipo.searchById(equipo.idEquipo)
+			val equipoPosta = repoEquipo.searchByIdConIntegrantes(equipo.idEquipo)
 			val integrantesPosta = equipo.integrantes.map[integ|repoUsuario.searchById(integ.idUsuario)].toSet
+
+			if(equipoPosta.integrantes != integrantesPosta && equipoPosta.tienePartidosPendientes){
+				throw new InvalidOperation('Los integrantes de este equipo no se pueden editar porque el equipo tiene partidos pendientes')
+			}
 
 			equipoPosta.nombre = equipo.nombre
 			equipoPosta.integrantes = integrantesPosta
 			equipoPosta.idEquipo = equipo.idEquipo
 			equipoPosta.foto = equipo.foto
-
+			
 			repoEquipo.update(equipoPosta)
 		} catch (NoResultException e) {
 			throw new ObjectDoesntExists('Se está intentando editar un equipo con un ID que no existe en la base')
@@ -380,7 +385,7 @@ class RestHost {
 
 		//TODO: Testear esto manualmente
 		if (equipoPosta.tienePartidosPendientes) {
-			throw new Exception("No se puede eliminar este equipo, tiene partidos pendientes")
+			throw new InvalidOperation("No se puede eliminar este equipo, tiene partidos pendientes")
 		} else {
 			equipoPosta.estado = false
 			repoEquipo.update(equipoPosta)
@@ -421,8 +426,13 @@ class RestHost {
 		}
 
 		if (equipoPosta.participaUsuarioById(usuarioPosta.idUsuario)) {
-			equipoPosta.quitarIntegranteById(usuarioPosta.idUsuario)
-			repoEquipo.update(equipoPosta)
+			
+			if(equipoPosta.tienePartidosPendientesConUsuario(usuarioPosta)){
+				throw new InvalidOperation('No podes abandonar un equipo con partidos pendientes')
+			}else{
+				equipoPosta.quitarIntegranteById(usuarioPosta.idUsuario)
+				repoEquipo.update(equipoPosta)
+			}
 		} else {
 			throw new ObjectDoesntExists('El usuario no forma parte de este equipo')
 		}

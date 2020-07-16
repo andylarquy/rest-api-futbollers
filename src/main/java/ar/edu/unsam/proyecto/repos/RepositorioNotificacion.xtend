@@ -189,6 +189,11 @@ class RepositorioNotificacion {
 		coleccion.removeIf[noti | noti.partido.idPartido == partidoABorrar.idPartido]
 	}
 	
-	
+	//Trae todas las notificaciones, incluso las que ya han sido aceptadas
+	def getTodasLasNotificacionesDelUsuario(Long idUsuario){
+		coleccion.filter [ noti |
+			noti.receptorTieneId(idUsuario)
+		].toList
+	}
 
 }

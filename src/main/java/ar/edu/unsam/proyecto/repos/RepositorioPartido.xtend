@@ -8,6 +8,7 @@ import java.util.List
 import javax.persistence.criteria.JoinType
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.commons.model.annotations.Observable
+import java.util.ArrayList
 
 @Observable
 @Accessors
@@ -21,6 +22,8 @@ class RepositorioPartido extends Repositorio<Partido> {
 		}
 		repoPartido
 	}
+	
+	RepositorioEquipo repoEquipo = RepositorioEquipo.instance
 
 	def reset() {
 		repoPartido = null
@@ -79,6 +82,19 @@ class RepositorioPartido extends Repositorio<Partido> {
 	
 	def partidosOwnereadosDelUsuario(Usuario usuario) {
 		coleccion.filter[partido | partido.equipo1.esOwner(usuario)].toList
+	}
+	
+	def List<Partido> coleccionConIntegrantes(){
+		val coleccionConIntegrantes = new ArrayList
+		
+		coleccion.forEach[partido | 
+			partido.equipo1 = repoEquipo.searchByIdConIntegrantes(partido.equipo1.idEquipo)
+			partido.equipo2 = repoEquipo.searchByIdConIntegrantes(partido.equipo2.idEquipo)
+			
+			coleccionConIntegrantes.add(partido)
+		]
+		
+		coleccionConIntegrantes
 	}
 	
 }
