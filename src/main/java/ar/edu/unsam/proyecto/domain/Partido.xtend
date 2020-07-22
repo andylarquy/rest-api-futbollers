@@ -497,7 +497,6 @@ class EnviarEncuesta implements Runnable {
 				//TODO: Delegar en un metodo enviarNotificacionEncuesta
 				val notificacion = new Notificacion => [
 				titulo = 'Has recibido una encuesta!'
-				descripcion = 'Para el partido del dia (TODO Dia)'
 				usuarioReceptor = encuesta.usuarioEncuestado
 		]
 		
