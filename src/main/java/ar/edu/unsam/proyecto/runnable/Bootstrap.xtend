@@ -139,7 +139,7 @@ class Bootstrap {
 		sexo = "Femenino"
 		posicion = "Mediocampista"
 		foto = "https://i.imgur.com/vtmHBNo.jpg"
-		email = "elmaildeljugador4@sarasa.com"
+		email = "florencia@gmail.om"
 		lat = -34.5768884
 		lon = -58.4904551
 	]
