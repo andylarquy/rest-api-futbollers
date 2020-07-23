@@ -385,12 +385,15 @@ class Partido {
 		// Desde el momento de creacion de un partido hay X dias para confirmarlo y asi evitar su autoeliminacion
 		scheduler.schedule(eliminarPartido, DIAS_PARA_CONFIRMAR, TimeUnit.DAYS)
 
-		val horasParaEnviarEncuesta = Duration.between(LocalDateTime.now, fechaDeReserva).plusHours(HORAS_DE_ESPERA_PARA_LA_ENCUESTA).toHours
+		//Para La presentacion reducimos el tiempo de espera
+		//val horasParaEnviarEncuesta = Duration.between(LocalDateTime.now, fechaDeReserva).plusHours(HORAS_DE_ESPERA_PARA_LA_ENCUESTA).toHours
+		val horasParaEnviarEncuesta = 1
 		
 		//DEBUG
 		//scheduler.schedule(enviarEncuestas, 20, TimeUnit.SECONDS)
 		
-		scheduler.schedule(enviarEncuestas, horasParaEnviarEncuesta, TimeUnit.HOURS)
+		scheduler.schedule(enviarEncuestas, horasParaEnviarEncuesta, TimeUnit.MINUTES)
+		//scheduler.schedule(enviarEncuestas, horasParaEnviarEncuesta, TimeUnit.HOURS)
 		
 		scheduler.shutdown()
 	}
@@ -487,7 +490,7 @@ class EnviarEncuesta implements Runnable {
 			encuesta.usuarioEncuestado = owner
 			encuesta.usuarioReferenciado = jugador
 
-			if (partido.estado && encuesta.noFueEnviada) {
+			if (partido.estado && encuesta.noFueEnviada && !encuesta.usuarioReferenciado.esUnJugadorReservado) {
 				println("Se van a enviar las encuestas de un partido")
 				encuesta.enviar()
 				

@@ -166,14 +166,15 @@ class Usuario {
 
 		var admite = true
 
-		if (sexo !== null) {
+		if (StringUtils.isNotBlank(sexo)) {
 			if (!sexo.equals("Mixto") && !sexo.equals(usuario.sexo)) {
+				println("SEXO")
 				admite = false
 			}
 		}
 		
-		if (posicion !== null) {
-			if (!sexo.equals("Cualquiera") && !posicion.equals(usuario.posicion)) {
+		if (StringUtils.isNotBlank(posicion)) {
+			if (!posicion.equals("Cualquiera") && !posicion.equals(usuario.posicion)) {
 				admite = false
 			}
 		}
