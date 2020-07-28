@@ -252,6 +252,20 @@ class Bootstrap {
 		foto = "https://i.imgur.com/KBA4jOL.jpg"
 		integrantes = new HashSet(Arrays.asList(sofia, julieta, carla, florencia))
 	]
+	
+	Equipo lesLuthier = new Equipo() =>[
+		nombre = "Les Luthier"
+		owner = andy
+		foto = "https://i.imgur.com/pHBFayA.jpg"
+		integrantes = new HashSet(Arrays.asList(pepe, juan, sofia, sebaCapo, andy))
+	]
+	
+	Equipo urquizaFc = new Equipo() =>[
+		nombre = "Urquiza FC"
+		owner = sebaCapo
+		foto = "https://i.imgur.com/1YaTT6v.jpg"
+		integrantes = new HashSet(Arrays.asList(lucas, sebaCapo, julieta, carlos, andy))
+	]
 
 	Cancha urquiza1 = new Cancha() => [
 		foto = "https://i.imgur.com/jrziFQc.png"
@@ -406,6 +420,9 @@ class Bootstrap {
 		repoEquipo.create(supercampeones)
 		repoEquipo.create(looneyTeam)
 		repoEquipo.create(hayEquipo)
+		repoEquipo.update(lesLuthier)
+		repoEquipo.update(urquizaFc)
+
 
 		repoCancha.create(urquiza1)
 		repoCancha.create(urquiza2)
@@ -432,7 +449,7 @@ class Bootstrap {
 		andy.crearAmistad(pepe)
 		andy.crearAmistad(juan)
 		//debug - comentar a sofia para debugear encuestas
-		andy.crearAmistad(sofia)
+		//andy.crearAmistad(sofia)
 		andy.crearAmistad(nikoBostero)
 		andy.crearAmistad(lucas)
 		andy.crearAmistad(marcela)
