@@ -151,7 +151,7 @@ class Equipo {
 	
 	def asignarNombreTemporal(){
 		if(idEquipo < 0){
-			nombre = "Equipo Temporal Nro. "+repoEquipo.coleccion.size
+			nombre = "Equipo Temporal"
 		}
 	}
 	
