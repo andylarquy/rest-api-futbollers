@@ -185,8 +185,7 @@ class RestHost {
 				invitacion.partido = partido
 				invitacion.usuarioReceptor = partido.equipo1.owner
 				invitacion.titulo = "¡ " + partido.equipo1.owner.nombre + " te invito a un partido!"
-				invitacion.descripcion = invitacion.partido.empresa.direccion + " - " +
-					invitacion.partido.fechaDeReserva + " (TODO: Formatear bien la fecha)"
+				invitacion.descripcion = invitacion.partido.empresa.direccion + " - " + invitacion.partido.fechaDeReserva
 				invitacion.usuarioReceptor = destinatario
 
 				// CAMBIADO A agregarNotificacion
@@ -199,8 +198,7 @@ class RestHost {
 			invitacion.partido = partido
 			invitacion.usuarioReceptor = partido.equipo1.owner
 			invitacion.titulo = "¡Has recibido una invitacion para un partido!"
-			invitacion.descripcion = invitacion.partido.empresa.direccion + " - " + invitacion.partido.fechaDeReserva +
-				" (TODO: Formatear bien la fecha)"
+			invitacion.descripcion = invitacion.partido.empresa.direccion + " - " + invitacion.partido.fechaDeReserva
 			invitacion.usuarioReceptor = destinatario
 
 			// CAMBIADO A agregarNotificacion
