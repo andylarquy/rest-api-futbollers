@@ -131,7 +131,7 @@
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			<version>3.3.0</version>
+			<version>3.7.0</version>
 		</dependency>
 
 		<!-- Google Firebase -->
@@ -155,7 +155,7 @@
 			<url>http://maven.uqbar.org/releases</url>
 		</repository>
 		<repository>
-			<snapshots />
+			<snapshots/>
 			<id>uqbar-wiki.org-snapshots</id>
 			<name>uqbar-wiki.org-snapshots</name>
 			<url>http://maven.uqbar.org/snapshots</url>
