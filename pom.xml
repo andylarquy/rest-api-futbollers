@@ -92,7 +92,7 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20190722</version>
+			<version>20231013</version>
 		</dependency>
 
 		<!-- Agrego Gson porque me cae bien, es un tipo educado -->
@@ -155,7 +155,7 @@
 			<url>http://maven.uqbar.org/releases</url>
 		</repository>
 		<repository>
-			<snapshots />
+			<snapshots/>
 			<id>uqbar-wiki.org-snapshots</id>
 			<name>uqbar-wiki.org-snapshots</name>
 			<url>http://maven.uqbar.org/snapshots</url>
